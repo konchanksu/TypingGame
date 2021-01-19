@@ -9,9 +9,17 @@
 </head>
 
 <body onload="firstload();">
+    {% for i in item %}
+        <script>
+            itemSet("{{ i.id }}", "{{ i.kanji_data }}", "{{ i.hiragana_data }}");
+        </script>
+    {% endfor %}
     <h1>Typing Game</h1>
     <h1 id="gameWindow"></h1>
-    <h1 id="romaji"></h1>
+    <div id="romaji">
+        <h1 id="already" style="display: inline;"></h1>
+        <h1 id="yet" style="display: inline;"></h1>
+    </div>
     <h1 id="subMenu"></h1>
 </body>
 </html>

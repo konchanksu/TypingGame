@@ -1,14 +1,12 @@
 /**
  * キーボードゲームを開始するクラス
  */
-class KeyBoardGame {
+class GameController {
     /**
      * コンストラクタ
      */
     constructor() {
-        // this.randomChar = new RandomChar();
-        this.hiraganaToAlphabet = new HiraganaToAlphabet("");
-        this.gamePaused();
+        this.typingGame = new TypingGame();
     }
 
     /**
@@ -19,80 +17,63 @@ class KeyBoardGame {
         let key = event.key;
         if(this.isGameStarted) {
             if(key == "Escape") {
-                this.gamePaused();
-            } else if(this.hiraganaToAlphabet.isAbleToInputRomaji(key)) {
-                this.onGameCorrectTyping(key);
+                this.isGameStarted = false;
+                this.typingGame.gameReset();
             } else {
-                this.onGameMissTyping();
-            }
-
-            if(this.hiraganaToAlphabet.isFinished()) {
-                this.gameClear();
+                this.typingGame.inputKey(key);
+                if(this.typingGame.isFinished()) {
+                    this.isGameStarted = false;
+                    this.typingGame.gameClear();
+                }
             }
 
         } else {
             if(key == " ") {
-                this.gameReset();
-                this.gameStart();
-                this.startGameTime = Date.now();
+                this.isGameStarted = true;
+                this.typingGame.gameStart();
+            } else if(key == "Escape") {
+                this.typingGame.gameReset();
             }
         }
     }
+}
+
+/**
+ * タイピングゲームを管理するクラス
+ */
+class TypingGame {
+    /**
+     * コンストラクタ
+     */
+    constructor() {
+        this.hiraganaToAlphabet = new HiraganaToAlphabet("");
+        this.gameReset();
+    }
 
     /**
-     * ゲームをクリア状態に変更する
+     * ゲームをクリアした時に表示するクラス
      */
     gameClear() {
         let endGameTime = Date.now();
         let diffarence = endGameTime - this.startGameTime;
-        this.isGameStarted = false;
-        this.showGameWindow(
+        this.gameReset();
+        ShowWindow.showGameWindow(
             "Game Clear　　Time:" +
             diffarence.toString().slice(0, -3) +
             "秒" +
             diffarence.toString().slice(-3) +
             "　　スペースキーでもう一度"
         );
-        this.showRomajiWindow("");
-    }
-
-    /**
-     * ゲームを中断する
-     */
-    gamePaused() {
-        this.gameReset();
-        this.showGameWindow("スペースキーでゲームスタート");
-    }
-
-    /**
-     * ゲームをPlay前の状態に戻す
-     */
-    gameReset() {
-        this.isGameStarted = false;
-        this.correctTyping = 0;
-        this.missTyping = 0;
-        this.typeKey = "";
-        // this.randomChar.randomCharSet();
-        this.hiraganaToAlphabet.newTextSet("なんかてきとうににほんごにゅうりょくできるもじれつをつくってみた");
-        this.showSubMenu("");
-    }
-
-    /**
-     * ゲームを開始状態に変更する
-     */
-    gameStart() {
-        this.isGameStarted = true;
-        this.gameContentsOnDisplay();
     }
 
     /**
      * ランダムな文字をディスプレイに表示する
      */
     gameContentsOnDisplay() {
-        // this.showGameWindow(this.randomChar.charArray.join(" "));
-        this.showGameWindow(this.hiraganaToAlphabet.text);
-        this.showRomajiWindow(this.typeKey);
-        this.showSubMenu(
+        ShowWindow.showGameWindow(this.nowStringItem.kanji_data);
+        ShowWindow.showAlreadyWindow(this.typeKey);
+        ShowWindow.showYetWindow(this.hiraganaToAlphabet.romajiChangeListHead());
+        ShowWindow.showSubMenu(
             "入力した数:" +
             (this.correctTyping + this.missTyping).toString() +
             "  正しい入力:" +
@@ -103,13 +84,70 @@ class KeyBoardGame {
     }
 
     /**
+     * ゲームを開始するクラス
+     */
+    gameStart() {
+        this.startGameTime = Date.now();
+        this.nextString();
+    }
+
+    /**
+     * ゲームをPlay前の状態に戻す
+     */
+    gameReset() {
+        this.correctTyping = 0;
+        this.missTyping = 0;
+        this.remainNum = 4;
+        this.hiraganaToAlphabet.newTextSet("");
+        this.typeKey = "";
+        Database.resetRandomItemList();
+        ShowWindow.showGameWindow("スペースキーでゲームスタート");
+        ShowWindow.showAlreadyWindow("");
+        ShowWindow.showYetWindow("");
+        ShowWindow.showSubMenu("");
+    }
+
+    /**
+     * ゲーム中にキー入力があった時に動作するクラス
+     */
+    inputKey(key) {
+        if(this.hiraganaToAlphabet.isAbleToInputRomaji(key)) {
+            this.onGameCorrectTyping(key);
+        } else {
+            this.onGameMissTyping();
+        }
+    }
+
+    /**
+     * ゲームが終了したかどうかを判定する
+     * @return { Boolean } ゲームが終了したかどうか
+     */
+    isFinished() {
+        if(this.hiraganaToAlphabet.isFinished()) {
+            this.remainNum -= 1;
+            if(this.remainNum == 0) { return true; }
+            this.nextString();
+        }
+        return false;
+    }
+
+    /**
+     * 新たな文字を出現させる
+     */
+    nextString() {
+        this.nowStringItem = Database.randomGet();
+        this.hiraganaToAlphabet.newTextSet(this.nowStringItem.hiragana_data);
+        this.typeKey = "";
+        this.gameContentsOnDisplay();
+    }
+
+    /**
      * ゲーム中に正しいタイプが発生した時の動作
      * @param {String} key 入力したキー
      */
     onGameCorrectTyping(key) {
         this.correctTyping += 1;
         this.typeKey += key;
-        // this.randomChar.randomCharDelete();
         this.gameContentsOnDisplay();
     }
 
@@ -118,16 +156,38 @@ class KeyBoardGame {
      */
     onGameMissTyping() {
         this.missTyping += 1;
-        // this.randomChar.randomCharAppend();
         this.gameContentsOnDisplay();
+    }
+}
+
+/**
+ * ウィンドウ表示について行うクラス
+ */
+class ShowWindow {
+    /**
+     * 文字列をid romajiに表示させる
+     * @param {*} str
+     */
+    static showAlreadyWindow(str) {
+        let element = document.getElementById("already");
+        element.innerHTML = str;
     }
 
     /**
-     * 文字列をid frameに表示させる
-     * @param {String} str 表示させる文字列
-     */
-    showGameWindow(str) {
+    * 文字列をid frameに表示させる
+    * @param {String} str 表示させる文字列
+    */
+    static showGameWindow(str) {
         let element = document.getElementById("gameWindow");
+        element.innerHTML = str;
+    }
+
+    /**
+    * ゲームのサブメニューを表示する
+    * @param {String} str 表示させる文字列
+    */
+    static showSubMenu(str) {
+        let element = document.getElementById("subMenu");
         element.innerHTML = str;
     }
 
@@ -135,73 +195,68 @@ class KeyBoardGame {
      * 文字列をid romajiに表示させる
      * @param {*} str
      */
-    showRomajiWindow(str) {
-        let element = document.getElementById("romaji");
-        element.innerHTML = str;
-    }
-
-    /**
-     * ゲームのサブメニューを表示する
-     * @param {String} str 表示させる文字列
-     */
-    showSubMenu(str) {
-        let element = document.getElementById("subMenu");
+    static showYetWindow(str) {
+        let element = document.getElementById("yet");
         element.innerHTML = str;
     }
 }
 
 /**
- * ランダムな文字列を生成,取り出し,削除するクラス
+ * データベースのItemを管理するクラス
  */
-class RandomChar {
-    /**
-     * 小文字のzのkeyCode定数
-     */
-    static end = 122;
-
-    /**
-     * 小文字のaのkeyCode定数
-     */
-    static first = 97;
-
+class Items {
     /**
      * コンストラクタ
+     * @param {Integer} id データベースでの番号
+     * @param {String} kanji_data データベース内の漢字の文章
+     * @param {String} hiragana_data データベース内の平仮名の文章
      */
-    constructor() {
-        this.randomCharSet();
+    constructor(id, kanji_data, hiragana_data) {
+        this.id = id;
+        this.kanji_data = kanji_data;
+        this.hiragana_data = hiragana_data;
+    }
+}
+
+/**
+ * データベースを管理するクラス
+ */
+class Database {
+    /**
+     * データベースにある単語のリスト
+     */
+    static itemList = [];
+    static randomItemList = [];
+
+    /**
+     * ItemListにデータを追加する
+     * @param {Integer} id データベースでの番号
+     * @param {String} kanji_data データベース内の漢字の文章
+     * @param {String} hiragana_data データベース内の平仮名の文章
+     */
+    static pushItemList(id, kanji_data, hiragana_data) {
+        Database.itemList.push( new Items(parseInt(id), kanji_data, hiragana_data) );
+        Database.randomItemList.push( Database.itemList[Database.itemList - 1] );
     }
 
     /**
-     * ランダムな文字列を一つ追加する
+     * ランダムにItemを入手する
+     * @returns {Item} ランダムに入手したitemオブジェクト
      */
-    randomCharAppend() {
-        this.charArray.push(this.randomCharBuild());
+    static randomGet() {
+        let randomIndex = Math.floor(Math.random() * Database.randomItemList.length);
+        let returnItem = Database.randomItemList[randomIndex];
+        Database.randomItemList = Database.randomItemList.filter(n => n != returnItem);
+        return returnItem;
     }
 
     /**
-     * ランダムな文字列を生成する
-     * @return {String} ランダムな文字列
+     * 一度ランダムに取り出した要素を全て戻す
      */
-    randomCharBuild() {
-        return String.fromCharCode(Math.floor(Math.random() * 26) + RandomChar.first);
+    static resetRandomItemList() {
+        Database.randomItemList = Database.itemList.slice(0);
     }
 
-    /**
-     * ランダムに生成した文字列を一つ削除する
-     */
-    randomCharDelete() {
-        this.charArray.shift();
-    }
-
-    /**
-     * ランダムな文字列を生成する
-     */
-    randomCharSet() {
-        this.charArray = new Array();
-        for(let i = 0; i < 100; i++) {
-            this.charArray[i] = this.randomCharBuild();
-        }
-    }
 }
 
 /**
@@ -230,19 +285,21 @@ class HiraganaToAlphabet {
         "ぁ":["xa", "la"], "ぃ":["xi", "li"], "ぅ":["xu", "lu"], "ぇ":["xe", "le"], "ぉ":["xo", "lo"],
         "ゃ":["lya", "xya"], "ゅ":["lyu", "xyu"], "ょ":["lyo", "xyo"], "っ":["xtu", "ltu"],
         "きゃ":["kya"], "きゅ":["kyu"], "きょ":["kyo"],
+        "しゃ":["sya"], "しゅ":["syu"], "しょ":["syo"],
         "じゃ":["ja", "zya"], "じゅ":["ju", "zyu"], "じょ":["jo", "zyo"],
         "ちゃ":["tya", "cha"], "ちゅ":["tyu", "chu"], "ちょ":["tyo", "cho"],
         "にゃ":["nya"], "にゅ":["nyu"], "にょ":["nyo"],
         "ひゃ":["hya"], "ひゅ":["hyu"], "ひょ":["hyo"],
         "ふぁ":["fa"], "ふぉ":["fo"],
-        "りゃ":["rya"], "りゅ":["ryu"], "りょ":["ryo"]
+        "りゃ":["rya"], "りゅ":["ryu"], "りょ":["ryo"],
+        "ー":["-"]
     };
 
     /**
      * んがまじったときに特殊入力になる平仮名リスト
      */
     static hiraganaSpecialListN = [
-        "", "な", "に", "ぬ", "ね", "の", "あ", "い", "う", "え", "お", "ん"
+        "", "な", "に", "ぬ", "ね", "の", "あ", "い", "う", "え", "お", "ん", "ー"
     ];
 
     /**
@@ -350,7 +407,6 @@ class HiraganaToAlphabet {
         })
 
         if(ableKeyList.length == 0) return false;
-        console.log(this.ableTypeKeyList);
         this.ableTypeKeyList = ableKeyList;
         return true;
     }
@@ -390,9 +446,21 @@ class HiraganaToAlphabet {
             this.ableTypeKeyList = nextKeyList;
         }
     }
+
+    /**
+     * 入力可能な文字列のうち先頭にあるものを返す
+     * @returns {String} 入力可能な文字列のうち先頭のもの
+     */
+    romajiChangeListHead() {
+        return this.ableTypeKeyList[0];
+    }
 }
 
 function firstload() {
-    keyBoardGame = new KeyBoardGame();
-    window.addEventListener("keydown", event => { keyBoardGame.gamePlay(event) });
+    gameController = new GameController();
+    window.addEventListener("keydown", event => { gameController.gamePlay(event) });
+}
+
+function itemSet(id, kanji_data, hiragana_data) {
+    Database.pushItemList(id, kanji_data, hiragana_data);
 }
