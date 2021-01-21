@@ -21,8 +21,6 @@ app.mount("/script", StaticFiles(directory="script"), name="script")
 
 templates = Jinja2Templates(directory="templates")
 
-
-
 # Dependency
 def get_db():
     db = SessionLocal()
