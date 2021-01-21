@@ -6,7 +6,7 @@ class TypingGame {
      * コンストラクタ
      */
     constructor() {
-        this.window = new ShowWindow();
+        this.window = new GameWindow();
         this.hiraganaToAlphabet = new HiraganaToAlphabet("");
         this.gameReset();
     }
@@ -130,7 +130,7 @@ class TypingGame {
 /**
  * ウィンドウ表示について行うクラス
  */
-class ShowWindow {
+class GameWindow {
     /**
      * コンストラクタ
      */

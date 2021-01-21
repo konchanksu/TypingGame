@@ -194,8 +194,3 @@ class HiraganaToAlphabet {
         return this.ableTypeKeyList[0];
     }
 }
-
-function firstload() {
-    gameController = new GameController();
-    window.addEventListener("keydown", event => { gameController.gamePlay(event) });
-}
