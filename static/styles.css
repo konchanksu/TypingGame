@@ -1,7 +1,33 @@
+/**
+ * h1を緑にする
+ */
 h1 {
     color: green;
+    margin: 10px;
 }
 
+/**
+ * 入力した文字を青色で表示
+ */
 #already {
     color: skyblue;
+}
+
+/**
+ * ゲームの表示画面全体の設定
+ */
+#game {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    transform: translate(-50%, -50%);
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1ch;
 }

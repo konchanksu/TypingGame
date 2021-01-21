@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Game</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
-    <script src="/script/tmp.js"></script>
+    <script src="/script/database.js"></script>
+    <script src="/script/gameController.js"></script>
+    <script src="/script/hiraganaToAlphabet.js"></script>
+    <script src="/script/typingGame.js"></script>
 </head>
 
 <body onload="firstload();">
@@ -15,11 +18,8 @@
         </script>
     {% endfor %}
     <h1>Typing Game</h1>
-    <h1 id="gameWindow"></h1>
-    <div id="romaji">
-        <h1 id="already" style="display: inline;"></h1>
-        <h1 id="yet" style="display: inline;"></h1>
+    <div id="game" style="width: 500px; height: 400px;">
+        <canvas id="gameWindow" width="500" height="400"></canvas>
     </div>
-    <h1 id="subMenu"></h1>
 </body>
 </html>
