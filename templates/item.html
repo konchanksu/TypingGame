@@ -10,17 +10,21 @@
     <script src="/script/hiraganaToAlphabet.js"></script>
     <script src="/script/titlePage.js"></script>
     <script src="/script/typingGame.js"></script>
+    <script src="/script/matchComb.js"></script>
 </head>
 
 <body onload="firstload();">
-    {% for i in item %}
-        <script>
-            itemSet("{{ i.id }}", "{{ i.kanji_data }}", "{{ i.hiragana_data }}");
-        </script>
-    {% endfor %}
     <h1>Typing Game</h1>
     <div id="game" style="width: 700px; height: 550px;">
         <canvas id="gameWindow" width="700" height="550"></canvas>
     </div>
 </body>
+
+<div>
+    {% for i in item %}
+        <script>
+            itemSet("{{ i.id }}", "{{ i.kanji_data }}", "{{ i.hiragana_data }}");
+        </script>
+    {% endfor %}
+</div>
 </html>

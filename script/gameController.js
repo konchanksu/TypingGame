@@ -7,6 +7,7 @@ class GameController {
      */
     static title = 0;
     static game = 1;
+    static matchConb = 2;
 
     /**
      * コンストラクタ
@@ -25,28 +26,35 @@ class GameController {
     }
 
     /**
-     * クリックがあった時の処理
-     */
-    onClick(event) {
-        let rect = event.target.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-
-        if(this.page == GameController.title) {
-            if(this.titlePage.onButtonClick(x, y)) {
-                this.page = GameController.game;
-                this.typingGame = new TypingGame();
-            }
-        }
-    }
-
-    /**
      * keyDownを取得する
      * @param {*} event
      */
     keyDown(event) {
+        // 対戦ページのキーダウンの処理
         if(this.page == GameController.game) {
             this.gamePlay(event);
+        }
+
+        // タイトルページのキーダウン処理
+        if(this.page == GameController.title) {
+            let movePage = this.titlePage.inputKeyDown(event.key);
+
+            // 一人ゲームに移動
+            if(movePage == 0) {
+                this.page = GameController.game;
+                this.typingGame = new TypingGame();
+            }
+
+            // マルチプレイに移動
+            else if(movePage == 1) {
+                this.page = GameController.matchConb;
+                this.matchConb = new MatchCombination();
+            }
+        }
+
+        // 結びつけのときの処理
+        if(this.page == GameController.matchConb) {
+            this.matchConb.inputKeyDown(event.key);
         }
     }
 
@@ -83,5 +91,4 @@ function firstload() {
     gameController = new GameController();
     canvas = document.getElementById("gameWindow");
     window.addEventListener("keydown", event => { gameController.keyDown(event) });
-    canvas.addEventListener("click", event => { gameController.onClick(event) }, false);
 }
