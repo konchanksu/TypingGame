@@ -7,7 +7,9 @@ class GameController {
      */
     static title = 0;
     static game = 1;
-    static matchConb = 2;
+    static nickName = 2;
+    static aikotoba = 3;
+    static battle = 4;
 
     /**
      * コンストラクタ
@@ -47,14 +49,27 @@ class GameController {
 
             // マルチプレイに移動
             else if(movePage == 1) {
-                this.page = GameController.matchConb;
-                this.matchConb = new MatchCombination();
+                this.page = GameController.nickName;
+                this.nickNamePage = new NickNamePage();
             }
         }
 
-        // 結びつけのときの処理
-        if(this.page == GameController.matchConb) {
-            this.matchConb.inputKeyDown(event.key);
+        // キーボードの押下のページ
+        else if(this.page == GameController.nickName) {
+            this.nickName = this.nickNamePage.inputKeyDown(event.key);
+            if(this.nickName != "") {
+                this.page = GameController.aikotoba;
+                this.aikotobaPage = new AikotobaPage();
+            }
+        }
+
+        // 合言葉入力ページ
+        else if(this.page == GameController.aikotoba) {
+            this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
+            if(this.aikotoba != "") {
+                this.page = GameController.battle;
+                this.BattlePage = new BattlePage(this.aikotoba, this.nickName);
+            }
         }
     }
 

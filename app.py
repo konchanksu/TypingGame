@@ -21,8 +21,11 @@ app = FastAPI()
 # クライアント情報
 clients = {}
 
-# 待機中のクライアント情報
-wait_clients = {}
+# 合言葉情報
+aikotoba = {}
+
+# バトル情報
+battle = []
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/script", StaticFiles(directory="script"), name="script")
@@ -61,31 +64,23 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     key = websocket.headers.get('sec-websocket-key')
     clients[key] = websocket
-    wait_clients[key] = websocket
-
-    # クライアントが増えたことの通知
-    for client in wait_clients.values():
-        if client != websocket:
-            await client.send_json("__memberAdd " + key)
-        else:
-            await client.send_json("__firstClient " + " ".join(filter(lambda x:x!=key, wait_clients.keys())))
 
     try:
         while True:
             # クライアントからメッセージを受信
             data = await websocket.receive_text()
+            data = data.split()
 
-            # 接続中のクライアントそれぞれにメッセージを送信（ブロードキャスト）
-            for client in clients.values():
-                await client.send_json(data)
+            if data[0] == "wait":
+                if data[1] in aikotoba.keys():
+                    aite = aikotoba.pop(data[1])
+                    battle.append((key, aite[1]))
+                    await clients[key].send_json(aite[1] + " " + aite[0])
+                    await clients[aite[1]].send_json(key + " " + data[2])
+                else:
+                    aikotoba[data[1]] = (data[2], key)
 
     except:
         await websocket.close()
         # 接続が切れた場合、当該クライアントを削除する
-
-        # クライアントが減ったことの通知
-        for client in wait_clients.values():
-            if client != websocket:
-                await client.send_json("__memberDelete " + key)
         del clients[key]
-        del wait_clients[key]
