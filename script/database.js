@@ -38,6 +38,14 @@ class Database {
     }
 
     /**
+     * 重複ありでランダムに入手する
+     * @returns {Item} ランダムに入手したitemオブジェクト
+     */
+    static randomGetDouble() {
+        return Database.itemList[Math.floor(Math.random() * Database.itemList.length)];
+    }
+
+    /**
      * ランダムにItemを入手する
      * @returns {Item} ランダムに入手したitemオブジェクト
      */

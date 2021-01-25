@@ -12,10 +12,18 @@ class BattlePage {
          */
         this.ws = new WebSocket("ws://localhost:8000/ws");
         this.ws.onmessage = function(event) {
+            let data = event.data.slice(1, event.data.length - 1).split(" ");
+            // ゲームが始まる前
             if(this.first) {
-                console.log(event.data);
-                this.aiteKey = event.data[0];
-                this.aiteNickName = event.data[1];
+                console.log(data);
+                this.aiteKey = data[0];
+                this.aiteNickName = data[1];
+                this.multiGame = new MultiGame(this.aiteNickName);
+                this.first = false;
+            }
+            // ゲームが始まった後
+            else {
+                console.log(data);
             }
         }
         this.ws.nickname = nickname;
@@ -37,5 +45,18 @@ class BattlePage {
             await sleep(1000);
             this.ws.send("wait " + this.aikotoba + " " + this.ws.nickname);
         })();
+    }
+
+    /**
+     * キー入力があった時の処理
+     * @param key キー入力
+     */
+    inputKeyDown(key) {
+        if(!this.ws.first) {
+            let damageData = this.ws.multiGame.inputKeyDown(key);
+            if(damageData != 0) {
+                this.ws.send("battle " + this.ws.aiteKey + " " + damageData.toString());
+            }
+        }
     }
 }

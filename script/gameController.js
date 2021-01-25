@@ -32,13 +32,13 @@ class GameController {
      * @param {*} event
      */
     keyDown(event) {
-        // 対戦ページのキーダウンの処理
+        // 一人対戦ページのキーダウンの処理
         if(this.page == GameController.game) {
             this.gamePlay(event);
         }
 
         // タイトルページのキーダウン処理
-        if(this.page == GameController.title) {
+        else if(this.page == GameController.title) {
             let movePage = this.titlePage.inputKeyDown(event.key);
 
             // 一人ゲームに移動
@@ -68,8 +68,13 @@ class GameController {
             this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
             if(this.aikotoba != "") {
                 this.page = GameController.battle;
-                this.BattlePage = new BattlePage(this.aikotoba, this.nickName);
+                this.battlePage = new BattlePage(this.aikotoba, this.nickName);
             }
+        }
+
+        // バトルページ
+        else if(this.page == GameController.battle) {
+            this.battlePage.inputKeyDown(event.key);
         }
     }
 

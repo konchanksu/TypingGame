@@ -74,11 +74,12 @@ async def websocket_endpoint(websocket: WebSocket):
             if data[0] == "wait":
                 if data[1] in aikotoba.keys():
                     aite = aikotoba.pop(data[1])
-                    battle.append((key, aite[1]))
                     await clients[key].send_json(aite[1] + " " + aite[0])
                     await clients[aite[1]].send_json(key + " " + data[2])
                 else:
                     aikotoba[data[1]] = (data[2], key)
+            elif data[0] == "battle":
+                await clients[data[1]].send_json(data[2])
 
     except:
         await websocket.close()
