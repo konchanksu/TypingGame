@@ -54,6 +54,7 @@ class CharacterStatus {
      */
     damageFlow() {
        this.hp -= this.waitDamage;
+       this.waitDamage = 0;
        return this.isHpRemain();
     }
 

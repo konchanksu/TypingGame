@@ -12,6 +12,8 @@ class MultiGame {
         // キャラクター
         this.character = new CharacterAlpha();
 
+        console.log(this.character);
+
         this.nowItem = Database.randomGetDouble();
         this.nowKanji = this.nowItem.kanji_data;
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
@@ -62,5 +64,14 @@ class MultiGame {
         this.character.attackDown();
         if(this.character.damageFlow()) { return 0 };
         return -1;
+    }
+
+    /**
+     * ダメージを受けた時の処理
+     * @param {Integer} damageData ダメージ量
+     * @return {Boolean} 生きているかどうか
+     */
+    getDamage(damageData) {
+        return this.character.damage(damageData);
     }
 }

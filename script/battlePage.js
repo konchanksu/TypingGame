@@ -13,9 +13,9 @@ class BattlePage {
         this.ws = new WebSocket("ws://localhost:8000/ws");
         this.ws.onmessage = function(event) {
             let data = event.data.slice(1, event.data.length - 1).split(" ");
+            console.log(data);
             // ゲームが始まる前
             if(this.first) {
-                console.log(data);
                 this.aiteKey = data[0];
                 this.aiteNickName = data[1];
                 this.multiGame = new MultiGame(this.aiteNickName);
@@ -23,7 +23,13 @@ class BattlePage {
             }
             // ゲームが始まった後
             else {
-                console.log(data);
+                let damageData = parseInt(data[0]);
+                if(damageData > 0) {
+                    if(!this.multiGame.getDamage(damageData)) {
+                        this.send("battle " + this.aiteKey + " " + "-1");
+                    }
+                    console.log(this.multiGame.character);
+                }
             }
         }
         this.ws.nickname = nickname;
