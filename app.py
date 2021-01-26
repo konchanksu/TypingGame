@@ -24,8 +24,8 @@ clients = {}
 # 合言葉情報
 aikotoba = {}
 
-# バトル情報
-battle = []
+# 対戦情報
+battle = {}
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/script", StaticFiles(directory="script"), name="script")
@@ -76,12 +76,20 @@ async def websocket_endpoint(websocket: WebSocket):
                     aite = aikotoba.pop(data[1])
                     await clients[key].send_json(aite[1] + " " + aite[0])
                     await clients[aite[1]].send_json(key + " " + data[2])
+                    battle[key] = aite[1]
+                    battle[aite[1]] = key
+
                 else:
                     aikotoba[data[1]] = (data[2], key)
             elif data[0] == "battle":
                 await clients[data[1]].send_json(data[2])
 
     except:
+        if key in battle: await clients[battle[key]].send_json("-1")
         await websocket.close()
         # 接続が切れた場合、当該クライアントを削除する
         del clients[key]
+        if key in battle:
+            tmp = battle[key]
+            del battle[key]
+            if tmp in battle: del battle[tmp]

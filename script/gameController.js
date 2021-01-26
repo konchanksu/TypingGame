@@ -74,7 +74,14 @@ class GameController {
 
         // バトルページ
         else if(this.page == GameController.battle) {
-            this.battlePage.inputKeyDown(event.key);
+            if(!this.battlePage.isFinished()) {
+                this.battlePage.inputKeyDown(event.key);
+            } else {
+                if(this.battlePage.inputKeyDownFinished(event.key)) {
+                    this.page = GameController.title;
+                    delete this.battlePage;
+                }
+            }
         }
     }
 

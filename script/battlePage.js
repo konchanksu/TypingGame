@@ -22,18 +22,31 @@ class BattlePage {
                 this.first = false;
             }
             // ゲームが始まった後
-            else {
+            else if(!this.finish) {
                 let damageData = parseInt(data[0]);
                 if(damageData > 0) {
                     if(!this.multiGame.getDamage(damageData)) {
+                        this.finish = true;
                         this.send("battle " + this.aiteKey + " " + "-1");
                     }
                     console.log(this.multiGame.character);
+                } else if(damageData < 0) {
+                    this.finish = true;
+                    this.win = true;
                 }
+            }
+        }
+        this.ws.onclose = function(event) {
+            if(!this.finish && !this.first) {
+                console.log("切断された");
+                this.finish = true;
+                this.win = true;
             }
         }
         this.ws.nickname = nickname;
         this.ws.first = true;
+        this.ws.finish = false;
+        this.ws.win = false;
 
         /**
          * キャンバス関連の設定
@@ -64,5 +77,24 @@ class BattlePage {
                 this.ws.send("battle " + this.ws.aiteKey + " " + damageData.toString());
             }
         }
+    }
+
+    /**
+     * 終了後のキー入力
+     * @return {Boolean} 終了するかどうか
+     */
+    inputKeyDownFinished(key) {
+        if(key == "Escape") {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * ゲームが終了しているかどうか
+     * @return {Boolean} 終了しているかどうか
+     */
+    isFinished() {
+        return this.ws.finish;
     }
 }
