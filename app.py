@@ -82,6 +82,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 else:
                     aikotoba[data[1]] = (data[2], key)
             elif data[0] == "battle":
+                if data[2] == "-1":
+                    if key in battle:
+                        tmp = battle[key]
+                        del battle[key]
+                        if tmp in battle: del battle[tmp]
                 await clients[data[1]].send_json(data[2])
 
     except:

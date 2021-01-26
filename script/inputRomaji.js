@@ -52,7 +52,6 @@ class InputKeyBoard {
                 this.text = this.text.slice(0, this.text.length -1);
             }
         }
-        console.log(this.text);
     }
 
     /**
@@ -71,6 +70,5 @@ class InputKeyBoard {
                 this.text = this.text.slice(0, this.text.length -1);
             }
         }
-        console.log(this.text);
     }
 }

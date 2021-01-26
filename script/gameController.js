@@ -15,16 +15,8 @@ class GameController {
      * コンストラクタ
      */
     constructor() {
-        this.showTitlePage();
-        this.page = GameController.title;
-    }
-
-    /**
-     * 一番初めのタイトルページ
-     * @param
-     */
-    showTitlePage() {
         this.titlePage = new TitlePage();
+        this.moveToTitlePage();
     }
 
     /**
@@ -74,11 +66,17 @@ class GameController {
 
         // バトルページ
         else if(this.page == GameController.battle) {
+            // 終了前
             if(!this.battlePage.isFinished()) {
-                this.battlePage.inputKeyDown(event.key);
-            } else {
+                if(this.battlePage.inputKeyDown(event.key)) {
+                    this.moveToTitlePage();
+                    delete this.battlePage;
+                }
+            }
+            // 終了後
+            else {
                 if(this.battlePage.inputKeyDownFinished(event.key)) {
-                    this.page = GameController.title;
+                    this.moveToTitlePage();
                     delete this.battlePage;
                 }
             }
@@ -111,6 +109,14 @@ class GameController {
                 this.typingGame.gameReset();
             }
         }
+    }
+
+    /**
+     * タイトル画面に移動
+     */
+    moveToTitlePage() {
+        this.page = GameController.title;
+        this.titlePage.showTitleWindow();
     }
 }
 

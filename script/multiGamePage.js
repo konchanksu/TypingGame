@@ -16,8 +16,11 @@ class MultiGame {
 
         this.nowItem = Database.randomGetDouble();
         this.nowKanji = this.nowItem.kanji_data;
+        this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
-        console.log(this.nowKanji);
+
+        this.battleWindow = new BattleWindow();
+        this.battleWindow.showKanjiText(this.nowKanji);
     }
 
     /**
@@ -26,8 +29,12 @@ class MultiGame {
     changeText() {
         this.nowItem = Database.randomGetDouble();
         this.nowKanji = this.nowItem.kanji_data;
+        this.alreadyType = "";
         this.hiraganaToAlphabet.newTextSet(this.nowItem.hiragana_data);
-        console.log(this.nowKanji);
+
+        this.battleWindow.canvasClear();
+        this.battleWindow.showKanjiText(this.nowKanji);
+        this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
     }
 
     /**
@@ -36,18 +43,20 @@ class MultiGame {
      * @return {Integer} 与えるダメージ
      */
     inputKeyDown(key) {
-        console.log(this.hiraganaToAlphabet.romajiChangeListHead());
         if(this.hiraganaToAlphabet.isAbleToInputRomaji(key)) {
-            return this.rightTyping();
+            return this.rightTyping(key);
         }
         return this.missTyping();
     }
 
     /**
      * 正しい入力だった時の処理
+     * @param key
      * @return {Integer} 与えるダメージ, マイナスなら終わり
      */
-    rightTyping() {
+    rightTyping(key) {
+        this.alreadyType += key;
+        this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
         // 打ち終わったかどうか
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
@@ -75,3 +84,46 @@ class MultiGame {
         return this.character.damage(damageData);
     }
 }
+
+/**
+ * バトル画面の表示を行うクラス
+ */
+class BattleWindow {
+    constructor() {
+        this.canvas = document.getElementById("gameWindow");
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.font = "24px osaka-mono"
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "black";
+        this.canvasClear();
+    }
+
+    /**
+     * canvas Clear
+     */
+    canvasClear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * 平仮名文字列を表示する
+     * @param {*} hiraganaText 平仮名の文字列
+     */
+    showKanjiText(hiraganaText) {
+        this.ctx.fillText(hiraganaText, 0, 150);
+    }
+
+    /**
+     * ローマ字を表示する
+     * @param {*} str
+     */
+    showRomaji(already, yet) {
+        this.ctx.clearRect(0, 50, this.canvas.width, 80);
+        this.ctx.fillStyle = "gray";
+        this.ctx.fillText(already, 0, 100);
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText(yet, already.length*12, 100);
+    }
+
+}
+

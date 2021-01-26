@@ -20,7 +20,13 @@ class TitlePage {
          * 現在位置の変数
          */
         this.nowCursor = 0;
+    }
 
+    /**
+     * タイトルウィンドウの表示
+     */
+    showTitleWindow() {
+        this.canvasClear();
         this.showTitle();
         this.showButton();
         this.showCursor();
@@ -31,6 +37,14 @@ class TitlePage {
      */
     canvasClear() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * ボタン部分を消去する
+     */
+    buttonClear() {
+        let height = 300;
+        this.ctx.clearRect(0, height, this.canvas.width, this.canvas.height-height);
     }
 
     /**
@@ -56,9 +70,11 @@ class TitlePage {
      * titleの表示を行う
      */
     showTitle() {
-        let titleText = "Battle Typing";
-        let textWidth = this.ctx.measureText( titleText ).width ;
-        this.ctx.fillText(titleText, (this.windowWidth - textWidth) / 2, 180 ) ;
+        const chara = new Image();
+        chara.src = "/static/img/title.png";
+        chara.onload = () => {
+            this.ctx.drawImage(chara, 0, 0);
+        };
     }
 
     /**
@@ -76,9 +92,8 @@ class TitlePage {
      * カーソルを表示する
      */
     showCursor() {
-        this.canvasClear();
+        this.buttonClear();
         this.showButton();
-        this.showTitle();
         let width = 210;
         let height = 50;
         this.ctx.strokeRect((this.windowWidth - width) / 2, 335 + 60*this.nowCursor, width, height);

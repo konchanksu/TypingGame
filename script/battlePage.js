@@ -28,25 +28,29 @@ class BattlePage {
                     if(!this.multiGame.getDamage(damageData)) {
                         this.finish = true;
                         this.send("battle " + this.aiteKey + " " + "-1");
+                        this.finishWindow.showLose();
                     }
                     console.log(this.multiGame.character);
                 } else if(damageData < 0) {
                     this.finish = true;
                     this.win = true;
+                    this.finishWindow.showWin();
                 }
             }
         }
         this.ws.onclose = function(event) {
             if(!this.finish && !this.first) {
-                console.log("切断された");
                 this.finish = true;
                 this.win = true;
+                this.finishWindow.showWin();
             }
         }
         this.ws.nickname = nickname;
         this.ws.first = true;
         this.ws.finish = false;
         this.ws.win = false;
+        this.ws.finishWindow = new FinishWindow();
+        if(this.ws.first) this.ws.finishWindow.showWait();
 
         /**
          * キャンバス関連の設定
@@ -69,6 +73,7 @@ class BattlePage {
     /**
      * キー入力があった時の処理
      * @param key キー入力
+     * @return {Boolean} 終了するかどうか
      */
     inputKeyDown(key) {
         if(!this.ws.first) {
@@ -76,7 +81,13 @@ class BattlePage {
             if(damageData != 0) {
                 this.ws.send("battle " + this.ws.aiteKey + " " + damageData.toString());
             }
+        } else {
+            if(key == "Escape") {
+                return true;
+            }
+            return false
         }
+        return false;
     }
 
     /**
@@ -84,7 +95,7 @@ class BattlePage {
      * @return {Boolean} 終了するかどうか
      */
     inputKeyDownFinished(key) {
-        if(key == "Escape") {
+        if(key == "Enter" || key == "Escape") {
             return true;
         }
         return false;
@@ -98,3 +109,60 @@ class BattlePage {
         return this.ws.finish;
     }
 }
+
+/**
+ * 終了後の表示を行うウィンドウ
+ */
+class FinishWindow {
+    constructor() {
+        this.canvas = document.getElementById("gameWindow");
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.font = "24px osaka-mono"
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "black";
+    }
+
+    /**
+     * canvas Clear
+     */
+    canvasClear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * 勝利を表示
+     */
+    showWin() {
+        this.canvasClear();
+        const chara = new Image();
+        chara.src = "/static/img/win.png";
+        chara.onload = () => {
+            this.ctx.drawImage(chara, 0, 0);
+        };
+    }
+
+    /**
+     * 敗北を表示
+     */
+    showLose() {
+        this.canvasClear();
+        const chara = new Image();
+        chara.src = "/static/img/lose.png";
+        chara.onload = () => {
+            this.ctx.drawImage(chara, 0, 0);
+        };
+    }
+
+    /**
+     * 待機画面の表示
+     */
+    showWait() {
+        this.canvasClear();
+        const chara = new Image();
+        chara.src = "/static/img/wait.png";
+        chara.onload = () => {
+            this.ctx.drawImage(chara, 0, 0);
+        };
+    }
+}
+
