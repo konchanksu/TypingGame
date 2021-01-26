@@ -21,6 +21,8 @@ class MultiGame {
 
         this.battleWindow = new BattleWindow();
         this.battleWindow.showKanjiText(this.nowKanji);
+        this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
+        this.battleWindow.showHp(this.character.hp);
     }
 
     /**
@@ -32,7 +34,6 @@ class MultiGame {
         this.alreadyType = "";
         this.hiraganaToAlphabet.newTextSet(this.nowItem.hiragana_data);
 
-        this.battleWindow.canvasClear();
         this.battleWindow.showKanjiText(this.nowKanji);
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
     }
@@ -81,7 +82,9 @@ class MultiGame {
      * @return {Boolean} 生きているかどうか
      */
     getDamage(damageData) {
-        return this.character.damage(damageData);
+        let live = this.character.damage(damageData);
+        this.battleWindow.showHp(this.character.hp);
+        return live;
     }
 }
 
@@ -106,11 +109,26 @@ class BattleWindow {
     }
 
     /**
+     * 平仮名部分の消去
+     */
+    kanjiClear() {
+        this.ctx.clearRect(0, 130, this.canvas.width, 40);
+    }
+
+    /**
      * 平仮名文字列を表示する
      * @param {*} hiraganaText 平仮名の文字列
      */
     showKanjiText(hiraganaText) {
+        this.kanjiClear();
         this.ctx.fillText(hiraganaText, 0, 150);
+    }
+
+    /**
+     * ローマ字部分のクリア
+     */
+    romajiClear(){
+        this.ctx.clearRect(0, 50, this.canvas.width-200, 80);
     }
 
     /**
@@ -118,11 +136,22 @@ class BattleWindow {
      * @param {*} str
      */
     showRomaji(already, yet) {
-        this.ctx.clearRect(0, 50, this.canvas.width, 80);
+        this.romajiClear();
         this.ctx.fillStyle = "gray";
         this.ctx.fillText(already, 0, 100);
         this.ctx.fillStyle = "black";
         this.ctx.fillText(yet, already.length*12, 100);
+    }
+
+    /**
+     * 残りHPを表示する
+     * いい感じで図形と文字を組み合わせてみたい...
+     * @param hp 残りHP
+     */
+    showHp(hp) {
+        console.log("a");
+        this.ctx.clearRect(500, 0, this.canvas.width-500, 80);
+        this.ctx.fillText(hp.toString(), 500, 70);
     }
 
 }

@@ -26,25 +26,21 @@ class BattlePage {
                 let damageData = parseInt(data[0]);
                 if(damageData > 0) {
                     if(!this.multiGame.getDamage(damageData)) {
-                        this.finish = true;
-                        this.send("battle " + this.aiteKey + " " + "-1");
-                        this.finishWindow.showLose();
+                        this.losePage();
                     }
                     console.log(this.multiGame.character);
                 } else if(damageData < 0) {
-                    this.finish = true;
-                    this.win = true;
-                    this.finishWindow.showWin();
+                    this.winPage();
                 }
             }
         }
+
         this.ws.onclose = function(event) {
             if(!this.finish && !this.first) {
-                this.finish = true;
-                this.win = true;
-                this.finishWindow.showWin();
+                this.winPage();
             }
         }
+
         this.ws.nickname = nickname;
         this.ws.first = true;
         this.ws.finish = false;
@@ -53,14 +49,23 @@ class BattlePage {
         if(this.ws.first) this.ws.finishWindow.showWait();
 
         /**
-         * キャンバス関連の設定
+         * 勝利したときの処理
          */
-        this.ws.canvas = document.getElementById("gameWindow");
-        this.ws.ctx = this.ws.canvas.getContext("2d");
-        this.ws.fontSize = 48;
-        this.ws.windowWidth = 700;
-        this.ws.widnowHeight = 550;
-        this.ws.ctx.font = this.ws.fontSize.toString() + "px osaka";
+        this.ws.winPage = function() {
+            this.finish = true;
+            this.win = true;
+            this.finishWindow.showWin();
+        }
+
+        /**
+         * 負けたときの処理
+         */
+        this.ws.losePage = function() {
+            this.send("battle " + this.aiteKey + " " + "-1");
+            this.finish = true;
+            this.finishWindow.showLose();
+        }
+
 
         // ニックネームと合言葉を1秒待って送信
         const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
@@ -78,8 +83,11 @@ class BattlePage {
     inputKeyDown(key) {
         if(!this.ws.first) {
             let damageData = this.ws.multiGame.inputKeyDown(key);
-            if(damageData != 0) {
+            if(damageData > 0) {
                 this.ws.send("battle " + this.ws.aiteKey + " " + damageData.toString());
+            }
+            else if(damageData < 0) {
+                this.ws.losePage();
             }
         } else {
             if(key == "Escape") {
