@@ -15,6 +15,7 @@ class GameController {
      * コンストラクタ
      */
     constructor() {
+        // ここに画面をすべて始めに読み込んでおくように変更する
         this.titlePage = new TitlePage();
         this.moveToTitlePage();
     }
@@ -84,6 +85,14 @@ class GameController {
     }
 
     /**
+     * タイトル画面に移動
+     */
+    moveToTitlePage() {
+        this.page = GameController.title;
+        this.titlePage.showTitleWindow();
+    }
+
+    /**
      * ゲームが始まっている時にキーボードの入力を受けた際の処理
      * @param {keyDown} event
      */
@@ -109,14 +118,6 @@ class GameController {
                 this.typingGame.gameReset();
             }
         }
-    }
-
-    /**
-     * タイトル画面に移動
-     */
-    moveToTitlePage() {
-        this.page = GameController.title;
-        this.titlePage.showTitleWindow();
     }
 }
 

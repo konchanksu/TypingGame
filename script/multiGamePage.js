@@ -5,24 +5,47 @@ class MultiGame {
     /**
      * コンストラクタ
      */
-    constructor(aiteNickName) {
-        // 相手のニックネーム
-        this.aiteNickName = aiteNickName;
-
+    constructor() {
         // キャラクター
         this.character = new CharacterAlpha();
-
-        console.log(this.character);
+        this.aiteCharacter;
 
         this.nowItem = Database.randomGetDouble();
         this.nowKanji = this.nowItem.kanji_data;
         this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
+        this.aiteStartHp = -1;
+    }
 
+    /**
+     * バトル画面を表示させる
+     */
+    showBattleWindow() {
         this.battleWindow = new BattleWindow();
         this.battleWindow.showKanjiText(this.nowKanji);
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
-        this.battleWindow.showHp(this.character.hp);
+        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
+        this.battleWindow.showAttack(this.character.attackPower);
+    }
+
+    /**
+     * 相手のニックネームを設定
+     */
+    setAiteNickname(aiteNickname) {
+        // 相手のニックネーム
+        this.aiteNickname = aiteNickname;
+    }
+
+    /**
+     * 相手のキャラクターをセットする
+     * @param {String} characterId キャラクターの番号
+     */
+    setAiteCharacter(characterId) {
+        switch(characterId) {
+            case "1":
+                this.aiteCharacter = new CharacterAlpha();
+                break;
+        }
     }
 
     /**
@@ -62,6 +85,7 @@ class MultiGame {
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
             this.character.attackUp();
+            this.battleWindow.showAttack(this.character.attackPower);
             return this.character.toAttack();
         }
         return 0;
@@ -81,10 +105,27 @@ class MultiGame {
      * @param {Integer} damageData ダメージ量
      * @return {Boolean} 生きているかどうか
      */
-    getDamage(damageData) {
+    reseiveDamage(damageData) {
         let live = this.character.damage(damageData);
-        this.battleWindow.showHp(this.character.hp);
+        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         return live;
+    }
+
+    /**
+     * hp情報の取得を行う
+     * @return {Integer} 相手のhp
+     */
+    getHp() {
+        return this.character.hp;
+    }
+
+    /**
+     * 相手のステータスをセットする
+     * @param {String} 相手のhp
+     */
+    setAiteHp(hpString) {
+        if(this.aiteStartHp < 0) { this.aiteStartHp = parseInt(hpString); }
+        this.aiteCharacter.hp = parseInt(hpString);
     }
 }
 
@@ -95,7 +136,7 @@ class BattleWindow {
     constructor() {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "24px osaka-mono"
+        this.ctx.font = "20px osaka-mono"
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "black";
         this.canvasClear();
@@ -112,23 +153,26 @@ class BattleWindow {
      * 平仮名部分の消去
      */
     kanjiClear() {
-        this.ctx.clearRect(0, 130, this.canvas.width, 40);
+        this.ctx.clearRect(0, 150, this.canvas.width, 60);
     }
 
     /**
      * 平仮名文字列を表示する
-     * @param {*} hiraganaText 平仮名の文字列
+     * @param {*} kanjiText 平仮名の文字列
      */
-    showKanjiText(hiraganaText) {
+    showKanjiText(kanjiText) {
         this.kanjiClear();
-        this.ctx.fillText(hiraganaText, 0, 150);
+        this.ctx.font = "28px osaka-mono";
+        let textWidth = this.ctx.measureText( kanjiText ).width;
+
+        this.ctx.fillText(kanjiText, (this.canvas.width - textWidth) / 2, 200);
     }
 
     /**
      * ローマ字部分のクリア
      */
     romajiClear(){
-        this.ctx.clearRect(0, 50, this.canvas.width-200, 80);
+        this.ctx.clearRect(0, 100, this.canvas.width-200, 60);
     }
 
     /**
@@ -136,11 +180,19 @@ class BattleWindow {
      * @param {*} str
      */
     showRomaji(already, yet) {
+        let fontSize = 20;
+        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        let textWidth = this.ctx.measureText( already + yet ).width;
+        let start = (this.canvas.width - textWidth) / 2;
+        let height = 150;
+
         this.romajiClear();
+
         this.ctx.fillStyle = "gray";
-        this.ctx.fillText(already, 0, 100);
+        this.ctx.fillText(already, start, height);
+
         this.ctx.fillStyle = "black";
-        this.ctx.fillText(yet, already.length*12, 100);
+        this.ctx.fillText(yet, start + already.length*fontSize / 2, height);
     }
 
     /**
@@ -148,11 +200,58 @@ class BattleWindow {
      * いい感じで図形と文字を組み合わせてみたい...
      * @param hp 残りHP
      */
-    showHp(hp) {
-        console.log("a");
-        this.ctx.clearRect(500, 0, this.canvas.width-500, 80);
+    showHp(hp, maxHp) {
+        let width = 300;
+        let height = 20;
+        let startH = 390;
+        let startW = (this.canvas.width - width) / 2;
+
+        this.ctx.fillStyle = "#F0F0F0";
+        this.ctx.clearRect(startW, startH, width, height);
+        this.ctx.fillRect(startW, startH, width, height);
+
+        this.ctx.fillStyle = "#73E396";
+        let diff = (1 - (hp / maxHp)) * width;
+        startW += diff;
+        width -= diff;
+        this.ctx.fillRect(startW, startH, width, height);
+
+        this.ctx.fillStyle = "#49C478";
+        this.ctx.fillRect(startW, startH + height / 2, width, height/2);
+
+        this.ctx.strockStyle = "#202020";
+        this.ctx.strockWidth = 2;
+        let brank = 3;
+        this.ctx.strokeRect(startW - brank, startH - brank, width + brank*2, height + brank*2);
+    }
+
+    /**
+     * 相手のHPを表示する
+     * @param hp 相手Hp
+     */
+    showAiteHp(hp) {
+        this.ctx.clearRect(500, 0, this.canvas.width - 500, 80);
         this.ctx.fillText(hp.toString(), 500, 70);
     }
 
+    /**
+     * 攻撃力を表示
+     */
+    showAttack(attack) {
+        let width = 100;
+        let between = 10;
+        let startW = (this.canvas.width + width) / 2;
+        let startH = 330;
+        let atk = attack;
+
+        this.ctx.clearRect(0, startH, this.canvas.width, 50);
+        const chara = new Image();
+        chara.src = "/static/img/attack.png";
+        chara.onload = () => {
+            for(let i = 0; i < atk; i += 40) {
+                this.ctx.drawImage(chara, startW - parseInt(i / 40) * (between + 50), startH);
+            }
+        };
+    }
 }
 

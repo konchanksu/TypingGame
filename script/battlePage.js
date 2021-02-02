@@ -13,24 +13,23 @@ class BattlePage {
         this.ws = new WebSocket("ws://localhost:8000/ws");
         this.ws.onmessage = function(event) {
             let data = event.data.slice(1, event.data.length - 1).split(" ");
-            console.log(data);
+
             // ゲームが始まる前
             if(this.first) {
                 this.aiteKey = data[0];
-                this.aiteNickName = data[1];
-                this.multiGame = new MultiGame(this.aiteNickName);
+                this.aiteNickname = data[1];
                 this.first = false;
+                this.multiGame.setAiteNickname(this.aiteNickname);
+                this.multiGame.setAiteCharacter(data[2]);
+                this.multiGame.showBattleWindow();
             }
             // ゲームが始まった後
             else if(!this.finish) {
-                let damageData = parseInt(data[0]);
-                if(damageData > 0) {
-                    if(!this.multiGame.getDamage(damageData)) {
-                        this.losePage();
-                    }
-                    console.log(this.multiGame.character);
-                } else if(damageData < 0) {
-                    this.winPage();
+                if(data[0] == "attack") {
+                    this.beAttacked(data);
+                }
+                else if(data[0] == "aiteStatus") {
+                    this.multiGame.setAiteHp(data[1]);
                 }
             }
         }
@@ -41,6 +40,7 @@ class BattlePage {
             }
         }
 
+        this.ws.multiGame = new MultiGame();
         this.ws.nickname = nickname;
         this.ws.first = true;
         this.ws.finish = false;
@@ -61,17 +61,39 @@ class BattlePage {
          * 負けたときの処理
          */
         this.ws.losePage = function() {
-            this.send("battle " + this.aiteKey + " " + "-1");
+            this.send("attack " + this.aiteKey + " " + "-1");
             this.finish = true;
             this.finishWindow.showLose();
         }
 
+        /**
+         * 攻撃を受けたときの処理
+         */
+        this.ws.beAttacked = function(data) {
+            let damageData = parseInt(data[1]);
+            if(damageData > 0) {
+                if(!this.multiGame.reseiveDamage(damageData)) {
+                    this.losePage();
+                } else {
+                    this.send("aiteStatus " + this.aiteKey + " " + this.multiGame.getHp().toString());
+                }
+            } else if(damageData < 0) {
+                this.winPage();
+            }
+        }
 
         // ニックネームと合言葉を1秒待って送信
         const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
         (async () => {
             await sleep(1000);
-            this.ws.send("wait " + this.aikotoba + " " + this.ws.nickname);
+            this.ws.send(
+                "wait " +
+                this.aikotoba +
+                " " +
+                this.ws.nickname +
+                " " +
+                this.ws.multiGame.character.id
+            );
         })();
     }
 
@@ -84,7 +106,7 @@ class BattlePage {
         if(!this.ws.first) {
             let damageData = this.ws.multiGame.inputKeyDown(key);
             if(damageData > 0) {
-                this.ws.send("battle " + this.ws.aiteKey + " " + damageData.toString());
+                this.ws.send("attack " + this.ws.aiteKey + " " + damageData.toString());
             }
             else if(damageData < 0) {
                 this.ws.losePage();
