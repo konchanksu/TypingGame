@@ -63,7 +63,10 @@ class TitleWindow {
          * 画像の読み込みを行う
          */
         this.chara = new Image();
-        this.chara.src = "/static/img/title.png";
+        this.chara.src = "/static/img/multi.png";
+        this.chara.onload = () => {
+            this.ctx.drawImage(this.chara, 0, 0);
+        }
     }
 
     /**
@@ -79,7 +82,7 @@ class TitleWindow {
      */
     showTitleWindow(nowCursor) {
         this.canvasClear();
-        // this.showTitle();
+        this.showTitle();
         this.showCursor(nowCursor);
         this.showButton();
     }
@@ -96,7 +99,7 @@ class TitleWindow {
      * titleの表示を行う
      */
     showTitle() {
-        this.ctx.drawImage(chara, 0, 0);
+        this.ctx.drawImage(this.chara, 0, 0);
     }
 
     /**
