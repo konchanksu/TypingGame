@@ -17,7 +17,11 @@ class GameController {
     constructor() {
         // ここに画面をすべて始めに読み込んでおくように変更する
         this.titlePage = new TitlePage();
-        this.moveToTitlePage();
+        const chara = new Image();
+        chara.src = "/static/img/pekora.png";
+        chara.onload = () => {
+            this.moveToTitlePage();
+        }
     }
 
     /**
