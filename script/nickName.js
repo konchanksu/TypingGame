@@ -40,10 +40,6 @@ class NickNameWindow{
     constructor() {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "56px osaka-mono"
-        this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "#ff9933";
-
         this.imageLoad();
     }
 
@@ -69,6 +65,10 @@ class NickNameWindow{
      */
     showNickNameWindow(nickname) {
         this.canvasClear();
+        this.ctx.font = "56px osaka-mono"
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "#ff9933";
+
         this.ctx.drawImage(this.description, 200, 0);
         this.showInputNickName(nickname);
     }

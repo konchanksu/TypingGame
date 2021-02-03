@@ -18,8 +18,13 @@ class AikotobaPage{
 
         this.inputKeyBoard = new InputKeyBoard(6);
         this.aikotobaWindow = new AikotobaWindow();
+    }
 
-        this.aikotobaWindow.showInputAikotoba("");
+    /**
+     * 合言葉画面を表示する
+     */
+    showAikotobaWindow() {
+        this.aikotobaWindow.showAikotobaWindow("");
     }
 
     /**
@@ -27,7 +32,7 @@ class AikotobaPage{
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
-        this.aikotobaWindow.showInputAikotoba(this.inputKeyBoard.text);
+        this.aikotobaWindow.showAikotobaWindow(this.inputKeyBoard.text);
         if(key == "Enter" && this.inputKeyBoard.text.length == this.inputKeyBoard.textMax) {
             return this.inputKeyBoard.text;
         }
@@ -46,9 +51,31 @@ class AikotobaWindow{
     constructor() {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "24px osaka-mono"
+
+        this.imageLoad();
+    }
+
+    /**
+     * 画像の読み込みを行う
+     */
+    imageLoad() {
+        this.aikotoba = new Image();
+        this.aikotoba.src = "/static/img/aikotoba.png";
+        this.input = new Image();
+        this.input.src = "/static/img/aikotoba_input.png";
+    }
+
+    /**
+     * ニックネームページの表示を行う
+     */
+    showAikotobaWindow(aikotoba) {
+        this.canvasClear();
+        this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = "#ff9933";
+
+        this.ctx.drawImage(this.aikotoba, 200, 0);
+        this.showInputAikotoba(aikotoba);
     }
 
     /**
@@ -62,8 +89,8 @@ class AikotobaWindow{
      * 入力した合言葉を表示する
      */
     showInputAikotoba(aikotoba) {
-        this.canvasClear();
-        this.ctx.fillText(aikotoba, 100, 100);
+        this.ctx.drawImage(this.input, 140, 130);
+        this.ctx.fillText(aikotoba, 330, 300);
     }
 }
 

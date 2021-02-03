@@ -18,6 +18,7 @@ class GameController {
         // ここに画面をすべて始めに読み込んでおくように変更する
         this.titlePage = new TitlePage();
         this.nickNamePage = new NickNamePage();
+        this.aikotobaPage = new AikotobaPage();
         const chara = new Image();
         chara.src = "/static/img/pekora.png";
         chara.onload = () => {
@@ -57,7 +58,7 @@ class GameController {
             this.nickName = this.nickNamePage.inputKeyDown(event.key);
             if(this.nickName != "") {
                 this.page = GameController.aikotoba;
-                this.aikotobaPage = new AikotobaPage();
+                this.aikotobaPage.showAikotobaWindow();
             }
         }
 
