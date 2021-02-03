@@ -59,15 +59,23 @@ class TitleWindow {
         this.widnowHeight = this.canvas.height;
         this.ctx.font = this.fontSize.toString() + "px osaka";
 
-        /**
-         * 画像の読み込みを行う
-         */
+        this.imageLoad();
+    }
+
+    /**
+     * 画像の読み込みを行う
+     */
+    imageLoad() {
         this.chara = new Image();
         this.chara.src = "/static/img/title.png";
         this.pekora = new Image();
         this.pekora.src = "/static/img/pekora.png";
         this.single = new Image();
         this.single.src = "/static/img/single_play.png";
+        this.multi = new Image();
+        this.multi.src = "/static/img/multi_play.png";
+        this.setting = new Image();
+        this.setting.src = "/static/img/setting.png";
     }
 
     /**
@@ -101,7 +109,7 @@ class TitleWindow {
      */
     showTitle() {
         this.ctx.drawImage(this.pekora, 0, 0);
-        this.ctx.drawImage(this.chara, 10, 60);
+        this.ctx.drawImage(this.chara, 10, 40);
     }
 
     /**
@@ -118,8 +126,8 @@ class TitleWindow {
      */
     showButton() {
         let width = 200;
-        this.ctx.drawImage(this.single, (this.windowWidth - width) / 2, 370);
-        this.ctx.fillText("マルチプレイ", (this.windowWidth - width) / 2, 430);
-        this.ctx.fillText("設定", (this.windowWidth - width) / 2, 490);
+        this.ctx.drawImage(this.single, (this.windowWidth - width) / 2, 320);
+        this.ctx.drawImage(this.multi, (this.windowWidth - width) / 2, 380);
+        this.ctx.drawImage(this.setting, (this.windowWidth - width) / 2, 440);
     }
 }
