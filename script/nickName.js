@@ -9,17 +9,15 @@ class NickNamePage {
         /**
          * キャンバス関係の処理
          */
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
-        this.fontSize = 48;
-        this.windowWidth = 700;
-        this.widnowHeight = 550;
-        this.ctx.font = this.fontSize.toString() + "px osaka";
-
         this.inputKeyBoard = new InputKeyBoard(10);
         this.nicknameWindow = new NickNameWindow();
+    }
 
-        this.nicknameWindow.showInputNickName("");
+    /**
+     * ニックネームページの表示を行う
+     */
+    showNickNameWindow() {
+        this.nicknameWindow.showNickNameWindow("");
     }
 
     /**
@@ -27,7 +25,7 @@ class NickNamePage {
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
-        this.nicknameWindow.showInputNickName(this.inputKeyBoard.text);
+        this.nicknameWindow.showNickNameWindow(this.inputKeyBoard.text);
         if(key == "Enter") {
             return this.inputKeyBoard.text;
         }
@@ -42,9 +40,21 @@ class NickNameWindow{
     constructor() {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "24px osaka-mono"
+        this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = "#ff9933";
+
+        this.imageLoad();
+    }
+
+    /**
+     * 画像の読み込みを行う
+     */
+    imageLoad() {
+        this.description = new Image();
+        this.description.src = "/static/img/nickname.png";
+        this.input = new Image();
+        this.input.src = "/static/img/nickname_input.png";
     }
 
     /**
@@ -55,10 +65,19 @@ class NickNameWindow{
     }
 
     /**
+     * ニックネームページの表示を行う
+     */
+    showNickNameWindow(nickname) {
+        this.canvasClear();
+        this.ctx.drawImage(this.description, 200, 0);
+        this.showInputNickName(nickname);
+    }
+
+    /**
      * 入力したニックネームを表示する
      */
     showInputNickName(nickname) {
-        this.canvasClear();
-        this.ctx.fillText(nickname, 100, 100);
+        this.ctx.drawImage(this.input, 140, 130);
+        this.ctx.fillText(nickname, 330, 300);
     }
 }

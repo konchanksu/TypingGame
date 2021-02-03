@@ -17,6 +17,7 @@ class GameController {
     constructor() {
         // ここに画面をすべて始めに読み込んでおくように変更する
         this.titlePage = new TitlePage();
+        this.nickNamePage = new NickNamePage();
         const chara = new Image();
         chara.src = "/static/img/pekora.png";
         chara.onload = () => {
@@ -47,11 +48,11 @@ class GameController {
             // マルチプレイに移動
             else if(movePage == 1) {
                 this.page = GameController.nickName;
-                this.nickNamePage = new NickNamePage();
+                this.nickNamePage.showNickNameWindow();
             }
         }
 
-        // キーボードの押下のページ
+        // ニックネーム入力ページ
         else if(this.page == GameController.nickName) {
             this.nickName = this.nickNamePage.inputKeyDown(event.key);
             if(this.nickName != "") {
