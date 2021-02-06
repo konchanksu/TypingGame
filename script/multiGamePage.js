@@ -15,13 +15,14 @@ class MultiGame {
         this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
         this.aiteStartHp = -1;
+        this.battleWindow = new BattleWindow();
     }
 
     /**
      * バトル画面を表示させる
      */
     showBattleWindow() {
-        this.battleWindow = new BattleWindow();
+        this.battleWindow.canvasClear();
         this.battleWindow.showKanjiText(this.nowKanji);
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
@@ -136,9 +137,6 @@ class BattleWindow {
     constructor() {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "20px osaka-mono"
-        this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
         this.canvasClear();
     }
 
@@ -163,6 +161,8 @@ class BattleWindow {
     showKanjiText(kanjiText) {
         this.kanjiClear();
         this.ctx.font = "28px osaka-mono";
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "black";
         let textWidth = this.ctx.measureText( kanjiText ).width;
 
         this.ctx.fillText(kanjiText, (this.canvas.width - textWidth) / 2, 200);
@@ -243,15 +243,6 @@ class BattleWindow {
         let startW = (this.canvas.width + width) / 2;
         let startH = 330;
         let atk = attack;
-
-        this.ctx.clearRect(0, startH, this.canvas.width, 50);
-        const chara = new Image();
-        chara.src = "/static/img/attack.png";
-        chara.onload = () => {
-            for(let i = 0; i < atk; i += 40) {
-                this.ctx.drawImage(chara, startW - parseInt(i / 40) * (between + 50), startH);
-            }
-        };
     }
 }
 

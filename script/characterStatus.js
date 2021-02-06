@@ -13,6 +13,7 @@ class CharacterStatus {
      */
     constructor(hp, attackPower, attackUpWidth, maxAttack, attackDownWidth, waitDamageMax) {
         this.hp = hp;
+        this.maxHp = hp;
         this.attackPower = attackPower;
         this.attackUpWidth = attackUpWidth;
         this.attackDownWidth = attackDownWidth;
