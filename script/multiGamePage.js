@@ -29,6 +29,7 @@ class MultiGame {
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         this.battleWindow.showNickName(this.nickName);
+        this.battleWindow.showAiteNickName(this.aiteNickname);
     }
 
     /**
@@ -166,20 +167,6 @@ class BattleWindow {
     }
 
     /**
-     * 平仮名文字列を表示する
-     * @param {*} kanjiText 平仮名の文字列
-     */
-    showKanjiText(kanjiText) {
-        this.kanjiClear();
-        this.ctx.font = "24px osaka-mono";
-        this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
-        let textWidth = this.ctx.measureText( kanjiText ).width;
-
-        this.ctx.fillText(kanjiText, (this.canvas.width - textWidth) / 2, 250);
-    }
-
-    /**
      * ローマ字部分のクリア
      */
     romajiClear(){
@@ -188,23 +175,42 @@ class BattleWindow {
     }
 
     /**
-     * ローマ字を表示する
-     * @param {*} str
+     * 相手のキャラクターを表示
+     * @param chara キャラクターイメージ
      */
-    showRomaji(already, yet) {
-        let fontSize = 18;
+    showAiteChara(chara) {
+        
+    }
+
+    /**
+     * 相手のHPを表示する
+     * @param hp 相手Hp
+     */
+    showAiteHp(hp) {
+        
+    }
+
+    /**
+     * 相手のニックネームを表示する
+     * @param nickName ニックネーム
+     */
+    showAiteNickName(nickName) {
+        let fontSize = 28;
         this.ctx.font = fontSize.toString() + "px osaka-mono";
-        let textWidth = this.ctx.measureText( already + yet ).width;
-        let start = (this.canvas.width - textWidth) / 2;
-        let height = 210;
-
-        this.romajiClear();
-
-        this.ctx.fillStyle = "gray";
-        this.ctx.fillText(already, start, height);
+        let textWidth = this.ctx.measureText( nickName ).width;
+        let start = (this.canvas.width) * 5 / 6;
+        let height = 480;
 
         this.ctx.fillStyle = "black";
-        this.ctx.fillText(yet, start + already.length*fontSize / 2, height);
+        this.ctx.fillText(nickName, (start - textWidth/2), height);
+    }
+
+    /**
+     * 攻撃力を表示
+     * @param attack 攻撃力
+     */
+    showAttack(attack) {
+        
     }
 
     /**
@@ -235,14 +241,27 @@ class BattleWindow {
         this.ctx.strokeWidth = 2;
         let brank = 3;
         this.ctx.strokeRect(startW - brank, startH - brank, width + brank*2, height + brank*2);
+
+        this.ctx.font = "24px osaka-mono";
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "black";
+        let text = hp.toString() + "/" + maxHp.toString();
+        let textWidth = this.ctx.measureText( text ).width;
+        this.ctx.fillText(text, (this.canvas.width - textWidth) / 2, startH+height-2);
     }
 
     /**
-     * 相手のHPを表示する
-     * @param hp 相手Hp
+     * 平仮名文字列を表示する
+     * @param {*} kanjiText 平仮名の文字列
      */
-    showAiteHp(hp) {
-        
+    showKanjiText(kanjiText) {
+        this.kanjiClear();
+        this.ctx.font = "24px osaka-mono";
+        this.ctx.textAlign = "left";
+        this.ctx.fillStyle = "black";
+        let textWidth = this.ctx.measureText( kanjiText ).width;
+
+        this.ctx.fillText(kanjiText, (this.canvas.width - textWidth) / 2, 250);
     }
 
     /**
@@ -254,34 +273,38 @@ class BattleWindow {
     }
 
     /**
-     * 相手のキャラクターを表示
-     * @param chara キャラクターイメージ
-     */
-    showAiteChara(chara) {
-        
-    }
-
-    /**
-     * 攻撃力を表示
-     * @param attack 攻撃力
-     */
-    showAttack(attack) {
-        
-    }
-
-    /**
-     * 相手の名前を表示する
+     * 自分のニックネームを表示する
      * @param nickName ニックネーム
      */
     showNickName(nickName) {
         let fontSize = 28;
         this.ctx.font = fontSize.toString() + "px osaka-mono";
         let textWidth = this.ctx.measureText( nickName ).width;
-        let start = (this.canvas.width - textWidth) / 6;
+        let start = (this.canvas.width) / 6;
         let height = 480;
 
         this.ctx.fillStyle = "black";
         this.ctx.fillText(nickName, (start - textWidth/2), height);
+    }
+
+    /**
+     * ローマ字を表示する
+     * @param {*} str
+     */
+    showRomaji(already, yet) {
+        let fontSize = 18;
+        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        let textWidth = this.ctx.measureText( already + yet ).width;
+        let start = (this.canvas.width - textWidth) / 2;
+        let height = 210;
+
+        this.romajiClear();
+
+        this.ctx.fillStyle = "gray";
+        this.ctx.fillText(already, start, height);
+
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText(yet, start + already.length*fontSize / 2, height);
     }
 }
 
