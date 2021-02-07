@@ -7,5 +7,7 @@ class CharacterAlpha extends CharacterStatus {
      */
     constructor() {
         super(500, 10, 10, 200, 5, 300);
+        this.image = new Image();
+        this.image.src = "/static/img/pekora.png";
     }
 }

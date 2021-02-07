@@ -40,7 +40,7 @@ class BattlePage {
             }
         }
 
-        this.ws.multiGame = new MultiGame();
+        this.ws.multiGame = new MultiGame(nickname);
         this.ws.nickname = nickname;
         this.ws.first = true;
         this.ws.finish = false;
@@ -71,13 +71,19 @@ class BattlePage {
          */
         this.ws.beAttacked = function(data) {
             let damageData = parseInt(data[1]);
+            // ダメージが存在する時
             if(damageData > 0) {
+                // ダメージでやられた時の処理
                 if(!this.multiGame.reseiveDamage(damageData)) {
                     this.losePage();
-                } else {
+                }
+                // ダメージを受けただけの処理
+                else {
                     this.send("aiteStatus " + this.aiteKey + " " + this.multiGame.getHp().toString());
                 }
-            } else if(damageData < 0) {
+            }
+            // ダメージが負の数，相手が敗北した時の処理
+            else if(damageData < 0) {
                 this.winPage();
             }
         }
@@ -121,22 +127,21 @@ class BattlePage {
     }
 
     /**
-     * 終了後のキー入力
-     * @return {Boolean} 終了するかどうか
-     */
-    inputKeyDownFinished(key) {
-        if(key == "Enter" || key == "Escape") {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * ゲームが終了しているかどうか
-     * @return {Boolean} 終了しているかどうか
+     * 終了したかどうか
      */
     isFinished() {
         return this.ws.finish;
+    }
+
+    /**
+     * 終了した時の処理
+     * @param key
+     */
+    inputKeyDownFinished(key) {
+        if(key == "Escape") {
+            return true;
+        }
+        return false
     }
 }
 

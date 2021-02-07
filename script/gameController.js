@@ -20,6 +20,8 @@ class GameController {
         this.nickNamePage = new NickNamePage();
         this.aikotobaPage = new AikotobaPage();
         const chara = new Image();
+        const ch = new Image();
+        ch.src = "/static/img/frame.png";
         chara.src = "/static/img/pekora.png";
         chara.onload = () => {
             this.moveToTitlePage();
