@@ -17,6 +17,7 @@ class CharacterStatus {
         this.attackPower = attackPower;
         this.attackUpWidth = attackUpWidth;
         this.attackDownWidth = attackDownWidth;
+        this.minAttack = this.attackPower;
         this.maxAttack = maxAttack;
         this.waitDamage = 0;
         this.waitDamageMax = waitDamageMax;
@@ -33,7 +34,7 @@ class CharacterStatus {
      * 攻撃力減少処理
      */
     attackDown() {
-        this.attackPower = Math.max(10, this.attackPower-this.attackDownWidth);
+        this.attackPower = Math.max(this.minAttack, this.attackPower-this.attackDownWidth);
     }
 
     /**

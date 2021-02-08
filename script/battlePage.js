@@ -5,7 +5,7 @@ class BattlePage {
     /**
      * コンストラクタ
      */
-    constructor(aikotoba, nickname) {
+    constructor(aikotoba, nickname, character) {
         this.aikotoba = aikotoba;
         /**
          * webSocketの設定
@@ -20,6 +20,7 @@ class BattlePage {
                 this.aiteNickname = data[1];
                 this.first = false;
                 this.multiGame.setAiteNickname(this.aiteNickname);
+                console.log(data[2]);
                 this.multiGame.setAiteCharacter(data[2]);
                 this.multiGame.showBattleWindow();
             }
@@ -40,7 +41,7 @@ class BattlePage {
             }
         }
 
-        this.ws.multiGame = new MultiGame(nickname);
+        this.ws.multiGame = new MultiGame(nickname, character);
         this.ws.nickname = nickname;
         this.ws.first = true;
         this.ws.finish = false;
@@ -148,20 +149,9 @@ class BattlePage {
 /**
  * 終了後の表示を行うウィンドウ
  */
-class FinishWindow {
+class FinishWindow extends WindowParents {
     constructor() {
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
-        this.ctx.font = "24px osaka-mono"
-        this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
-    }
-
-    /**
-     * canvas Clear
-     */
-    canvasClear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        super();
     }
 
     /**
@@ -198,6 +188,10 @@ class FinishWindow {
         chara.onload = () => {
             this.ctx.drawImage(chara, 0, 0);
         };
+
+        this.frame = new Image();
+        this.frame.src = "/static/img/frame.png";
+        this.ctx.drawImage(this.frame, 0, 0);
     }
 }
 

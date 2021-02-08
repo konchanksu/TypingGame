@@ -64,7 +64,6 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     key = websocket.headers.get('sec-websocket-key')
     clients[key] = websocket
-    print(key)
 
     try:
         while True:
@@ -75,13 +74,13 @@ async def websocket_endpoint(websocket: WebSocket):
             if data[0] == "wait":
                 if data[1] in aikotoba.keys():
                     aite = aikotoba.pop(data[1])
-                    await clients[key].send_json(aite[1] + " " + aite[0])
-                    await clients[aite[1]].send_json(key + " " + data[2])
+                    await clients[key].send_json(aite[1] + " " + aite[0] + " " + aite[2])
+                    await clients[aite[1]].send_json(key + " " + data[2] + " " + data[3])
                     battle[key] = aite[1]
                     battle[aite[1]] = key
-
                 else:
-                    aikotoba[data[1]] = (data[2], key)
+                    aikotoba[data[1]] = (data[2], key, data[3])
+
             elif data[0] == "attack":
                 if data[2] == "-1":
                     if key in battle:

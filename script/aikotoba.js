@@ -44,14 +44,12 @@ class AikotobaPage{
 /**
  * ニックネーム入力画面を表示するウィンドウ
  */
-class AikotobaWindow{
+class AikotobaWindow extends WindowParents {
     /**
      * コンストラクタ
      */
     constructor() {
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
-
+        super();
         this.imageLoad();
     }
 
@@ -63,6 +61,8 @@ class AikotobaWindow{
         this.aikotoba.src = "/static/img/aikotoba.png";
         this.input = new Image();
         this.input.src = "/static/img/aikotoba_input.png";
+        this.frame = new Image();
+        this.frame.src = "/static/img/frame.png";
     }
 
     /**
@@ -75,14 +75,8 @@ class AikotobaWindow{
         this.ctx.fillStyle = "#ff9933";
 
         this.ctx.drawImage(this.aikotoba, 200, 0);
+        this.ctx.drawImage(this.frame, 0, 0);
         this.showInputAikotoba(aikotoba);
-    }
-
-    /**
-     * canvas Clear
-     */
-    canvasClear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /**

@@ -5,9 +5,9 @@ class MultiGame {
     /**
      * コンストラクタ
      */
-    constructor(nickName) {
+    constructor(nickName, characterId) {
         // キャラクター
-        this.character = new CharacterAlpha();
+        this.character = Characters.characters(characterId);
         this.aiteCharacter;
 
         this.nowItem = Database.randomGetDouble();
@@ -24,12 +24,15 @@ class MultiGame {
      */
     showBattleWindow() {
         this.battleWindow.canvasClear();
+        this.battleWindow.showFrame();
         this.battleWindow.showMyChara(this.character.image);
         this.battleWindow.showKanjiText(this.nowKanji);
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         this.battleWindow.showNickName(this.nickName);
         this.battleWindow.showAiteNickName(this.aiteNickname);
+        this.battleWindow.showAiteChara(this.aiteCharacter.image);
+        this.battleWindow.showAttack(this.character.attackPower);
         this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
     }
 
@@ -39,7 +42,6 @@ class MultiGame {
     setAiteNickname(aiteNickname) {
         // 相手のニックネーム
         this.aiteNickname = aiteNickname;
-        console.log(this.aiteNickname);
     }
 
     /**
@@ -47,11 +49,7 @@ class MultiGame {
      * @param {String} characterId キャラクターの番号
      */
     setAiteCharacter(characterId) {
-        switch(characterId) {
-            case "1":
-                this.aiteCharacter = new CharacterAlpha();
-                break;
-        }
+        this.aiteCharacter = Characters.characters(parseInt(characterId));
     }
 
     /**
@@ -107,6 +105,7 @@ class MultiGame {
         this.character.attackDown();
         let live = this.character.damageFlow();
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
+        this.battleWindow.showAttack(this.character.attackPower);
         this.battleWindow.showDamageWait(this.character.damageWait, this.character.damageWaitMax);
         if(live) { return 0; }
         else { return -1; }
@@ -145,20 +144,13 @@ class MultiGame {
 /**
  * バトル画面の表示を行うクラス
  */
-class BattleWindow {
+class BattleWindow extends WindowParents{
     constructor() {
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
+        super();
+        this.attack = new Image();
+        this.attack.src = "/static/img/attack.png";
         this.frame = new Image();
-        this.frame = "/static/img/frame.png";
-        this.canvasClear();
-    }
-
-    /**
-     * canvas Clear
-     */
-    canvasClear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.frame.src = "/static/img/frame.png";
     }
 
     /**
@@ -182,7 +174,7 @@ class BattleWindow {
      * @param chara キャラクターイメージ
      */
     showAiteChara(chara) {
-        
+        this.ctx.drawImage(chara, 500, 0);
     }
 
     /**
@@ -213,7 +205,23 @@ class BattleWindow {
      * @param attack 攻撃力
      */
     showAttack(attack) {
-        
+        let num = parseInt(attack / 30) + 1;
+        let imgWidth = this.attack.width;
+        let between = 10;
+        let startH = 330;
+        let startW = parseInt(this.canvas.width/2 + imgWidth*3/2 + between*2);
+
+        this.ctx.clearRect(
+            parseInt(this.canvas.width/2 - imgWidth*5/2 - between*2)-1,
+            startH,
+            between*4+imgWidth*5+1,
+            this.attack.height
+        );
+
+        for(let i = 0; i < num; i++) {
+            this.ctx.drawImage(this.attack, startW, startH);
+            startW -= between + imgWidth;
+        }
     }
 
     /**
@@ -242,6 +250,13 @@ class BattleWindow {
     }
 
     /**
+     * 外枠を表示する
+     */
+    showFrame() {
+        this.ctx.drawImage(this.frame, 0, 0);
+    }
+
+    /**
      * 残りHPを表示する
      * いい感じで図形と文字を組み合わせてみたい...
      * @param hp 残りHP
@@ -249,7 +264,7 @@ class BattleWindow {
     showHp(hp, maxHp) {
         let width = 250;
         let height = 20;
-        let startH = 360;
+        let startH = 390;
         let startW = (this.canvas.width - width) / 2;
         const startWcotei = startW;
         const widthcotei = width;

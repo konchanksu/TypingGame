@@ -76,7 +76,8 @@ class GameController {
                 this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
                 if(this.aikotoba != "") {
                     this.page = GameController.battle;
-                    this.battlePage = new BattlePage(this.aikotoba, this.nickName);
+                    let character = 1;
+                    this.battlePage = new BattlePage(this.aikotoba, this.nickName, character);
                 }
             }
         }

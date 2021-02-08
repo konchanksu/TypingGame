@@ -35,6 +35,8 @@ class TitlePage {
             this.nowCursor = (this.nowCursor + 1) % 3;
             this.window.showTitleWindow(this.nowCursor);
         } else if(key == "Enter") {
+            // 音を出す
+            this.window.playAudioKettei();
             return this.nowCursor;
         }
         return -1;  // 何も起きない
@@ -44,21 +46,12 @@ class TitlePage {
 /**
  * タイトルのウィンドウを表示するクラス
  */
-class TitleWindow {
+class TitleWindow extends WindowParents {
     /**
      * コンストラクタ
      */
     constructor() {
-        /**
-         * キャンバス関係の情報
-         */
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
-        this.fontSize = 24;
-        this.windowWidth = this.canvas.width;
-        this.widnowHeight = this.canvas.height;
-        this.ctx.font = this.fontSize.toString() + "px osaka";
-
+        super();
         this.imageLoad();
     }
 
@@ -76,13 +69,25 @@ class TitleWindow {
         this.multi.src = "/static/img/multi_play.png";
         this.setting = new Image();
         this.setting.src = "/static/img/setting.png";
+        this.frame = new Image();
+        this.frame.src = "/static/img/frame.png";
+        this.kettei = new Audio();
+        this.kettei.src = "/static/audio/kettei.mp3"
     }
 
     /**
-     * キャンバスを消去する
+     * ボタン部分を消去する
      */
-    canvasClear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    buttonClear() {
+        let height = 350;
+        this.ctx.clearRect(0, height, this.windowWidth, this.widnowHeight-height);
+    }
+
+    /**
+     * 決定の効果音を鳴らす
+     */
+    playAudioKettei() {
+        this.kettei.play();
     }
 
     /**
@@ -91,17 +96,10 @@ class TitleWindow {
      */
     showTitleWindow(nowCursor) {
         this.canvasClear();
+        this.ctx.drawImage(this.frame, 0, 0);
         this.showTitle();
         this.showButton();
         this.showCursor(nowCursor);
-    }
-
-    /**
-     * ボタン部分を消去する
-     */
-    buttonClear() {
-        let height = 350;
-        this.ctx.clearRect(0, height, this.canvas.width, this.canvas.height-height);
     }
 
     /**

@@ -36,10 +36,9 @@ class NickNamePage {
 /**
  * ニックネーム入力画面を表示するウィンドウ
  */
-class NickNameWindow{
+class NickNameWindow extends WindowParents{
     constructor() {
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
+        super();
         this.imageLoad();
     }
 
@@ -51,13 +50,8 @@ class NickNameWindow{
         this.description.src = "/static/img/nickname.png";
         this.input = new Image();
         this.input.src = "/static/img/nickname_input.png";
-    }
-
-    /**
-     * canvas Clear
-     */
-    canvasClear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.frame = new Image();
+        this.frame.src = "/static/img/frame.png";
     }
 
     /**
@@ -70,6 +64,7 @@ class NickNameWindow{
         this.ctx.fillStyle = "#ff9933";
 
         this.ctx.drawImage(this.description, 200, 0);
+        this.ctx.drawImage(this.frame, 0, 0);
         this.showInputNickName(nickname);
     }
 
