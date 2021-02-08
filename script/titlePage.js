@@ -59,6 +59,7 @@ class TitleWindow extends WindowParents {
      * 画像の読み込みを行う
      */
     imageLoad() {
+        super.imageLoad();
         this.chara = new Image();
         this.chara.src = "/static/img/title.png";
         this.pekora = new Image();
@@ -69,10 +70,6 @@ class TitleWindow extends WindowParents {
         this.multi.src = "/static/img/multi_play.png";
         this.setting = new Image();
         this.setting.src = "/static/img/setting.png";
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
-        this.kettei = new Audio();
-        this.kettei.src = "/static/audio/kettei.mp3"
     }
 
     /**
@@ -81,13 +78,6 @@ class TitleWindow extends WindowParents {
     buttonClear() {
         let height = 350;
         this.ctx.clearRect(0, height, this.windowWidth, this.widnowHeight-height);
-    }
-
-    /**
-     * 決定の効果音を鳴らす
-     */
-    playAudioKettei() {
-        this.kettei.play();
     }
 
     /**

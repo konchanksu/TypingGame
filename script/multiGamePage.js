@@ -147,10 +147,16 @@ class MultiGame {
 class BattleWindow extends WindowParents{
     constructor() {
         super();
+        this.imageLoad();
+    }
+
+    /**
+     * イメージを読み込む
+     */
+    imageLoad() {
+        super.imageLoad();
         this.attack = new Image();
         this.attack.src = "/static/img/attack.png";
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
     }
 
     /**

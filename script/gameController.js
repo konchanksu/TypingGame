@@ -5,11 +5,12 @@ class GameController {
     /**
      * タイトルページの番号
      */
-    static title = 0;
-    static game = 1;
-    static nickName = 2;
-    static aikotoba = 3;
-    static battle = 4;
+    static aikotoba = 0;
+    static battle = 1;
+    static game = 2;
+    static nickName = 3;
+    static setting = 4;
+    static title = 5;
 
     /**
      * コンストラクタ
@@ -19,9 +20,9 @@ class GameController {
         this.titlePage = new TitlePage();
         this.nickNamePage = new NickNamePage();
         this.aikotobaPage = new AikotobaPage();
+        this.settingPage = new SettingPage();
+
         const chara = new Image();
-        const ch = new Image();
-        ch.src = "/static/img/frame.png";
         chara.src = "/static/img/pekora.png";
         chara.onload = () => {
             this.moveToTitlePage();
@@ -38,6 +39,15 @@ class GameController {
             this.gamePlay(event);
         }
 
+        // 設定ページに移動
+        else if(this.page == GameController.setting) {
+            if(event.key == "Escape") {
+                this.moveToTitlePage();
+            } else {
+                this.settingPage.inputKeyDown(event.key);
+            }
+        }
+
         // タイトルページのキーダウン処理
         else if(this.page == GameController.title) {
             let movePage = this.titlePage.inputKeyDown(event.key);
@@ -51,6 +61,10 @@ class GameController {
             // マルチプレイに移動
             else if(movePage == 1) {
                 this.moveToNickNamePage();
+            }
+
+            else if(movePage == 2) {
+                this.moveToSettingPage();
             }
         }
 
@@ -104,11 +118,11 @@ class GameController {
     }
 
     /**
-     * タイトル画面に移動
+     * 合言葉画面に移動
      */
-    moveToTitlePage() {
-        this.page = GameController.title;
-        this.titlePage.showTitleWindow();
+    moveToAikotobaPage() {
+        this.page = GameController.aikotoba;
+        this.aikotobaPage.showAikotobaWindow();
     }
 
     /**
@@ -120,11 +134,19 @@ class GameController {
     }
 
     /**
-     * 合言葉画面に移動
+     * 設定画面に移動
      */
-    moveToAikotobaPage() {
-        this.page = GameController.aikotoba;
-        this.aikotobaPage.showAikotobaWindow();
+    moveToSettingPage() {
+        this.page = GameController.setting;
+        this.settingPage.showSettingWindow();
+    }
+
+    /**
+     * タイトル画面に移動
+     */
+    moveToTitlePage() {
+        this.page = GameController.title;
+        this.titlePage.showTitleWindow();
     }
 
     /**

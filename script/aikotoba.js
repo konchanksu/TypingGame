@@ -6,16 +6,6 @@ class AikotobaPage{
      * コンストラクタ
      */
     constructor() {
-        /**
-         * キャンバス関係の処理
-         */
-        this.canvas = document.getElementById("gameWindow");
-        this.ctx = this.canvas.getContext("2d");
-        this.fontSize = 48;
-        this.windowWidth = 700;
-        this.widnowHeight = 550;
-        this.ctx.font = this.fontSize.toString() + "px osaka";
-
         this.inputKeyBoard = new InputKeyBoard(6);
         this.aikotobaWindow = new AikotobaWindow();
     }
@@ -34,6 +24,7 @@ class AikotobaPage{
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
         this.aikotobaWindow.showAikotobaWindow(this.inputKeyBoard.text);
         if(key == "Enter" && this.inputKeyBoard.text.length == this.inputKeyBoard.textMax) {
+            this.aikotobaWindow.playAudioKettei();
             return this.inputKeyBoard.text;
         }
         return "";
@@ -57,12 +48,11 @@ class AikotobaWindow extends WindowParents {
      * 画像の読み込みを行う
      */
     imageLoad() {
+        super.imageLoad();
         this.aikotoba = new Image();
         this.aikotoba.src = "/static/img/aikotoba.png";
         this.input = new Image();
         this.input.src = "/static/img/aikotoba_input.png";
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
     }
 
     /**

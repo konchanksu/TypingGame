@@ -6,9 +6,6 @@ class NickNamePage {
      * コンストラクタ
      */
     constructor() {
-        /**
-         * キャンバス関係の処理
-         */
         this.inputKeyBoard = new InputKeyBoard(10);
         this.nicknameWindow = new NickNameWindow();
     }
@@ -27,6 +24,7 @@ class NickNamePage {
         this.inputKeyBoard.inputKeyDown(key);
         this.nicknameWindow.showNickNameWindow(this.inputKeyBoard.text);
         if(key == "Enter") {
+            this.nicknameWindow.playAudioKettei();
             return this.inputKeyBoard.text;
         }
         return "";
@@ -36,7 +34,7 @@ class NickNamePage {
 /**
  * ニックネーム入力画面を表示するウィンドウ
  */
-class NickNameWindow extends WindowParents{
+class NickNameWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
@@ -46,12 +44,11 @@ class NickNameWindow extends WindowParents{
      * 画像の読み込みを行う
      */
     imageLoad() {
+        super.imageLoad();
         this.description = new Image();
         this.description.src = "/static/img/nickname.png";
         this.input = new Image();
         this.input.src = "/static/img/nickname_input.png";
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
     }
 
     /**

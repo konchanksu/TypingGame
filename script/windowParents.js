@@ -23,4 +23,22 @@ class WindowParents {
     canvasClear() {
         this.ctx.clearRect(0, 0, this.windowWidth, this.widnowHeight);
     }
+
+    /**
+     * 画像の読み込みを行う
+     */
+    imageLoad() {
+        this.frame = new Image();
+        this.frame.src = "/static/img/frame.png";
+        this.kettei = new Audio();
+        this.kettei.src = "/static/audio/kettei.mp3"
+    }
+
+    /**
+     * 決定の効果音を鳴らす
+     */
+    playAudioKettei() {
+        this.kettei.volume = AudioSetting.nowAudioVolume;
+        this.kettei.play();
+    }
 }

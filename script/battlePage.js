@@ -20,7 +20,6 @@ class BattlePage {
                 this.aiteNickname = data[1];
                 this.first = false;
                 this.multiGame.setAiteNickname(this.aiteNickname);
-                console.log(data[2]);
                 this.multiGame.setAiteCharacter(data[2]);
                 this.multiGame.showBattleWindow();
             }
