@@ -64,6 +64,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     key = websocket.headers.get('sec-websocket-key')
     clients[key] = websocket
+    print(key)
 
     try:
         while True:
@@ -92,8 +93,13 @@ async def websocket_endpoint(websocket: WebSocket):
     except:
         if key in battle: await clients[battle[key]].send_json("-1")
         await websocket.close()
-        # 接続が切れた場合、当該クライアントを削除する
         del clients[key]
+
+        # 接続が切れた場合、当該クライアントを削除する
+        for k, v in aikotoba.items():
+            if v[1] == key:
+                del aikotoba[k]
+                break
         if key in battle:
             tmp = battle[key]
             del battle[key]

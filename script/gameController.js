@@ -50,26 +50,34 @@ class GameController {
 
             // マルチプレイに移動
             else if(movePage == 1) {
-                this.page = GameController.nickName;
-                this.nickNamePage.showNickNameWindow();
+                this.moveToNickNamePage();
             }
         }
 
         // ニックネーム入力ページ
         else if(this.page == GameController.nickName) {
-            this.nickName = this.nickNamePage.inputKeyDown(event.key);
-            if(this.nickName != "") {
-                this.page = GameController.aikotoba;
-                this.aikotobaPage.showAikotobaWindow();
+            if(event.key == "Escape") {
+                this.moveToTitlePage();
+            }
+            else {
+                this.nickName = this.nickNamePage.inputKeyDown(event.key);
+                if(this.nickName != "") {
+                    this.moveToAikotobaPage();
+                }
             }
         }
 
         // 合言葉入力ページ
         else if(this.page == GameController.aikotoba) {
-            this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
-            if(this.aikotoba != "") {
-                this.page = GameController.battle;
-                this.battlePage = new BattlePage(this.aikotoba, this.nickName);
+            if(event.key == "Escape") {
+                this.moveToNickNamePage();
+            }
+            else {
+                this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
+                if(this.aikotoba != "") {
+                    this.page = GameController.battle;
+                    this.battlePage = new BattlePage(this.aikotoba, this.nickName);
+                }
             }
         }
 
@@ -78,7 +86,8 @@ class GameController {
             // 終了前
             if(!this.battlePage.isFinished()) {
                 if(this.battlePage.inputKeyDown(event.key)) {
-                    this.moveToTitlePage();
+                    this.moveToAikotobaPage();
+                    this.battlePage.ws.close();
                     delete this.battlePage;
                 }
             }
@@ -86,6 +95,7 @@ class GameController {
             else {
                 if(this.battlePage.inputKeyDownFinished(event.key)) {
                     this.moveToTitlePage();
+                    this.battlePage.ws.close();
                     delete this.battlePage;
                 }
             }
@@ -98,6 +108,22 @@ class GameController {
     moveToTitlePage() {
         this.page = GameController.title;
         this.titlePage.showTitleWindow();
+    }
+
+    /**
+     * ニックネーム入力画面に移動
+     */
+    moveToNickNamePage() {
+        this.page = GameController.nickName;
+        this.nickNamePage.showNickNameWindow();
+    }
+
+    /**
+     * 合言葉画面に移動
+     */
+    moveToAikotobaPage() {
+        this.page = GameController.aikotoba;
+        this.aikotobaPage.showAikotobaWindow();
     }
 
     /**

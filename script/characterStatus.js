@@ -45,6 +45,7 @@ class CharacterStatus {
         this.waitDamage += damageData;
         if(this.waitDamage > this.waitDamageMax) {
             this.hp -= this.waitDamage - this.waitDamageMax;
+            this.waitDamage = this.waitDamageMax;
         }
         return this.isHpRemain();
     }
@@ -78,7 +79,7 @@ class CharacterStatus {
             damageData = this.attackPower - this.waitDamage;
             this.waitDamage = 0;
         } else {
-            this.waitDamage = this.waitDamage - this.attackPower;
+            this.waitDamage -= this.attackPower;
         }
 
         return damageData;

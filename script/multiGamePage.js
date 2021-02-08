@@ -30,6 +30,7 @@ class MultiGame {
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         this.battleWindow.showNickName(this.nickName);
         this.battleWindow.showAiteNickName(this.aiteNickname);
+        this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
     }
 
     /**
@@ -90,8 +91,10 @@ class MultiGame {
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
             this.character.attackUp();
+            let damage = this.character.toAttack();
             this.battleWindow.showAttack(this.character.attackPower);
-            return this.character.toAttack();
+            this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
+            return damage;
         }
         return 0;
     }
@@ -102,11 +105,11 @@ class MultiGame {
      */
     missTyping() {
         this.character.attackDown();
-        if(this.character.damageFlow()) {
-            this.battleWindow.showHp(this.character.hp, this.character.maxHp);
-            return 0;
-        }
-        return -1;
+        let live = this.character.damageFlow();
+        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
+        this.battleWindow.showDamageWait(this.character.damageWait, this.character.damageWaitMax);
+        if(live) { return 0; }
+        else { return -1; }
     }
 
     /**
@@ -117,7 +120,7 @@ class MultiGame {
     reseiveDamage(damageData) {
         let live = this.character.damage(damageData);
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
-        console.log(this.character.hp);
+        this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
         return live;
     }
 
@@ -162,7 +165,7 @@ class BattleWindow {
      * 平仮名部分の消去
      */
     kanjiClear() {
-        let width = 350;
+        let width = 270;
         this.ctx.clearRect(this.canvas.width/2-width/2, 200, width, 60);
     }
 
@@ -170,7 +173,7 @@ class BattleWindow {
      * ローマ字部分のクリア
      */
     romajiClear(){
-        let width = 350;
+        let width = 270;
         this.ctx.clearRect(this.canvas.width/2-width/2, 180, width, 40);
     }
 
@@ -214,18 +217,46 @@ class BattleWindow {
     }
 
     /**
+     * ダメージ待機に応じてダメージを表示する
+     * @param damageWaitMax 最大値
+     * @param {*} damageWait 現在のダメージ待機
+     */
+    showDamageWait(damageWait, damageWaitMax) {
+        let width = 25;
+        let height = 400;
+        let startW = 235;
+        let startH = 50;
+
+        this.ctx.clearRect(startW, startH, width, height);
+
+        this.ctx.strokeStyle = "#666666";
+        this.ctx.strokeRect(startW, startH, width, height);
+
+        this.ctx.fillStyle = "#ff9933";
+        let wariai = damageWait / damageWaitMax;
+        let goalH = startH + height;
+        height = parseInt(height * wariai);
+        startH = goalH - height;
+        let blank = 2;
+        this.ctx.fillRect(startW + blank, startH, width - blank*2, height);
+    }
+
+    /**
      * 残りHPを表示する
      * いい感じで図形と文字を組み合わせてみたい...
      * @param hp 残りHP
      */
     showHp(hp, maxHp) {
-        let width = 300;
+        let width = 250;
         let height = 20;
-        let startH = 390;
+        let startH = 360;
         let startW = (this.canvas.width - width) / 2;
+        const startWcotei = startW;
+        const widthcotei = width;
+        let brank = 3;
 
         this.ctx.fillStyle = "#F0F0F0";
-        this.ctx.clearRect(startW, startH, width, height);
+        this.ctx.clearRect(startW - brank, startH - brank, width + brank*2, height + brank*2);
         this.ctx.fillRect(startW, startH, width, height);
 
         this.ctx.fillStyle = "#73E396";
@@ -239,8 +270,7 @@ class BattleWindow {
 
         this.ctx.strokeStyle = "#666666";
         this.ctx.strokeWidth = 2;
-        let brank = 3;
-        this.ctx.strokeRect(startW - brank, startH - brank, width + brank*2, height + brank*2);
+        this.ctx.strokeRect(startWcotei - brank, startH - brank, widthcotei + brank*2, height + brank*2);
 
         this.ctx.font = "24px osaka-mono";
         this.ctx.textAlign = "left";
@@ -256,7 +286,7 @@ class BattleWindow {
      */
     showKanjiText(kanjiText) {
         this.kanjiClear();
-        this.ctx.font = "24px osaka-mono";
+        this.ctx.font = "20px osaka-mono";
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "black";
         let textWidth = this.ctx.measureText( kanjiText ).width;

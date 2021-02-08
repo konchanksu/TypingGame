@@ -24,7 +24,7 @@ class AikotobaPage{
      * 合言葉画面を表示する
      */
     showAikotobaWindow() {
-        this.aikotobaWindow.showAikotobaWindow("");
+        this.aikotobaWindow.showAikotobaWindow(this.inputKeyBoard.text);
     }
 
     /**

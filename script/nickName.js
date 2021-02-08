@@ -17,7 +17,7 @@ class NickNamePage {
      * ニックネームページの表示を行う
      */
     showNickNameWindow() {
-        this.nicknameWindow.showNickNameWindow("");
+        this.nicknameWindow.showNickNameWindow(this.inputKeyBoard.text);
     }
 
     /**
