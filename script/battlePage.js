@@ -71,11 +71,11 @@ class BattlePage {
          * 攻撃を受けたときの処理
          */
         this.ws.beAttacked = function(data) {
-            let damageData = parseInt(data[1]);
+            let damage = parseInt(data[1]);
             // ダメージが存在する時
-            if(damageData > 0) {
+            if(damage > 0) {
                 // ダメージでやられた時の処理
-                if(!this.multiGame.reseiveDamage(damageData)) {
+                if(!this.multiGame.receiveDamage(damage)) {
                     this.losePage();
                 }
                 // ダメージを受けただけの処理
@@ -84,7 +84,7 @@ class BattlePage {
                 }
             }
             // ダメージが負の数，相手が敗北した時の処理
-            else if(damageData < 0) {
+            else if(damage < 0) {
                 this.winPage();
             }
         }

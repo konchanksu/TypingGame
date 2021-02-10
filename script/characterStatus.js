@@ -4,85 +4,149 @@
 class CharacterStatus {
     /**
      * コンストラクタ
-     * @param {*} hp 体力
-     * @param {*} attackPower 攻撃力
-     * @param {*} attackUpWidth 攻撃の上がり幅
-     * @param {*} maxAttack 最大攻撃力
-     * @param {*} attackDownWidth 攻撃の下り幅
-     * @param {*} waitDamageMax ダメージ待機で耐えられる最大値
+     * @param {Integer} attack 攻撃力
+     * @param {Integer} attackDownWidth 攻撃の下り幅
+     * @param {Integer} attackUpWidth 攻撃の上がり幅
+     * @param {Integer} damageWaitMax ダメージ待機で耐えられる最大値
+     * @param {Integer} hp 体力
+     * @param {String} 相手の画像
+     * @param {Integer} maxAttack 最大攻撃力
      */
-    constructor(hp, attackPower, attackUpWidth, maxAttack, attackDownWidth, waitDamageMax) {
-        this.hp = hp;
-        this.maxHp = hp;
-        this.attackPower = attackPower;
-        this.attackUpWidth = attackUpWidth;
-        this.attackDownWidth = attackDownWidth;
-        this.minAttack = this.attackPower;
-        this.maxAttack = maxAttack;
-        this.waitDamage = 0;
-        this.waitDamageMax = waitDamageMax;
-    }
+    constructor(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image) {
+        this._attack = attack;
+        this._attackDownWidth = attackDownWidth;
+        this._attackMax = attackMax;
+        this._attackMin = attack;
+        this._attackUpWidth = attackUpWidth;
 
-    /**
-     * 攻撃力増加処理
-     */
-    attackUp() {
-        this.attackPower = Math.min(this.maxAttack, this.attackPower+this.attackUpWidth);
+        this._damageWait = 0;
+        this._damageWaitMax = damageWaitMax;
+
+        this._hp = hp;
+        this._hpMax = hp;
+
+        this._image = new Image();
+        this._image.src = image;
     }
 
     /**
      * 攻撃力減少処理
      */
-    attackDown() {
-        this.attackPower = Math.max(this.minAttack, this.attackPower-this.attackDownWidth);
-    }
-
-    /**
-     * ダメージ待機時にダメージを受けた時の処理
-     * @param {Integer} damageData ダメージ量
-     * @return {Boolean}　残っていればtrue、残っていなければfalse
-     */
-    damage(damageData) {
-        this.waitDamage += damageData;
-        if(this.waitDamage > this.waitDamageMax) {
-            this.hp -= this.waitDamage - this.waitDamageMax;
-            this.waitDamage = this.waitDamageMax;
-        }
-        return this.isHpRemain();
+    downAttack() {
+        this._attack = Math.max(this._attackMin, this._attack - this._attackDownWidth);
     }
 
     /**
      * ダメージが溢れた時の処理
      * @return {Boolean} hpが残っているかどうか
      */
-    damageFlow() {
-       this.hp -= this.waitDamage;
-       this.waitDamage = 0;
-       return this.isHpRemain();
+    flowDamage() {
+        this._hp -= this._damageWait;
+        this._damageWait = 0;
+        return this.isRemainHp();
+    }
+
+    /**
+     * @return {Integer} 攻撃力
+     */
+    getAttack() {
+        return this._attack;
+    }
+
+    /**
+     * @return {Integer} 待機ダメージの表示
+     */
+    getDamageWait() {
+        return this._damageWait;
+    }
+
+    /**
+     * @return {Integer} 待機ダメージの最大値の表示
+     */
+    getDamageWaitMax() {
+        return this._damageWaitMax;
+    }
+
+    /**
+     * @return {Integer} 体力
+     */
+    getHp() {
+        return this._hp;
+    }
+
+    /**
+     * @return {Integer} 体力の最大値
+     */
+    getHpMax() {
+        return this._hpMax;
+    }
+
+    /**
+     * @return {Image} 画像データ
+     */
+    getImage() {
+        return this._image;
     }
 
     /**
      * 体力が残っているかどうか
      * @return {Boolean}　残っていればtrue、残っていなければfalse
      */
-    isHpRemain() {
-        if(this.hp > 0) { return true; }
+    isRemainHp() {
+        if(this._hp > 0) { return true; }
         return false;
     }
 
     /**
+     * ダメージ待機時にダメージを受けた時の処理
+     * @param {Integer} damage ダメージ量
+     * @return {Boolean}　残っていればtrue、残っていなければfalse
+     */
+    receiveDamage(damage) {
+        this._damageWait += damage;
+        if(this._damageWait > this._damageWaitMax) {
+            this._hp -= this._damageWait - this._damageWaitMax;
+            this._damageWait = this._damageWaitMax;
+        }
+        return this.isRemainHp();
+    }
+
+    /**
+     * 攻撃力を設定する
+     * @param {Integer} attack 攻撃力
+     */
+    setAttack(attack) {
+        this._attack = attack;
+    }
+
+    /**
+     * 体力を設定する
+     * @param {Integer} hp 体力
+     */
+    setHp(hp) {
+        this._hp = hp;
+    }
+
+    /**
      * 攻撃を行う処理
-     * @return {Integer} damageData ダメージ量
+     * @return {Integer} damage ダメージ量
      */
     toAttack() {
-        let damageData = 0;
-        if(this.waitDamage < this.attackPower) {
-            damageData = this.attackPower - this.waitDamage;
-            this.waitDamage = 0;
+        let damage = 0;
+        if(this._damageWait < this._attack) {
+            damage = this._attack - this._damageWait;
+            this._damageWait = 0;
         } else {
-            this.waitDamage -= this.attackPower;
+            this._damageWait -= this._attack;
         }
 
-        return damageData;
+        return damage;
+    }
+
+    /**
+     * 攻撃力増加処理
+     */
+    upAttack() {
+        this._attack = Math.min(this._attackMax, this._attack + this._attackUpWidth);
     }
 }

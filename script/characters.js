@@ -1,14 +1,20 @@
 /**
  * キャラクター名未定、キャラ1を設定する
  */
-class CharacterAlpha extends CharacterStatus {
+class Character1 extends CharacterStatus {
     /**
      * コンストラクタ
      */
     constructor() {
-        super(500, 25, 10, 100, 5, 200);
-        this.image = new Image();
-        this.image.src = "/static/img/pekora.png";
+        const attack = 25;
+        const attackDownWidth = 5;
+        const attackMax = 100;
+        const attackUpWidth = 10;
+        const damageWaitMax = 200;
+        const hp = 500;
+        const image = "/static/img/pekora.png";
+        super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
+
         this.id = 1;
     }
 }
@@ -20,7 +26,7 @@ class Characters {
     static characters(characterId) {
         switch(characterId) {
             case 1:
-                return new CharacterAlpha();
+                return new Character1();
         }
     }
 

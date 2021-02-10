@@ -7,49 +7,16 @@ class MultiGame {
      */
     constructor(nickName, characterId) {
         // キャラクター
-        this.character = Characters.characters(characterId);
         this.aiteCharacter;
+        this.character = Characters.characters(characterId);
 
         this.nowItem = Database.randomGetDouble();
         this.nowKanji = this.nowItem.kanji_data;
+
         this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
         this.nickName = nickName;
         this.battleWindow = new BattleWindow();
-    }
-
-    /**
-     * バトル画面を表示させる
-     */
-    showBattleWindow() {
-        this.battleWindow.canvasClear();
-        this.battleWindow.showFrame();
-        this.battleWindow.showMyChara(this.character.image);
-        this.battleWindow.showKanjiText(this.nowKanji);
-        this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
-        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
-        this.battleWindow.showNickName(this.nickName);
-        this.battleWindow.showAiteHp(this.aiteCharacter.hp, this.aiteCharacter.maxHp);
-        this.battleWindow.showAiteNickName(this.aiteNickname);
-        this.battleWindow.showAiteChara(this.aiteCharacter.image);
-        this.battleWindow.showAttack(this.character.attackPower);
-        this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
-    }
-
-    /**
-     * 相手のニックネームを設定
-     */
-    setAiteNickname(aiteNickname) {
-        // 相手のニックネーム
-        this.aiteNickname = aiteNickname;
-    }
-
-    /**
-     * 相手のキャラクターをセットする
-     * @param {String} characterId キャラクターの番号
-     */
-    setAiteCharacter(characterId) {
-        this.aiteCharacter = Characters.characters(parseInt(characterId));
     }
 
     /**
@@ -66,6 +33,14 @@ class MultiGame {
     }
 
     /**
+     * hp情報の取得を行う
+     * @return {Integer} 相手のhp
+     */
+    getHp() {
+        return this.character.getHp();
+    }
+
+    /**
      * キー入力があった時の処理
      * @param key
      * @return {Integer} 与えるダメージ
@@ -75,6 +50,40 @@ class MultiGame {
             return this.rightTyping(key);
         }
         return this.missTyping();
+    }
+
+    /**
+     * 間違った入力だった時の処理
+     * @return 0なら問題なし，マイナスなら終了
+     */
+    missTyping() {
+        let hp = this.character.getHp();
+        this.character.downAttack();
+
+        let live = this.character.flowDamage();
+
+        let hpAfter = this.character.getHp();
+        let hpMax = this.character.getHpMax();
+
+        this.battleWindow.showHp(hpAfter, hpMax);
+        this.battleWindow.showAttack(this.character.getAttack());
+        this.battleWindow.showDamageWait(this.character.getDamageWait(), this.character.getDamageWaitMax());
+
+        if(!live) { return [-1, ""]; }
+        else if(hp != hpAfter) { return [hpAfter, "aiteStatus"]; }
+        else { return [0, ""]; }
+    }
+
+    /**
+     * ダメージを受けた時の処理
+     * @param {Integer} damage ダメージ量
+     * @return {Boolean} 生きているかどうか
+     */
+    receiveDamage(damage) {
+        let live = this.character.receiveDamage(damage);
+        this.battleWindow.showHp(this.character.getHp(), this.character.getHpMax());
+        this.battleWindow.showDamageWait(this.character.getDamageWait(), this.character.getDamageWaitMax());
+        return live;
     }
 
     /**
@@ -88,49 +97,23 @@ class MultiGame {
         // 打ち終わったかどうか
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
-            this.character.attackUp();
+            this.character.upAttack();
+
             let damage = this.character.toAttack();
-            this.battleWindow.showAttack(this.character.attackPower);
-            this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
+
+            this.battleWindow.showAttack(this.character.getAttack());
+            this.battleWindow.showDamageWait(this.character.getDamageWait(), this.character.getDamageWaitMax());
             return [damage, "attack"];
         }
         return [0, ""];
     }
 
     /**
-     * 間違った入力だった時の処理
-     * @return 0なら問題なし，マイナスなら終了
+     * 相手のキャラクターをセットする
+     * @param {String} characterId キャラクターの番号
      */
-    missTyping() {
-        let hp = this.character.hp;
-        this.character.attackDown();
-        let live = this.character.damageFlow();
-        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
-        this.battleWindow.showAttack(this.character.attackPower);
-        this.battleWindow.showDamageWait(this.character.damageWait, this.character.damageWaitMax);
-        if(!live) { return [-1, ""]; }
-        else if(hp != this.character.hp) { return [this.character.hp, "aiteStatus"]; }
-        else { return [0, ""]; }
-    }
-
-    /**
-     * ダメージを受けた時の処理
-     * @param {Integer} damageData ダメージ量
-     * @return {Boolean} 生きているかどうか
-     */
-    reseiveDamage(damageData) {
-        let live = this.character.damage(damageData);
-        this.battleWindow.showHp(this.character.hp, this.character.maxHp);
-        this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
-        return live;
-    }
-
-    /**
-     * hp情報の取得を行う
-     * @return {Integer} 相手のhp
-     */
-    getHp() {
-        return this.character.hp;
+    setAiteCharacter(characterId) {
+        this.aiteCharacter = Characters.characters(parseInt(characterId));
     }
 
     /**
@@ -138,8 +121,46 @@ class MultiGame {
      * @param {String} 相手のhp
      */
     setAiteHp(hpString) {
-        this.aiteCharacter.hp = parseInt(hpString);
-        this.battleWindow.showAiteHp(this.aiteCharacter.hp, this.aiteCharacter.maxHp);
+        this.aiteCharacter.setHp(parseInt(hpString));
+        this.battleWindow.showAiteHp(this.aiteCharacter.getHp(), this.aiteCharacter.getHpMax());
+    }
+
+    /**
+     * 相手のニックネームを設定
+     * @param {String} aiteNickname 相手のニックネーム
+     */
+    setAiteNickname(aiteNickname) {
+        // 相手のニックネーム
+        this.aiteNickname = aiteNickname;
+    }
+
+    /**
+     * バトル画面を表示させる
+     */
+    showBattleWindow() {
+        const aiteHp = this.aiteCharacter.getHp();
+        const aiteHpMax = this.aiteCharacter.getHpMax();
+        const aiteImage = this.aiteCharacter.getImage();
+
+        const attack = this.character.getAttack();
+        const damageWait = this.character.getDamageWait();
+        const damagaeWaitMax = this.character.getDamageWaitMax();
+        const hp = this.character.getHp();
+        const hpMax = this.character.getHpMax();
+        const image = this.character.getImage();
+
+        this.battleWindow.canvasClear();
+        this.battleWindow.showFrame();
+        this.battleWindow.showMyChara(image);
+        this.battleWindow.showKanjiText(this.nowKanji);
+        this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
+        this.battleWindow.showHp(hp, hpMax);
+        this.battleWindow.showNickName(this.nickName);
+        this.battleWindow.showAiteHp(aiteHp, aiteHpMax);
+        this.battleWindow.showAiteNickName(this.aiteNickname);
+        this.battleWindow.showAiteChara(aiteImage);
+        this.battleWindow.showAttack(attack);
+        this.battleWindow.showDamageWait(damageWait, damagaeWaitMax);
     }
 }
 
