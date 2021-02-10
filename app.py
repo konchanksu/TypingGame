@@ -89,6 +89,9 @@ async def websocket_endpoint(websocket: WebSocket):
                         if tmp in battle: del battle[tmp]
                 await clients[data[1]].send_json("attack " + data[2])
 
+            elif data[0] == "aiteStatus":
+                await clients[data[1]].send_json(data[0] + " " + data[2])
+
     except:
         if key in battle: await clients[battle[key]].send_json("attack -1")
         await websocket.close()

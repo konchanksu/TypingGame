@@ -29,6 +29,7 @@ class BattlePage {
                     this.beAttacked(data);
                 }
                 else if(data[0] == "aiteStatus") {
+                    console.log(data);
                     this.multiGame.setAiteHp(data[1]);
                 }
             }
@@ -111,10 +112,10 @@ class BattlePage {
     inputKeyDown(key) {
         if(!this.ws.first) {
             let damageData = this.ws.multiGame.inputKeyDown(key);
-            if(damageData > 0) {
-                this.ws.send("attack " + this.ws.aiteKey + " " + damageData.toString());
+            if(damageData[1] != "") {
+                this.ws.send(damageData[1] + " " + this.ws.aiteKey + " " + damageData[0].toString());
             }
-            else if(damageData < 0) {
+            else if(damageData[0] < 0) {
                 this.ws.losePage();
             }
         } else {

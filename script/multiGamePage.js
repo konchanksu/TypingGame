@@ -14,7 +14,6 @@ class MultiGame {
         this.nowKanji = this.nowItem.kanji_data;
         this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet(this.nowItem.hiragana_data);
-        this.aiteStartHp = -1;
         this.nickName = nickName;
         this.battleWindow = new BattleWindow();
     }
@@ -30,6 +29,7 @@ class MultiGame {
         this.battleWindow.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         this.battleWindow.showNickName(this.nickName);
+        this.battleWindow.showAiteHp(this.aiteCharacter.hp, this.aiteCharacter.maxHp);
         this.battleWindow.showAiteNickName(this.aiteNickname);
         this.battleWindow.showAiteChara(this.aiteCharacter.image);
         this.battleWindow.showAttack(this.character.attackPower);
@@ -92,9 +92,9 @@ class MultiGame {
             let damage = this.character.toAttack();
             this.battleWindow.showAttack(this.character.attackPower);
             this.battleWindow.showDamageWait(this.character.waitDamage, this.character.waitDamageMax);
-            return damage;
+            return [damage, "attack"];
         }
-        return 0;
+        return [0, ""];
     }
 
     /**
@@ -102,13 +102,15 @@ class MultiGame {
      * @return 0なら問題なし，マイナスなら終了
      */
     missTyping() {
+        let hp = this.character.hp;
         this.character.attackDown();
         let live = this.character.damageFlow();
         this.battleWindow.showHp(this.character.hp, this.character.maxHp);
         this.battleWindow.showAttack(this.character.attackPower);
         this.battleWindow.showDamageWait(this.character.damageWait, this.character.damageWaitMax);
-        if(live) { return 0; }
-        else { return -1; }
+        if(!live) { return [-1, ""]; }
+        else if(hp != this.character.hp) { return [this.character.hp, "aiteStatus"]; }
+        else { return [0, ""]; }
     }
 
     /**
@@ -136,8 +138,8 @@ class MultiGame {
      * @param {String} 相手のhp
      */
     setAiteHp(hpString) {
-        if(this.aiteStartHp < 0) { this.aiteStartHp = parseInt(hpString); }
         this.aiteCharacter.hp = parseInt(hpString);
+        this.battleWindow.showAiteHp(this.aiteCharacter.hp, this.aiteCharacter.maxHp);
     }
 }
 
@@ -186,9 +188,25 @@ class BattleWindow extends WindowParents{
     /**
      * 相手のHPを表示する
      * @param hp 相手Hp
+     * @param maxHp 相手の最大Hp
      */
-    showAiteHp(hp) {
-        
+    showAiteHp(hp, maxHp) {
+        let width = 150;
+        let height = 10;
+        let startW = this.canvas.width*5 / 6 - width / 2;
+        let startH = 480;
+
+        this.ctx.clearRect(startW, startH, width, height);
+
+        this.ctx.fillStyle = "#666666";
+        this.ctx.fillRect(startW, startH, width, height);
+
+        let diff = (1 - hp / maxHp) * width;
+        startW += diff;
+        width -= diff;
+
+        this.ctx.fillStyle = "#73E396";
+        this.ctx.fillRect(startW, startH, width, height);
     }
 
     /**
@@ -200,7 +218,7 @@ class BattleWindow extends WindowParents{
         this.ctx.font = fontSize.toString() + "px osaka-mono";
         let textWidth = this.ctx.measureText( nickName ).width;
         let start = (this.canvas.width) * 5 / 6;
-        let height = 480;
+        let height = 440;
 
         this.ctx.fillStyle = "black";
         this.ctx.fillText(nickName, (start - textWidth/2), height);
