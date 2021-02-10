@@ -256,13 +256,6 @@ class BattleWindow extends WindowParents{
     }
 
     /**
-     * 外枠を表示する
-     */
-    showFrame() {
-        this.ctx.drawImage(this.frame, 0, 0);
-    }
-
-    /**
      * 残りHPを表示する
      * いい感じで図形と文字を組み合わせてみたい...
      * @param hp 残りHP
@@ -321,6 +314,15 @@ class BattleWindow extends WindowParents{
      */
     showMyChara(chara) {
         this.ctx.drawImage(chara, 0, 0);
+    }
+
+    /**
+     * 自キャラの小さい体力ゲージを表示する
+     * @param {*} hp 体力
+     * @param {*} maxHp 最大体力
+     */
+    showMyMiniHp(hp, maxHp) {
+        
     }
 
     /**

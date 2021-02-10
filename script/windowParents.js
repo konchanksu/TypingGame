@@ -15,6 +15,8 @@ class WindowParents {
         this.windowWidth = this.canvas.width;
         this.widnowHeight = this.canvas.height;
         this.ctx.font = this.fontSize.toString() + "px osaka";
+
+        this.imageLoad();
     }
 
     /**
@@ -30,15 +32,56 @@ class WindowParents {
     imageLoad() {
         this.frame = new Image();
         this.frame.src = "/static/img/frame.png";
-        this.kettei = new Audio();
-        this.kettei.src = "/static/audio/kettei.mp3"
+        this.kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
+        this.type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
     }
 
     /**
      * 決定の効果音を鳴らす
      */
     playAudioKettei() {
-        this.kettei.volume = AudioSetting.nowAudioVolume;
-        this.kettei.play();
+        this.kettei.playAudio();
+    }
+
+    /**
+     * タイピング音を鳴らす
+     */
+    playAudioCorrectType() {
+        this.type.playAudio();
+    }
+
+    /**
+     * 外枠を表示する
+     */
+    showFrame() {
+        this.ctx.drawImage(this.frame, 0, 0);
+    }
+}
+
+/**
+ * オーディオを定義するクラス
+ */
+class AudioOnWeb extends Audio {
+    static se = 0;
+    /**
+     * コンストラクタ
+     * @param src audioのソース
+     */
+    constructor(src, musicType) {
+        super();
+        super.src = src;
+        this.musicType = musicType;
+    }
+
+    /**
+     * オーディオを実行する
+     */
+    playAudio() {
+        super.pause();
+        super.currentTime = 0;
+        if(this.musicType == AudioOnWeb.se) {
+            super.volume = AudioSetting.nowSEVolume;
+        }
+        super.play();
     }
 }

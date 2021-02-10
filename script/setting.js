@@ -15,14 +15,17 @@ class SettingPage {
     showSettingWindow() {
         this.settingWindow.canvasClear();
         this.settingWindow.showFrame();
+        this.settingWindow.showSEVolume();
     }
 
     inputKeyDown(key) {
         if(key == "ArrowLeft") {
-            AudioSetting.softVolume();
+            AudioSetting.softSEVolume();
+            this.showSettingWindow();
             this.settingWindow.playAudioKettei();
         } else if(key == "ArrowRight") {
-            AudioSetting.loudVolume();
+            AudioSetting.loudSEVolume();
+            this.showSettingWindow();
             this.settingWindow.playAudioKettei();
         }
     }
@@ -53,6 +56,34 @@ class SettingWindow extends WindowParents {
     showFrame() {
         this.ctx.drawImage(this.frame, 0, 0);
     }
+
+    /**
+     * SE音量ボリュームを表示する
+     */
+    showSEVolume() {
+        let boxQuantity = parseInt(AudioSetting.nowSEVolume * 10 + 0.1);
+        let maxQuantity = 5;
+        let startW = 300;
+        let startH = 100;
+        let width = 30;
+        let height = 60;
+        let blank = 20;
+
+        this.ctx.fillStyle = "#ff9933";
+        this.ctx.strokeStyle = "#ff9933";
+        this.ctx.font = "32px Osaka";
+
+        this.ctx.fillText("効果音: ", 140, startH + height*2 / 3);
+
+        for(let i = 0; i < maxQuantity; i++) {
+            if(i < boxQuantity) {
+                this.ctx.fillRect(startW, startH, width, height);
+            } else {
+                this.ctx.strokeRect(startW, startH, width, height);
+            }
+            startW += width + blank;
+        }
+    }
 }
 
 /**
@@ -62,19 +93,19 @@ class AudioSetting {
     /**
      * 今の音量
      */
-    static nowAudioVolume = 0.2;
+    static nowSEVolume = 0.1;
 
     /**
      * 音量を大きくする
      */
-    static loudVolume() {
-        if(AudioSetting.nowAudioVolume < 0.9) { AudioSetting.nowAudioVolume += 0.2; }
+    static loudSEVolume() {
+        if(AudioSetting.nowSEVolume < 0.45) { AudioSetting.nowSEVolume += 0.1; }
     }
     　
     /**
      * 音量を小さくする
      */
-    static softVolume() {
-        if(AudioSetting.nowAudioVolume > 0.1) { AudioSetting.nowAudioVolume -= 0.2; }
+    static softSEVolume() {
+        if(AudioSetting.nowSEVolume > 0.05) { AudioSetting.nowSEVolume -= 0.1; }
     }
 }

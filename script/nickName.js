@@ -27,6 +27,7 @@ class NickNamePage {
             this.nicknameWindow.playAudioKettei();
             return this.inputKeyBoard.text;
         }
+        this.nicknameWindow.playAudioCorrectType();
         return "";
     }
 }
@@ -61,7 +62,7 @@ class NickNameWindow extends WindowParents {
         this.ctx.fillStyle = "#ff9933";
 
         this.ctx.drawImage(this.description, 200, 0);
-        this.ctx.drawImage(this.frame, 0, 0);
+        this.showFrame();
         this.showInputNickName(nickname);
     }
 

@@ -86,7 +86,7 @@ class TitleWindow extends WindowParents {
      */
     showTitleWindow(nowCursor) {
         this.canvasClear();
-        this.ctx.drawImage(this.frame, 0, 0);
+        this.showFrame();
         this.showTitle();
         this.showButton();
         this.showCursor(nowCursor);

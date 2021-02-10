@@ -27,6 +27,7 @@ class AikotobaPage{
             this.aikotobaWindow.playAudioKettei();
             return this.inputKeyBoard.text;
         }
+        this.aikotobaWindow.playAudioCorrectType();
         return "";
     }
 
@@ -65,7 +66,7 @@ class AikotobaWindow extends WindowParents {
         this.ctx.fillStyle = "#ff9933";
 
         this.ctx.drawImage(this.aikotoba, 200, 0);
-        this.ctx.drawImage(this.frame, 0, 0);
+        this.showFrame();
         this.showInputAikotoba(aikotoba);
     }
 
