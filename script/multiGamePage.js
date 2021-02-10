@@ -292,6 +292,8 @@ class BattleWindow extends WindowParents{
         let text = hp.toString() + "/" + maxHp.toString();
         let textWidth = this.ctx.measureText( text ).width;
         this.ctx.fillText(text, (this.canvas.width - textWidth) / 2, startH+height-2);
+
+        this.showMyMiniHp(hp, maxHp);
     }
 
     /**
@@ -322,7 +324,22 @@ class BattleWindow extends WindowParents{
      * @param {*} maxHp 最大体力
      */
     showMyMiniHp(hp, maxHp) {
-        
+        let width = 150;
+        let height = 10;
+        let startW = this.canvas.width / 6 - width / 2;
+        let startH = 480;
+
+        this.ctx.clearRect(startW, startH, width, height);
+
+        this.ctx.fillStyle = "#666666";
+        this.ctx.fillRect(startW, startH, width, height);
+
+        let diff = (1 - hp / maxHp) * width;
+        startW += diff;
+        width -= diff;
+
+        this.ctx.fillStyle = "#73E396";
+        this.ctx.fillRect(startW, startH, width, height);
     }
 
     /**
@@ -334,7 +351,7 @@ class BattleWindow extends WindowParents{
         this.ctx.font = fontSize.toString() + "px osaka-mono";
         let textWidth = this.ctx.measureText( nickName ).width;
         let start = (this.canvas.width) / 6;
-        let height = 480;
+        let height = 440;
 
         this.ctx.fillStyle = "black";
         this.ctx.fillText(nickName, (start - textWidth/2), height);
