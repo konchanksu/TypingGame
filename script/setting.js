@@ -6,28 +6,38 @@ class SettingPage {
      * コンストラクタ
      */
     constructor() {
-        this.settingWindow = new SettingWindow();
+        this.window = new SettingWindow();
     }
 
     /**
      * セッティング画面を表示する
      */
     showWindow() {
-        this.settingWindow.canvasClear();
-        this.settingWindow.showFrame();
-        this.settingWindow.showSEVolume();
+        this.window.canvasClear();
+        this.window.showFrame();
+        this.window.showSEVolume();
+        this.window.showUndo();
     }
 
     inputKeyDown(key) {
         if(key == "ArrowLeft") {
             AudioSetting.softSEVolume();
             this.showWindow();
-            this.settingWindow.playAudioKettei();
+            this.window.playAudioKettei();
         } else if(key == "ArrowRight") {
             AudioSetting.loudSEVolume();
             this.showWindow();
-            this.settingWindow.playAudioKettei();
+            this.window.playAudioKettei();
         }
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @return 移動先のサイト
+     */
+    onClick(x, y) {
+        return this.window.onClick(x, y);
     }
 }
 
@@ -44,6 +54,13 @@ class SettingWindow extends WindowParents {
     }
 
     /**
+     * クリックできなくする
+     */
+    cannotClick() {
+        this.undo.setAbleClick(false);
+    }
+
+    /**
      * 画像の読み込みを行う
      */
     imageLoad() {
@@ -51,10 +68,17 @@ class SettingWindow extends WindowParents {
     }
 
     /**
-     * フレームを表示する
+     * @param x
+     * @param y
+     * @return 移動先のサイト
      */
-    showFrame() {
-        this.ctx.drawImage(this.frame, 0, 0);
+    onClick(x, y) {
+        if(this.undo.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.title;
+        }
+        return -1;
     }
 
     /**

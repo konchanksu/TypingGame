@@ -8,10 +8,10 @@ class GameController {
     static aikotoba = 0;
     static battle = 1;
     static characterChoose = 2;
-    static nickName = 4;
-    static setting = 5;
+    static nickName = 3;
+    static setting = 4;
+    static single = 5;
     static title = 6;
-    static single = 7;
 
     /**
      * コンストラクタ
@@ -66,6 +66,12 @@ class GameController {
                 break;
             case GameController.nickName:
                 this.onClickNickNamePage(event.x, event.y);
+                break;
+            case GameController.setting:
+                this.onClickSettingPage(event.x, event.y);
+                break;
+            case GameController.aikotoba:
+                this.onClickAikotobaPage(event.x, event.y);
                 break;
         }
     }
@@ -127,11 +133,7 @@ class GameController {
      * @param {*} key
      */
     doSettingPage(key) {
-        if(key == "Escape") {
-            this.moveToTitlePage();
-        } else {
-            this.settingPage.inputKeyDown(key);
-        }
+        this.settingPage.inputKeyDown(key);
     }
 
     /**
@@ -203,12 +205,42 @@ class GameController {
     }
 
     /**
+     * 合言葉ページでの処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickAikotobaPage(x, y) {
+        let movePage = this.aikotobaPage.onClick(x, y);
+
+        switch(movePage) {
+            case GameController.nickName:
+                this.moveToNickNamePage();
+                break;
+        }
+    }
+
+    /**
      * ニックネームページの処理
      * @param {*} x
      * @param {*} y
      */
     onClickNickNamePage(x, y) {
         let movePage = this.nickNamePage.onClick(x, y);
+
+        switch(movePage) {
+            case GameController.title:
+                this.moveToTitlePage();
+                break;
+        }
+    }
+
+    /**
+     * 設定ページの処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickSettingPage(x, y) {
+        let movePage = this.settingPage.onClick(x, y);
 
         switch(movePage) {
             case GameController.title:
@@ -227,7 +259,7 @@ class GameController {
 
         switch(movePage) {
             case GameController.single:
-                this.page = GameController.game;
+                this.page = GameController.single;
                 this.typingGame = new TypingGame();
                 break;
             case GameController.nickName:

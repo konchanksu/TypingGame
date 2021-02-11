@@ -7,14 +7,14 @@ class AikotobaPage{
      */
     constructor() {
         this.inputKeyBoard = new InputKeyBoard(6);
-        this.aikotobaWindow = new AikotobaWindow();
+        this.window = new AikotobaWindow();
     }
 
     /**
      * 合言葉画面を表示する
      */
     showWindow() {
-        this.aikotobaWindow.showWindow(this.inputKeyBoard.text);
+        this.window.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -22,15 +22,24 @@ class AikotobaPage{
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
-        this.aikotobaWindow.showWindow(this.inputKeyBoard.text);
+        this.window.showWindow(this.inputKeyBoard.text);
         if(key == "Enter" && this.inputKeyBoard.text.length == this.inputKeyBoard.textMax) {
-            this.aikotobaWindow.playAudioKettei();
+            this.window.playAudioKettei();
             return this.inputKeyBoard.text;
         }
-        this.aikotobaWindow.playAudioCorrectType();
+        this.window.playAudioCorrectType();
         return "";
     }
 
+    /**
+     * クリックした時の処理
+     * @param {*} x
+     * @param {*} y
+     * @return クリックした後の遷移先
+     */
+    onClick(x, y) {
+        　return this.window.onClick(x, y);
+    }
 }
 
 /**
@@ -46,6 +55,13 @@ class AikotobaWindow extends WindowParents {
     }
 
     /**
+     * クリックできなくする
+     */
+    cannotClick() {
+        this.undo.setAbleClick(false);
+    }
+
+    /**
      * 画像の読み込みを行う
      */
     imageLoad() {
@@ -54,6 +70,20 @@ class AikotobaWindow extends WindowParents {
         this.aikotoba.src = "/static/img/aikotoba.png";
         this.input = new Image();
         this.input.src = "/static/img/aikotoba_input.png";
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @return 移動先のサイト
+     */
+    onClick(x, y) {
+        if(this.undo.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.nickName;
+        }
+        return -1;
     }
 
     /**
@@ -68,6 +98,7 @@ class AikotobaWindow extends WindowParents {
         this.ctx.drawImage(this.aikotoba, 200, 0);
         this.showFrame();
         this.showInputAikotoba(aikotoba);
+        this.showUndo();
     }
 
     /**
