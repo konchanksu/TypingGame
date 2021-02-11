@@ -35,6 +35,7 @@ class WindowParents {
         this.frame.src = "/static/img/frame.png";
         this.kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
         this.type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
+        this.undo = new ButtonOnCanvas("/static/img/undo.png", "/static/img/undo_hover.png");
     }
 
     /**
@@ -56,6 +57,13 @@ class WindowParents {
      */
     showFrame() {
         this.ctx.drawImage(this.frame, 0, 0);
+    }
+
+    /**
+     * アンドゥ機能を表示する
+     */
+    showUndo() {
+        this.undo.drawImage(20, 20);
     }
 }
 
@@ -90,19 +98,47 @@ class AudioOnWeb extends Audio {
 /**
  * ボタンを管理するクラス
  */
-class Button {
+class ButtonOnCanvas {
     /**
      * コンストラクタ
+     * @param {*} hover_src
      * @param {*} src 座標
      */
-    constructor(src) {
+    constructor(src, hover_src) {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
 
         this._image = new Image();
         this._image.src = src;
 
+        this._imageHover = new Image();
+        this._imageHover.src = hover_src;
+
         this.isAbleClick = false;
+        this.hover = false;
+        this.eventListeners = [];
+    }
+
+    addEventHover() {
+        let self = this;
+        this.eventListeners.push(
+            function(event) {
+                if(self.hover != self.onClick(event.x, event.y)) {
+                    self.hover = !self.hover;
+                    self.drawImage();
+                }
+            }
+        )
+        addEventListener('mousemove',
+            this.eventListeners[0]
+        );
+    }
+
+    /**
+     * ボタンを消去する
+     */
+    buttonClear() {
+        this.canvas.clearRect(this.startW, this.startH, this._image.width, this._image.height);
     }
 
     /**
@@ -111,12 +147,16 @@ class Button {
      * @param {Integer} startH 左上のy座標
      */
     drawImage(startW, startH) {
-        this.startW = startW;
-        this.startH = startH;
-        this.endW = this.startW + this._image.width;
-        this.endH = this.startH + this._image.height;
+        if(!this.isAbleClick) { this.addEventHover(); }
+        if(startW != undefined && startH != undefined) {
+            this.startW = startW;
+            this.startH = startH;
+            this.endW = this.startW + this._image.width;
+            this.endH = this.startH + this._image.height;
+        }
 
-        this.ctx.drawImage(this._image, startW, startH);
+        if(!this.hover) { this.ctx.drawImage(this._image, this.startW, this.startH); }
+        else { this.ctx.drawImage(this._imageHover, this.startW, this.startH); }
 
         this.isAbleClick = true;
     }
@@ -157,5 +197,27 @@ class Button {
         [x, y] = this.position(x, y);
         if(this.startW <= x && x <= this.endW && this.startH <= y && y <= this.endH && this.isAbleClick) { return true; }
         return false;
+    }
+
+    /**
+     * イベントを削除する
+     */
+    removeEventListener() {
+        this.eventListeners.map(
+            eventListener => removeEventListener('mousemove',
+                eventListener
+            )
+        );
+    }
+
+    /**
+     * booleanに設定する
+     * @param {*} bool
+     */
+    setAbleClick(bool) {
+        this.isAbleClick = bool;
+        if(!this.isAbleClick) {
+            this.removeEventListener();
+        }
     }
 }

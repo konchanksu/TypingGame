@@ -7,14 +7,14 @@ class NickNamePage {
      */
     constructor() {
         this.inputKeyBoard = new InputKeyBoard(10);
-        this.nicknameWindow = new NickNameWindow();
+        this.window = new NickNameWindow();
     }
 
     /**
      * ニックネームページの表示を行う
      */
     showWindow() {
-        this.nicknameWindow.showWindow(this.inputKeyBoard.text);
+        this.window.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -22,13 +22,22 @@ class NickNamePage {
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
-        this.nicknameWindow.showWindow(this.inputKeyBoard.text);
+        this.window.showWindow(this.inputKeyBoard.text);
         if(key == "Enter") {
-            this.nicknameWindow.playAudioKettei();
+            this.window.playAudioKettei();
             return this.inputKeyBoard.text;
         }
-        this.nicknameWindow.playAudioCorrectType();
+        this.window.playAudioCorrectType();
         return "";
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @return 移動先のサイト
+     */
+    onClick(x, y) {
+        return this.window.onClick(x, y);
     }
 }
 
@@ -39,6 +48,13 @@ class NickNameWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+    }
+
+    /**
+     * クリックできなくする
+     */
+    cannotClick() {
+        this.undo.setAbleClick(false);
     }
 
     /**
@@ -53,7 +69,22 @@ class NickNameWindow extends WindowParents {
     }
 
     /**
+     * @param x
+     * @param y
+     * @return 移動先のサイト
+     */
+    onClick(x, y) {
+        if(this.undo.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.title;
+        }
+        return -1;
+    }
+
+    /**
      * ニックネームページの表示を行う
+     * @param nickname ニックネーム
      */
     showWindow(nickname) {
         this.canvasClear();
@@ -64,6 +95,7 @@ class NickNameWindow extends WindowParents {
         this.ctx.drawImage(this.description, 200, 0);
         this.showFrame();
         this.showInputNickName(nickname);
+        super.showUndo();
     }
 
     /**

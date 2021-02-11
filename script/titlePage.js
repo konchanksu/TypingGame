@@ -39,6 +39,12 @@ class TitleWindow extends WindowParents {
         this.imageLoad();
     }
 
+    cannotClick() {
+        this.single.setAbleClick(false);
+        this.multi.setAbleClick(false);
+        this.setting.setAbleClick(false);
+    }
+
     /**
      * 画像の読み込みを行う
      */
@@ -46,25 +52,28 @@ class TitleWindow extends WindowParents {
         super.imageLoad();
         this.chara = new Image();
         this.chara.src = "/static/img/title.png";
-        this.single = new Button("/static/img/single_play.png");
-        this.multi = new Button("/static/img/multi_play.png");
-        this.setting = new Button("/static/img/setting.png");
+        this.single = new ButtonOnCanvas("/static/img/single_play.png", "/static/img/single_play_hover.png");
+        this.multi = new ButtonOnCanvas("/static/img/multi_play.png", "/static/img/multi_play_hover.png");
+        this.setting = new ButtonOnCanvas("/static/img/setting.png", "/static/img/setting_hover.png");
     }
 
     onClick(x, y) {
         if(this.single.onClick(x, y)) {
             super.playAudioKettei();
+            this.cannotClick();
             return GameController.single;
         }
         if(this.multi.onClick(x, y)) {
             super.playAudioKettei();
+            this.cannotClick();
             return GameController.nickName;
         }
         if(this.setting.onClick(x, y)) {
             super.playAudioKettei();
+            this.cannotClick();
             return GameController.setting;
         }
-        return -1
+        return -1;
     }
 
     /**

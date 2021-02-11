@@ -64,6 +64,9 @@ class GameController {
             case GameController.title:
                 this.onClickTitlePage(event.x, event.y);
                 break;
+            case GameController.nickName:
+                this.onClickNickNamePage(event.x, event.y);
+                break;
         }
     }
 
@@ -113,14 +116,9 @@ class GameController {
      * @param {*} key
      */
     doNicknamePage(key) {
-        if(key == "Escape") {
-            this.moveToTitlePage();
-        }
-        else {
-            this.nickName = this.nickNamePage.inputKeyDown(key);
-            if(this.nickName != "") {
-                this.moveToAikotobaPage();
-            }
+        this.nickName = this.nickNamePage.inputKeyDown(key);
+        if(this.nickName != "") {
+            this.moveToAikotobaPage();
         }
     }
 
@@ -202,6 +200,21 @@ class GameController {
     moveToTitlePage() {
         this.page = GameController.title;
         this.titlePage.showWindow();
+    }
+
+    /**
+     * ニックネームページの処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickNickNamePage(x, y) {
+        let movePage = this.nickNamePage.onClick(x, y);
+
+        switch(movePage) {
+            case GameController.title:
+                this.moveToTitlePage();
+                break;
+        }
     }
 
     /**
