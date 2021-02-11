@@ -8,10 +8,10 @@ class GameController {
     static aikotoba = 0;
     static battle = 1;
     static characterChoose = 2;
-    static game = 3;
     static nickName = 4;
     static setting = 5;
     static title = 6;
+    static single = 7;
 
     /**
      * コンストラクタ
@@ -37,8 +37,8 @@ class GameController {
      */
     keyDown(event) {
         switch (this.page) {
-            case GameController.game:
-                this.gamePlay(event);
+            case GameController.single:
+                this.doSinglePlay(event.key);
                 break;
             case GameController.setting:
                 this.doSettingPage(event.key);
@@ -52,8 +52,17 @@ class GameController {
             case GameController.battle:
                 this.doBattlePage(event.key);
                 break;
+        }
+    }
+
+    /**
+     * クリック処理があった時
+     * @param {*} event
+     */
+    onClick(event) {
+        switch(this.page) {
             case GameController.title:
-                this.doTitlePage(event.key);
+                this.onClickTitlePage(event.x, event.y);
                 break;
         }
     }
@@ -128,25 +137,30 @@ class GameController {
     }
 
     /**
-     * タイトルページの処理
+     * ゲームが始まっている時にキーボードの入力を受けた際の処理
      * @param {*} key
      */
-    doTitlePage(key) {
-        let movePage = this.titlePage.inputKeyDown(key);
+    doSinglePlay(key) {
+        if(this.isGameStarted) {
+            if(key == "Escape") {
+                this.isGameStarted = false;
+                this.typingGame.gameReset();
+            } else {
+                this.typingGame.inputKey(key);
+                if(this.typingGame.isFinished()) {
+                    this.isGameStarted = false;
+                    this.typingGame.gameClear();
+                }
+            }
 
-        // 一人ゲームに移動
-        if(movePage == 0) {
-            this.page = GameController.game;
-            this.typingGame = new TypingGame();
-        }
-
-        // マルチプレイに移動
-        else if(movePage == 1) {
-            this.moveToNickNamePage();
-        }
-
-        else if(movePage == 2) {
-            this.moveToSettingPage();
+        } else {
+            if(key == " ") {
+                this.isGameStarted = true;
+                this.typingGame.gameStart();
+            } else if(key == "Escape") {
+                this.typingGame.gameReset();
+                this.moveToTitlePage();
+            }
         }
     }
 
@@ -191,30 +205,24 @@ class GameController {
     }
 
     /**
-     * ゲームが始まっている時にキーボードの入力を受けた際の処理
-     * @param {keyDown} event
+     * タイトルページの処理
+     * @param {*} x
+     * @param {*} y
      */
-    gamePlay(event) {
-        let key = event.key;
-        if(this.isGameStarted) {
-            if(key == "Escape") {
-                this.isGameStarted = false;
-                this.typingGame.gameReset();
-            } else {
-                this.typingGame.inputKey(key);
-                if(this.typingGame.isFinished()) {
-                    this.isGameStarted = false;
-                    this.typingGame.gameClear();
-                }
-            }
+    onClickTitlePage(x, y) {
+        let movePage = this.titlePage.onClick(x, y);
 
-        } else {
-            if(key == " ") {
-                this.isGameStarted = true;
-                this.typingGame.gameStart();
-            } else if(key == "Escape") {
-                this.typingGame.gameReset();
-            }
+        switch(movePage) {
+            case GameController.single:
+                this.page = GameController.game;
+                this.typingGame = new TypingGame();
+                break;
+            case GameController.nickName:
+                this.moveToNickNamePage();
+                break;
+            case GameController.setting:
+                this.moveToSettingPage();
+                break;
         }
     }
 }
@@ -223,4 +231,5 @@ function firstload() {
     gameController = new GameController();
     canvas = document.getElementById("gameWindow");
     window.addEventListener("keydown", event => { gameController.keyDown(event) });
+    window.addEventListener("click", event => {gameController.onClick(event) });
 }

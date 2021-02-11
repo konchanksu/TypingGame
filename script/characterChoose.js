@@ -15,6 +15,13 @@ class CharacterChoosePage {
     inputKeyDown(key) {
         
     }
+
+    /**
+     * ウィンドウ表示する
+     */
+    showWindow() {
+
+    }
 }
 
 /**

@@ -86,3 +86,76 @@ class AudioOnWeb extends Audio {
         super.play();
     }
 }
+
+/**
+ * ボタンを管理するクラス
+ */
+class Button {
+    /**
+     * コンストラクタ
+     * @param {*} src 座標
+     */
+    constructor(src) {
+        this.canvas = document.getElementById("gameWindow");
+        this.ctx = this.canvas.getContext("2d");
+
+        this._image = new Image();
+        this._image.src = src;
+
+        this.isAbleClick = false;
+    }
+
+    /**
+     * 描画する
+     * @param {Integer} startW 左上のx座標
+     * @param {Integer} startH 左上のy座標
+     */
+    drawImage(startW, startH) {
+        this.startW = startW;
+        this.startH = startH;
+        this.endW = this.startW + this._image.width;
+        this.endH = this.startH + this._image.height;
+
+        this.ctx.drawImage(this._image, startW, startH);
+
+        this.isAbleClick = true;
+    }
+
+    /**
+     * 幅
+     */
+    width() {
+        return this._image.width;
+    }
+
+    /**
+     * 高さ
+     */
+    height() {
+        return this._image.height;
+    }
+
+    /**
+     * イベントの座標をキャンバスの座標に変更
+     * @param {*} x
+     * @param {*} y
+     * @return canvasでの座標
+     */
+    position(x, y) {
+        x -= this.canvas.getBoundingClientRect().left;
+        y -= this.canvas.getBoundingClientRect().top;
+        return [x, y];
+    }
+
+    /**
+     * クリックがあった時の処理
+     * @param {*} x
+     * @param {*} y
+     * @param {Boolean} ボタンが押されたかどうか
+     */
+    onClick(x, y) {
+        [x, y] = this.position(x, y);
+        if(this.startW <= x && x <= this.endW && this.startH <= y && y <= this.endH && this.isAbleClick) { return true; }
+        return false;
+    }
+}
