@@ -20,6 +20,27 @@ class Character1 extends CharacterStatus {
 }
 
 /**
+ * キャラクター名未定、キャラ2を設定する
+ */
+class Character2 extends CharacterStatus {
+    /**
+     * コンストラクタ
+     */
+    constructor() {
+        const attack = 40;
+        const attackDownWidth = 10;
+        const attackMax = 130;
+        const attackUpWidth = 10;
+        const damageWaitMax = 150;
+        const hp = 300;
+        const image = "/static/img/mio.png";
+        super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
+
+        this.id = 2;
+    }
+}
+
+/**
  * キャラクターたちを管理するクラス
  */
 class Characters {
@@ -27,6 +48,8 @@ class Characters {
         switch(characterId) {
             case 1:
                 return new Character1();
+            case 2:
+                return new Character2();
         }
     }
 

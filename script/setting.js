@@ -12,7 +12,7 @@ class SettingPage {
     /**
      * セッティング画面を表示する
      */
-    showSettingWindow() {
+    showWindow() {
         this.settingWindow.canvasClear();
         this.settingWindow.showFrame();
         this.settingWindow.showSEVolume();
@@ -21,11 +21,11 @@ class SettingPage {
     inputKeyDown(key) {
         if(key == "ArrowLeft") {
             AudioSetting.softSEVolume();
-            this.showSettingWindow();
+            this.showWindow();
             this.settingWindow.playAudioKettei();
         } else if(key == "ArrowRight") {
             AudioSetting.loudSEVolume();
-            this.showSettingWindow();
+            this.showWindow();
             this.settingWindow.playAudioKettei();
         }
     }

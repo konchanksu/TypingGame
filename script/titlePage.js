@@ -17,8 +17,8 @@ class TitlePage {
     /**
      * タイトルウィンドウの表示
      */
-    showTitleWindow() {
-        this.window.showTitleWindow(this.nowCursor);
+    showWindow() {
+        this.window.showWindow(this.nowCursor);
     }
 
     /**
@@ -30,10 +30,10 @@ class TitlePage {
         if(key == "ArrowUp") {
             if(this.nowCursor == 0) this.nowCursor = 3;
             this.nowCursor = (this.nowCursor - 1) % 3;
-            this.window.showTitleWindow(this.nowCursor);
+            this.window.showWindow(this.nowCursor);
         } else if(key == "ArrowDown") {
             this.nowCursor = (this.nowCursor + 1) % 3;
-            this.window.showTitleWindow(this.nowCursor);
+            this.window.showWindow(this.nowCursor);
         } else if(key == "Enter") {
             // 音を出す
             this.window.playAudioKettei();
@@ -84,7 +84,7 @@ class TitleWindow extends WindowParents {
      * ウィンドウ全体を表示する
      * @param nowCursor 現在のカーソル位置
      */
-    showTitleWindow(nowCursor) {
+    showWindow(nowCursor) {
         this.canvasClear();
         this.showFrame();
         this.showTitle();

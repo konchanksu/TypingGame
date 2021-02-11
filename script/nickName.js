@@ -13,8 +13,8 @@ class NickNamePage {
     /**
      * ニックネームページの表示を行う
      */
-    showNickNameWindow() {
-        this.nicknameWindow.showNickNameWindow(this.inputKeyBoard.text);
+    showWindow() {
+        this.nicknameWindow.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -22,7 +22,7 @@ class NickNamePage {
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
-        this.nicknameWindow.showNickNameWindow(this.inputKeyBoard.text);
+        this.nicknameWindow.showWindow(this.inputKeyBoard.text);
         if(key == "Enter") {
             this.nicknameWindow.playAudioKettei();
             return this.inputKeyBoard.text;
@@ -55,7 +55,7 @@ class NickNameWindow extends WindowParents {
     /**
      * ニックネームページの表示を行う
      */
-    showNickNameWindow(nickname) {
+    showWindow(nickname) {
         this.canvasClear();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";

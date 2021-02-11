@@ -137,7 +137,7 @@ class MultiGame {
     /**
      * バトル画面を表示させる
      */
-    showBattleWindow() {
+    showWindow() {
         const aiteHp = this.aiteCharacter.getHp();
         const aiteHpMax = this.aiteCharacter.getHpMax();
         const aiteImage = this.aiteCharacter.getImage();

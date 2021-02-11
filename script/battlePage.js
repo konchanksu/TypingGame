@@ -21,7 +21,7 @@ class BattlePage {
                 this.first = false;
                 this.multiGame.setAiteNickname(this.aiteNickname);
                 this.multiGame.setAiteCharacter(data[2]);
-                this.multiGame.showBattleWindow();
+                this.multiGame.showWindow();
             }
             // ゲームが始まった後
             else if(!this.finish) {

@@ -13,8 +13,8 @@ class AikotobaPage{
     /**
      * 合言葉画面を表示する
      */
-    showAikotobaWindow() {
-        this.aikotobaWindow.showAikotobaWindow(this.inputKeyBoard.text);
+    showWindow() {
+        this.aikotobaWindow.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -22,7 +22,7 @@ class AikotobaPage{
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
-        this.aikotobaWindow.showAikotobaWindow(this.inputKeyBoard.text);
+        this.aikotobaWindow.showWindow(this.inputKeyBoard.text);
         if(key == "Enter" && this.inputKeyBoard.text.length == this.inputKeyBoard.textMax) {
             this.aikotobaWindow.playAudioKettei();
             return this.inputKeyBoard.text;
@@ -59,7 +59,7 @@ class AikotobaWindow extends WindowParents {
     /**
      * ニックネームページの表示を行う
      */
-    showAikotobaWindow(aikotoba) {
+    showWindow(aikotoba) {
         this.canvasClear();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";

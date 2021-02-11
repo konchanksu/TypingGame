@@ -11,6 +11,7 @@ class WindowParents {
          */
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
+        this.gl = this.canvas.getContext("webgl");
         this.fontSize = 24;
         this.windowWidth = this.canvas.width;
         this.widnowHeight = this.canvas.height;

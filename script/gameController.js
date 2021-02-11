@@ -7,20 +7,22 @@ class GameController {
      */
     static aikotoba = 0;
     static battle = 1;
-    static game = 2;
-    static nickName = 3;
-    static setting = 4;
-    static title = 5;
+    static characterChoose = 2;
+    static game = 3;
+    static nickName = 4;
+    static setting = 5;
+    static title = 6;
 
     /**
      * コンストラクタ
      */
     constructor() {
         // ここに画面をすべて始めに読み込んでおくように変更する
-        this.titlePage = new TitlePage();
-        this.nickNamePage = new NickNamePage();
         this.aikotobaPage = new AikotobaPage();
+        this.characterChoosePage = new CharacterChoosePage();
+        this.nickNamePage = new NickNamePage();
         this.settingPage = new SettingPage();
+        this.titlePage = new TitlePage();
 
         const chara = new Image();
         chara.src = "/static/img/pekora.png";
@@ -34,86 +36,117 @@ class GameController {
      * @param {*} event
      */
     keyDown(event) {
-        // 一人対戦ページのキーダウンの処理
-        if(this.page == GameController.game) {
-            this.gamePlay(event);
+        switch (this.page) {
+            case GameController.game:
+                this.gamePlay(event);
+                break;
+            case GameController.setting:
+                this.doSettingPage(event.key);
+                break;
+            case GameController.aikotoba:
+                this.doAikotobaPage(event.key);
+                break;
+            case GameController.nickName:
+                this.doNicknamePage(event.key);
+                break;
+            case GameController.battle:
+                this.doBattlePage(event.key);
+                break;
+            case GameController.title:
+                this.doTitlePage(event.key);
+                break;
         }
+    }
 
-        // 設定ページに移動
-        else if(this.page == GameController.setting) {
-            if(event.key == "Escape") {
+    /**
+     * 合言葉ページでの処理
+     * @param {*} key
+     */
+    doAikotobaPage(key) {
+        if(key == "Escape") {
+            this.moveToNickNamePage();
+        }
+        else {
+            this.aikotoba = this.aikotobaPage.inputKeyDown(key);
+            if(this.aikotoba != "") {
+                this.page = GameController.battle;
+                let character = 2;
+                this.battlePage = new BattlePage(this.aikotoba, this.nickName, character);
+            }
+        }
+    }
+
+    /**
+     * バトルページでの処理
+     * @param {*} key
+     */
+    doBattlePage(key) {
+        // 終了前
+        if(!this.battlePage.isFinished()) {
+            if(this.battlePage.inputKeyDown(key)) {
+                this.moveToAikotobaPage();
+                this.battlePage.ws.close();
+                delete this.battlePage;
+            }
+        }
+        // 終了後
+        else {
+            if(this.battlePage.inputKeyDownFinished(key)) {
                 this.moveToTitlePage();
-            } else {
-                this.settingPage.inputKeyDown(event.key);
+                this.battlePage.ws.close();
+                delete this.battlePage;
             }
         }
+    }
 
-        // タイトルページのキーダウン処理
-        else if(this.page == GameController.title) {
-            let movePage = this.titlePage.inputKeyDown(event.key);
-
-            // 一人ゲームに移動
-            if(movePage == 0) {
-                this.page = GameController.game;
-                this.typingGame = new TypingGame();
-            }
-
-            // マルチプレイに移動
-            else if(movePage == 1) {
-                this.moveToNickNamePage();
-            }
-
-            else if(movePage == 2) {
-                this.moveToSettingPage();
+    /**
+     * ニックネームページでの処理
+     * @param {*} key
+     */
+    doNicknamePage(key) {
+        if(key == "Escape") {
+            this.moveToTitlePage();
+        }
+        else {
+            this.nickName = this.nickNamePage.inputKeyDown(key);
+            if(this.nickName != "") {
+                this.moveToAikotobaPage();
             }
         }
+    }
 
-        // ニックネーム入力ページ
-        else if(this.page == GameController.nickName) {
-            if(event.key == "Escape") {
-                this.moveToTitlePage();
-            }
-            else {
-                this.nickName = this.nickNamePage.inputKeyDown(event.key);
-                if(this.nickName != "") {
-                    this.moveToAikotobaPage();
-                }
-            }
+    /**
+     * 設定ページでの処理
+     * @param {*} key
+     */
+    doSettingPage(key) {
+        if(key == "Escape") {
+            this.moveToTitlePage();
+        } else {
+            this.settingPage.inputKeyDown(key);
+        }
+    }
+
+    /**
+     * タイトルページの処理
+     * @param {*} key
+     */
+    doTitlePage(key) {
+        let movePage = this.titlePage.inputKeyDown(key);
+
+        // 一人ゲームに移動
+        if(movePage == 0) {
+            this.page = GameController.game;
+            this.typingGame = new TypingGame();
         }
 
-        // 合言葉入力ページ
-        else if(this.page == GameController.aikotoba) {
-            if(event.key == "Escape") {
-                this.moveToNickNamePage();
-            }
-            else {
-                this.aikotoba = this.aikotobaPage.inputKeyDown(event.key);
-                if(this.aikotoba != "") {
-                    this.page = GameController.battle;
-                    let character = 1;
-                    this.battlePage = new BattlePage(this.aikotoba, this.nickName, character);
-                }
-            }
+        // マルチプレイに移動
+        else if(movePage == 1) {
+            this.moveToNickNamePage();
         }
 
-        // バトルページ
-        else if(this.page == GameController.battle) {
-            // 終了前
-            if(!this.battlePage.isFinished()) {
-                if(this.battlePage.inputKeyDown(event.key)) {
-                    this.moveToAikotobaPage();
-                    this.battlePage.ws.close();
-                    delete this.battlePage;
-                }
-            }
-            // 終了後
-            else {
-                if(this.battlePage.inputKeyDownFinished(event.key)) {
-                    this.moveToTitlePage();
-                    this.battlePage.ws.close();
-                    delete this.battlePage;
-                }
-            }
+        else if(movePage == 2) {
+            this.moveToSettingPage();
         }
     }
 
@@ -122,7 +155,15 @@ class GameController {
      */
     moveToAikotobaPage() {
         this.page = GameController.aikotoba;
-        this.aikotobaPage.showAikotobaWindow();
+        this.aikotobaPage.showWindow();
+    }
+
+    /**
+     * キャラクター選択画面に移動
+     */
+    moveToCharacterChoosePage() {
+        this.page = GameController.characterChoose;
+        this.characterChoosePage.showWindow();
     }
 
     /**
@@ -130,7 +171,7 @@ class GameController {
      */
     moveToNickNamePage() {
         this.page = GameController.nickName;
-        this.nickNamePage.showNickNameWindow();
+        this.nickNamePage.showWindow();
     }
 
     /**
@@ -138,7 +179,7 @@ class GameController {
      */
     moveToSettingPage() {
         this.page = GameController.setting;
-        this.settingPage.showSettingWindow();
+        this.settingPage.showWindow();
     }
 
     /**
@@ -146,7 +187,7 @@ class GameController {
      */
     moveToTitlePage() {
         this.page = GameController.title;
-        this.titlePage.showTitleWindow();
+        this.titlePage.showWindow();
     }
 
     /**
