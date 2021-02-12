@@ -35,7 +35,7 @@ class WindowParents {
         this.frame.src = "/static/img/frame.png";
         this.kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
         this.type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
-        this.undo = new ButtonOnCanvas("/static/img/undo.png", "/static/img/undo_hover.png");
+        this.undo = new ButtonOnCanvas("/static/img/button/undo/undo.png");
     }
 
     /**
@@ -80,18 +80,29 @@ class AudioOnWeb extends Audio {
         super();
         super.src = src;
         this.musicType = musicType;
+        this.isNowPlayAudio = undefined;
     }
 
     /**
      * オーディオを実行する
      */
     playAudio() {
-        super.pause();
-        super.currentTime = 0;
-        if(this.musicType == AudioOnWeb.se) {
-            super.volume = AudioSetting.nowSEVolume;
+        if (this.isNowPlayAudio !== undefined) {
+            this.currentTime = 0.0;
         }
-        super.play();
+        this.changeAudioVolume();
+        this.isNowPlayAudio = super.play();
+    }
+
+    /**
+     * 音量を変更する
+     */
+    changeAudioVolume() {
+        switch (this.musicType) {
+            case AudioOnWeb.se:
+                super.volume = AudioSetting.nowSEVolume;
+                break;
+        }
     }
 }
 
@@ -104,7 +115,7 @@ class ButtonOnCanvas {
      * @param {*} hover_src
      * @param {*} src 座標
      */
-    constructor(src, hover_src) {
+    constructor(src) {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
 
@@ -112,33 +123,65 @@ class ButtonOnCanvas {
         this._image.src = src;
 
         this._imageHover = new Image();
-        this._imageHover.src = hover_src;
+        this._imageHover.src = src.slice(0, -4) + "_hover" + src.slice(-4);
+
+        this._imageDown = new Image();
+        this._imageDown.src = src.slice(0, -4) + "_down" + src.slice(-4);
 
         this.isAbleClick = false;
-        this.hover = false;
+        this.isHover = false;
+        this.isDown = false;
         this.eventListeners = [];
     }
 
+    /**
+     * 直前にリストに追加したイベントを登録する
+     */
+    addEvent(eventListener) {
+        addEventListener(
+            eventListener[0],
+            eventListener[1]
+        );
+    }
+
+    /**
+     * マウスダウンイベントを追加する
+     */
+    addEventDown() {
+        let self = this;
+        this.eventListeners.push([
+            "mousedown",
+            event => {
+            if(self.isDown != self.onClick(event.x, event.y)) {
+                self.isDown = !self.isDown;
+                self.drawImage();
+            }
+        }])
+        this.addEvent(this.eventListeners.slice(-1)[0]);
+    }
+
+    /**
+     * ホバーイベントを追加する
+     */
     addEventHover() {
         let self = this;
-        this.eventListeners.push(
+        this.eventListeners.push([
+            "mousemove",
             function(event) {
-                if(self.hover != self.onClick(event.x, event.y)) {
-                    self.hover = !self.hover;
+                if(self.isHover != self.onClick(event.x, event.y)) {
+                    self.isHover = !self.isHover;
                     self.drawImage();
                 }
             }
-        )
-        addEventListener('mousemove',
-            this.eventListeners[0]
-        );
+        ])
+        this.addEvent(this.eventListeners.slice(-1)[0]);
     }
 
     /**
      * ボタンを消去する
      */
     buttonClear() {
-        this.canvas.clearRect(this.startW, this.startH, this._image.width, this._image.height);
+        this.ctx.clearRect(this.startW, this.startH, this._image.width, this._image.height);
     }
 
     /**
@@ -147,18 +190,23 @@ class ButtonOnCanvas {
      * @param {Integer} startH 左上のy座標
      */
     drawImage(startW, startH) {
-        if(!this.isAbleClick) { this.addEventHover(); }
-        if(startW != undefined && startH != undefined) {
-            this.startW = startW;
-            this.startH = startH;
-            this.endW = this.startW + this._image.width;
-            this.endH = this.startH + this._image.height;
-        }
+        if(!this.isAbleClick) { this.doFirstDrawImage(startW, startH); }
 
-        if(!this.hover) { this.ctx.drawImage(this._image, this.startW, this.startH); }
+        this.buttonClear();
+        if(!this.isHover && !this.isDown) { this.ctx.drawImage(this._image, this.startW, this.startH); }
+        else if(this.isDown) { this.ctx.drawImage(this._imageDown, this.startW, this.startH); }
         else { this.ctx.drawImage(this._imageHover, this.startW, this.startH); }
 
         this.isAbleClick = true;
+    }
+
+    doFirstDrawImage(startW, startH) {
+        this.addEventHover();
+        this.addEventDown();
+        this.startW = startW;
+        this.startH = startH;
+        this.endW = this.startW + this._image.width;
+        this.endH = this.startH + this._image.height;
     }
 
     /**
@@ -204,8 +252,9 @@ class ButtonOnCanvas {
      */
     removeEventListener() {
         this.eventListeners.map(
-            eventListener => removeEventListener('mousemove',
-                eventListener
+            eventListener => removeEventListener(
+                eventListener[0],
+                eventListener[1]
             )
         );
     }
@@ -218,6 +267,8 @@ class ButtonOnCanvas {
         this.isAbleClick = bool;
         if(!this.isAbleClick) {
             this.removeEventListener();
+            this.isHover = false;
+            this.isDown = false;
         }
     }
 }

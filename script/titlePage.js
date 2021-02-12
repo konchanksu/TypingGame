@@ -52,9 +52,9 @@ class TitleWindow extends WindowParents {
         super.imageLoad();
         this.chara = new Image();
         this.chara.src = "/static/img/title.png";
-        this.single = new ButtonOnCanvas("/static/img/single_play.png", "/static/img/single_play_hover.png");
-        this.multi = new ButtonOnCanvas("/static/img/multi_play.png", "/static/img/multi_play_hover.png");
-        this.setting = new ButtonOnCanvas("/static/img/setting.png", "/static/img/setting_hover.png");
+        this.single = new ButtonOnCanvas("/static/img/button/single_play/single_play.png");
+        this.multi = new ButtonOnCanvas("/static/img/button/multi_play/multi_play.png");
+        this.setting = new ButtonOnCanvas("/static/img/button/setting/setting.png");
     }
 
     onClick(x, y) {
