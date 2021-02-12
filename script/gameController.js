@@ -25,7 +25,7 @@ class GameController {
         this.titlePage = new TitlePage();
 
         const chara = new Image();
-        chara.src = "/static/img/pekora.png";
+        chara.src = "/static/img/character/character1/pekora.png";
         chara.onload = () => {
             this.moveToTitlePage();
         }
@@ -75,6 +75,12 @@ class GameController {
             case GameController.aikotoba:
                 this.onClickAikotobaPage(event.x, event.y);
                 break;
+            case GameController.battle:
+                this.onClickMultiPlayPage(event.x, event.y);
+                break;
+            case GameController.characterChoose:
+                this.onClickCharacterChoosePage(event.x, event.y);
+                break;
         }
     }
 
@@ -83,10 +89,7 @@ class GameController {
      * @param {*} key
      */
     doAikotobaPage(key) {
-        this.aikotoba = this.aikotobaPage.inputKeyDown(key);
-        if(this.aikotoba != "") {
-            this.moveToBattlePage();
-        }
+        this.aikotobaPage.inputKeyDown(key);
     }
 
     /**
@@ -94,13 +97,8 @@ class GameController {
      * @param {*} key
      */
     doBattlePage(key) {
-        // 終了前
         if(!this.battlePage.isFinished()) {
-            if(this.battlePage.inputKeyDown(key)) {
-                this.moveToAikotobaPage();
-                this.battlePage.ws.close();
-                delete this.battlePage;
-            }
+            this.battlePage.inputKeyDown(key);
         }
         // 終了後
         else {
@@ -117,10 +115,7 @@ class GameController {
      * @param {*} key
      */
     doNicknamePage(key) {
-        this.nickName = this.nickNamePage.inputKeyDown(key);
-        if(this.nickName != "") {
-            this.moveToAikotobaPage();
-        }
+        this.nickNamePage.inputKeyDown(key);
     }
 
     /**
@@ -164,7 +159,6 @@ class GameController {
      */
     moveToAikotobaPage() {
         this.page = GameController.aikotoba;
-        this.nickName = this.nickNamePage.getNickName();
         this.aikotobaPage.showWindow();
     }
 
@@ -173,7 +167,6 @@ class GameController {
      */
     moveToBattlePage() {
         this.page = GameController.battle;
-        this.character = 2;
         this.battlePage = new BattlePage(this.aikotoba, this.nickName, this.character);
     }
 
@@ -218,11 +211,49 @@ class GameController {
         let movePage = this.aikotobaPage.onClick(x, y);
 
         switch(movePage) {
+            case GameController.characterChoose:
+                this.moveToCharacterChoosePage();
+                break;
+            case GameController.battle:
+                this.aikotoba = this.aikotobaPage.getAikotoba();
+                this.moveToBattlePage();
+                break;
+        }
+    }
+
+    /**
+     * キャラクター選択画面の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickCharacterChoosePage(x, y) {
+        let movePage = this.characterChoosePage.onClick(x, y);
+
+        switch(movePage) {
+            case GameController.aikotoba:
+                this.character = 1;
+                this.moveToAikotobaPage();
+                break;
             case GameController.nickName:
                 this.moveToNickNamePage();
                 break;
-            case GameController.battle:
-                this.moveToBattlePage();
+        }
+    }
+
+    /**
+     * マルチプレイゲームでの処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickMultiPlayPage(x, y) {
+        let movePage = this.battlePage.onClick(x, y);
+
+        switch(movePage) {
+            case GameController.aikotoba:
+                this.battlePage.ws.close();
+                delete this.battlePage;
+                this.moveToAikotobaPage();
+                break;
         }
     }
 
@@ -238,8 +269,9 @@ class GameController {
             case GameController.title:
                 this.moveToTitlePage();
                 break;
-            case GameController.aikotoba:
-                this.moveToAikotobaPage();
+            case GameController.characterChoose:
+                this.nickName = this.nickNamePage.getNickName();
+                this.moveToCharacterChoosePage();
                 break;
         }
     }

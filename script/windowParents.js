@@ -195,7 +195,7 @@ class ButtonOnCanvas {
         this.eventListeners.push([
             "mouseup",
             event => {
-                if(self.isDown && this.onClick(event.x, event.y)) {
+                if(self.isDown) {
                     self.isDown = !self.isDown;
                     self.drawImage();
                 }

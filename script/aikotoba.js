@@ -31,12 +31,7 @@ class AikotobaPage{
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
         this.window.showWindow(this.inputKeyBoard.text);
-        if(key == "Enter" && this.inputKeyBoard.text.length == this.inputKeyBoard.textMax) {
-            this.window.playAudioKettei();
-            return this.inputKeyBoard.text;
-        }
         this.window.playAudioCorrectType();
-        return "";
     }
 
     /**
@@ -103,7 +98,7 @@ class AikotobaWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             super.playAudioKettei();
             this.cannotClick();
-            return GameController.nickName;
+            return GameController.characterChoose;
         }
         if(this.decision.onClick(x, y)) {
             super.playAudioKettei();

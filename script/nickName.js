@@ -31,12 +31,7 @@ class NickNamePage {
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
         this.window.showWindow(this.inputKeyBoard.text);
-        if(key == "Enter") {
-            this.window.playAudioKettei();
-            return this.inputKeyBoard.text;
-        }
         this.window.playAudioCorrectType();
-        return "";
     }
 
     /**
@@ -46,7 +41,7 @@ class NickNamePage {
      */
     onClick(x, y) {
         let moveToPage = this.window.onClick(x, y);
-        if(moveToPage == GameController.aikotoba && this.inputKeyBoard.text == "") {
+        if(moveToPage == GameController.characterChoose && this.inputKeyBoard.text.length == 0) {
             this.window.canClick();
             return -1;
         }
@@ -104,7 +99,7 @@ class NickNameWindow extends WindowParents {
         if(this.decision.onClick(x, y)) {
             super.playAudioKettei();
             this.cannotClick();
-            return GameController.aikotoba;
+            return GameController.characterChoose;
         }
         return -1;
     }

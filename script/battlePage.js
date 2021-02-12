@@ -19,6 +19,7 @@ class BattlePage {
                 this.aiteKey = data[0];
                 this.aiteNickname = data[1];
                 this.first = false;
+                this.window.cannotClick();
                 this.multiGame.setAiteNickname(this.aiteNickname);
                 this.multiGame.setAiteCharacter(data[2]);
                 this.multiGame.showWindow();
@@ -46,8 +47,8 @@ class BattlePage {
         this.ws.first = true;
         this.ws.finish = false;
         this.ws.win = false;
-        this.ws.finishWindow = new FinishWindow();
-        if(this.ws.first) this.ws.finishWindow.showWait();
+        this.ws.window = new FinishWindow();
+        if(this.ws.first) this.ws.window.showWait();
 
         /**
          * 勝利したときの処理
@@ -55,7 +56,7 @@ class BattlePage {
         this.ws.winPage = function() {
             this.finish = true;
             this.win = true;
-            this.finishWindow.showWin();
+            this.window.showWin();
         }
 
         /**
@@ -64,7 +65,7 @@ class BattlePage {
         this.ws.losePage = function() {
             this.send("attack " + this.aiteKey + " " + "-1");
             this.finish = true;
-            this.finishWindow.showLose();
+            this.window.showLose();
         }
 
         /**
@@ -107,7 +108,6 @@ class BattlePage {
     /**
      * キー入力があった時の処理
      * @param key キー入力
-     * @return {Boolean} 終了するかどうか
      */
     inputKeyDown(key) {
         if(!this.ws.first) {
@@ -118,13 +118,19 @@ class BattlePage {
             else if(damageData[0] < 0) {
                 this.ws.losePage();
             }
-        } else {
-            if(key == "Escape") {
-                return true;
-            }
-            return false
         }
-        return false;
+    }
+
+    /**
+     * クリックした時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClick(x, y) {
+        if(this.ws.first) {
+            return this.ws.window.onClick(x, y);
+        }
+        return -1;
     }
 
     /**
@@ -152,6 +158,24 @@ class BattlePage {
 class FinishWindow extends WindowParents {
     constructor() {
         super();
+        super.imageLoad();
+    }
+
+    cannotClick() {
+        this.undo.setAbleClick(false);
+    }
+
+    /**
+     * クリックされた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    onClick(x, y) {
+        if(this.undo.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.aikotoba;
+        }
     }
 
     /**
@@ -189,9 +213,8 @@ class FinishWindow extends WindowParents {
             this.ctx.drawImage(chara, 0, 0);
         };
 
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
-        this.ctx.drawImage(this.frame, 0, 0);
+        this.showFrame();
+        this.showUndo();
     }
 }
 

@@ -12,7 +12,7 @@ class Character1 extends CharacterStatus {
         const attackUpWidth = 10;
         const damageWaitMax = 200;
         const hp = 500;
-        const image = "/static/img/pekora.png";
+        const image = "/static/img/character/character1/pekora.png";
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
         this.id = 1;
@@ -33,7 +33,7 @@ class Character2 extends CharacterStatus {
         const attackUpWidth = 10;
         const damageWaitMax = 150;
         const hp = 300;
-        const image = "/static/img/mio.png";
+        const image = "/static/img/character/character2/mio.png";
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
         this.id = 2;
@@ -44,7 +44,7 @@ class Character2 extends CharacterStatus {
  * キャラクターたちを管理するクラス
  */
 class Characters {
-    static characters(characterId) {
+    static characters(characterId) {　
         switch(characterId) {
             case 1:
                 return new Character1();
