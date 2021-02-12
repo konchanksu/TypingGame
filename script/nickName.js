@@ -18,6 +18,14 @@ class NickNamePage {
     }
 
     /**
+     * 入力したニックネームを返す
+     * @return ニックネーム
+     */
+    getNickName() {
+        return this.inputKeyBoard.text;
+    }
+
+    /**
      * キー入力があった時の処理
      */
     inputKeyDown(key) {
@@ -37,7 +45,12 @@ class NickNamePage {
      * @return 移動先のサイト
      */
     onClick(x, y) {
-        return this.window.onClick(x, y);
+        let moveToPage = this.window.onClick(x, y);
+        if(moveToPage == GameController.aikotoba && this.inputKeyBoard.text == "") {
+            this.window.canClick();
+            return -1;
+        }
+        return moveToPage;
     }
 }
 
@@ -55,6 +68,15 @@ class NickNameWindow extends WindowParents {
      */
     cannotClick() {
         this.undo.setAbleClick(false);
+        this.decision.setAbleClick(false);
+    }
+
+    /**
+     * ボタンを押せるようにする
+     */
+    canClick() {
+        this.undo.setAbleClick(true);
+        this.decision.setAbleClick(true);
     }
 
     /**
@@ -79,6 +101,11 @@ class NickNameWindow extends WindowParents {
             this.cannotClick();
             return GameController.title;
         }
+        if(this.decision.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.aikotoba;
+        }
         return -1;
     }
 
@@ -96,6 +123,7 @@ class NickNameWindow extends WindowParents {
         this.showFrame();
         this.showInputNickName(nickname);
         super.showUndo();
+        this.showDecisionButton();
     }
 
     /**
@@ -104,5 +132,13 @@ class NickNameWindow extends WindowParents {
     showInputNickName(nickname) {
         this.ctx.drawImage(this.input, 140, 130);
         this.ctx.fillText(nickname, 330, 300);
+    }
+
+    /**
+     * 決定ボタンを表示する
+     */
+    showDecisionButton() {
+        let startH = 450;
+        this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
     }
 }

@@ -18,6 +18,14 @@ class AikotobaPage{
     }
 
     /**
+     * 入力したニックネームを返す
+     * @return ニックネーム
+     */
+    getAikotoba() {
+        return this.inputKeyBoard.text;
+    }
+
+    /**
      * キー入力があった時の処理
      */
     inputKeyDown(key) {
@@ -38,7 +46,12 @@ class AikotobaPage{
      * @return クリックした後の遷移先
      */
     onClick(x, y) {
-        　return this.window.onClick(x, y);
+        let movePage = this.window.onClick(x, y);
+        if(movePage == GameController.battle && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax) {
+            this.window.canClick();
+            return -1;
+        }
+        return movePage;
     }
 }
 
@@ -59,6 +72,15 @@ class AikotobaWindow extends WindowParents {
      */
     cannotClick() {
         this.undo.setAbleClick(false);
+        this.decision.setAbleClick(false);
+    }
+
+    /**
+     * ボタンを押せるようにする
+     */
+    canClick() {
+        this.undo.setAbleClick(true);
+        this.decision.setAbleClick(true);
     }
 
     /**
@@ -83,6 +105,11 @@ class AikotobaWindow extends WindowParents {
             this.cannotClick();
             return GameController.nickName;
         }
+        if(this.decision.onClick(x, y)) {
+            super.playAudioKettei();
+            this.cannotClick();
+            return GameController.battle;
+        }
         return -1;
     }
 
@@ -99,6 +126,7 @@ class AikotobaWindow extends WindowParents {
         this.showFrame();
         this.showInputAikotoba(aikotoba);
         this.showUndo();
+        this.showDecisionButton();
     }
 
     /**
@@ -107,6 +135,14 @@ class AikotobaWindow extends WindowParents {
     showInputAikotoba(aikotoba) {
         this.ctx.drawImage(this.input, 140, 130);
         this.ctx.fillText(aikotoba, 330, 300);
+    }
+
+    /**
+     * 決定ボタンを表示する
+     */
+    showDecisionButton() {
+        let startH = 450;
+        this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
     }
 }
 

@@ -29,6 +29,8 @@ class GameController {
         chara.onload = () => {
             this.moveToTitlePage();
         }
+
+        this.character = undefined;
     }
 
     /**
@@ -81,16 +83,9 @@ class GameController {
      * @param {*} key
      */
     doAikotobaPage(key) {
-        if(key == "Escape") {
-            this.moveToNickNamePage();
-        }
-        else {
-            this.aikotoba = this.aikotobaPage.inputKeyDown(key);
-            if(this.aikotoba != "") {
-                this.page = GameController.battle;
-                let character = 2;
-                this.battlePage = new BattlePage(this.aikotoba, this.nickName, character);
-            }
+        this.aikotoba = this.aikotobaPage.inputKeyDown(key);
+        if(this.aikotoba != "") {
+            this.moveToBattlePage();
         }
     }
 
@@ -169,7 +164,17 @@ class GameController {
      */
     moveToAikotobaPage() {
         this.page = GameController.aikotoba;
+        this.nickName = this.nickNamePage.getNickName();
         this.aikotobaPage.showWindow();
+    }
+
+    /**
+     * バトルページに移動
+     */
+    moveToBattlePage() {
+        this.page = GameController.battle;
+        this.character = 2;
+        this.battlePage = new BattlePage(this.aikotoba, this.nickName, this.character);
     }
 
     /**
@@ -216,6 +221,8 @@ class GameController {
             case GameController.nickName:
                 this.moveToNickNamePage();
                 break;
+            case GameController.battle:
+                this.moveToBattlePage();
         }
     }
 
@@ -230,6 +237,9 @@ class GameController {
         switch(movePage) {
             case GameController.title:
                 this.moveToTitlePage();
+                break;
+            case GameController.aikotoba:
+                this.moveToAikotobaPage();
                 break;
         }
     }

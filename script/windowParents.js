@@ -36,6 +36,7 @@ class WindowParents {
         this.kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
         this.type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
         this.undo = new ButtonOnCanvas("/static/img/button/undo/undo.png");
+        this.decision = new ButtonOnCanvas("/static/img/button/decision/decision.png");
     }
 
     /**
@@ -64,6 +65,15 @@ class WindowParents {
      */
     showUndo() {
         this.undo.drawImage(20, 20);
+    }
+
+    /**
+     * 決定ボタンを表示する
+     * @param {*} startW
+     * @param {*} startH
+     */
+    showDecision(startW, startH) {
+        this.decision.drawImage(startW, startH);
     }
 }
 
@@ -152,7 +162,7 @@ class ButtonOnCanvas {
         this.eventListeners.push([
             "mousedown",
             event => {
-            if(self.isDown != self.onClick(event.x, event.y)) {
+            if(!self.isDown && this.onClick(event.x, event.y)) {
                 self.isDown = !self.isDown;
                 self.drawImage();
             }
@@ -167,9 +177,26 @@ class ButtonOnCanvas {
         let self = this;
         this.eventListeners.push([
             "mousemove",
-            function(event) {
+            event => {
                 if(self.isHover != self.onClick(event.x, event.y)) {
                     self.isHover = !self.isHover;
+                    self.drawImage();
+                }
+            }
+        ])
+        this.addEvent(this.eventListeners.slice(-1)[0]);
+    }
+
+    /**
+     * マウスが上がった時のイベントを追加する
+     */
+    addEventUp() {
+        let self = this;
+        this.eventListeners.push([
+            "mouseup",
+            event => {
+                if(self.isDown && this.onClick(event.x, event.y)) {
+                    self.isDown = !self.isDown;
                     self.drawImage();
                 }
             }
@@ -200,9 +227,15 @@ class ButtonOnCanvas {
         this.isAbleClick = true;
     }
 
+    /**
+     * ボタンが表示されたタイミングで行う操作
+     * @param {*} startW 左上のx座標
+     * @param {*} startH 左上のy座標
+     */
     doFirstDrawImage(startW, startH) {
         this.addEventHover();
         this.addEventDown();
+        this.addEventUp();
         this.startW = startW;
         this.startH = startH;
         this.endW = this.startW + this._image.width;
@@ -269,6 +302,8 @@ class ButtonOnCanvas {
             this.removeEventListener();
             this.isHover = false;
             this.isDown = false;
+        } else {
+            this.doFirstDrawImage(this.startW, this.startH);
         }
     }
 }

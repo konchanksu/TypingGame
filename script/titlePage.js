@@ -39,6 +39,9 @@ class TitleWindow extends WindowParents {
         this.imageLoad();
     }
 
+    /**
+     * ボタンを押せなくする
+     */
     cannotClick() {
         this.single.setAbleClick(false);
         this.multi.setAbleClick(false);
