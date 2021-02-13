@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Game</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <script src="/script/button.js"></script>
     <script src="/script/windowParents.js"></script>
     <script src="/script/aikotoba.js"></script>
     <script src="/script/battlePage.js"></script>
@@ -24,10 +25,11 @@
 
 <body onload="firstload();">
     <h1>Typing Game</h1>
+    <p>音楽：魔王魂</p>
+    <a href="https://maoudamashii.jokersounds.com/" title="フリー音楽素材/魔王魂" target="_blank">フリー音楽素材/魔王魂</a>
     <div id="game" style="width: 800px; height: 550px;">
         <canvas id="gameWindow" width="800" height="550" style="border:1px solid #000"></canvas>
     </div>
-    <p>音楽：魔王魂</p>
 </body>
 
 <div>

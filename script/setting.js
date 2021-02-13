@@ -118,6 +118,7 @@ class AudioSetting {
      * 今の音量
      */
     static nowSEVolume = 0.1;
+    static nowBGMvolume = 0.1;
 
     /**
      * 音量を大きくする
@@ -125,11 +126,25 @@ class AudioSetting {
     static loudSEVolume() {
         if(AudioSetting.nowSEVolume < 0.45) { AudioSetting.nowSEVolume += 0.1; }
     }
+
+    /**
+     * 音量を大きくする
+     */
+    static loudBGMVolume() {
+        if(AudioSetting.nowBGMvolume < 0.45) { AudioSetting.nowBGMvolume += 0.1; }
+    }
     　
     /**
      * 音量を小さくする
      */
     static softSEVolume() {
         if(AudioSetting.nowSEVolume > 0.05) { AudioSetting.nowSEVolume -= 0.1; }
+    }
+
+    /**
+     * 音量を小さくする
+     */
+    static softBGMVolume() {
+        if(AudioSetting.nowBGMvolume > 0.05) { AudioSetting.nowBGMvolume -= 0.1; }
     }
 }
