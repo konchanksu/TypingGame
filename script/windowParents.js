@@ -33,24 +33,8 @@ class WindowParents {
     imageLoad() {
         this.frame = new Image();
         this.frame.src = "/static/img/frame.png";
-        this.kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
-        this.type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
         this.undo = new ButtonOnCanvas("/static/img/button/undo/undo.png");
         this.decision = new ButtonOnCanvas("/static/img/button/decision/decision.png");
-    }
-
-    /**
-     * 決定の効果音を鳴らす
-     */
-    playAudioKettei() {
-        this.kettei.playAudio();
-    }
-
-    /**
-     * タイピング音を鳴らす
-     */
-    playAudioCorrectType() {
-        this.type.playAudio();
     }
 
     /**
@@ -78,44 +62,24 @@ class WindowParents {
 }
 
 /**
- * オーディオを定義するクラス
+ * よく使う音源を定義するクラス
  */
-class AudioOnWeb extends Audio {
-    static se = 0;
-    static bgm = 1;
+class AudioUsedRegularly {
+    static bgm = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.bgm);
+    static kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
+    static type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
+
     /**
-     * コンストラクタ
-     * @param src audioのソース
+     * 決定の効果音を鳴らす
      */
-    constructor(src, musicType) {
-        super();
-        super.src = src;
-        this.musicType = musicType;
-        this.isNowPlayAudio = undefined;
+    static playAudioKettei() {
+        AudioUsedRegularly.kettei.playAudio();
     }
 
     /**
-     * オーディオを実行する
+     * タイピング音を鳴らす
      */
-    playAudio() {
-        if (this.isNowPlayAudio !== undefined) {
-            this.currentTime = 0.0;
-        }
-        this.changeAudioVolume();
-        this.isNowPlayAudio = super.play();
-    }
-
-    /**
-     * 音量を変更する
-     */
-    changeAudioVolume() {
-        switch (this.musicType) {
-            case AudioOnWeb.se:
-                super.volume = AudioSetting.nowSEVolume;
-                break;
-            case AudioOnWeb.bgm:
-                super.volume = AudioSetting.nowBGMVolume;
-                break;
-        }
+    static playAudioCorrectType() {
+        AudioUsedRegularly.type.playAudio();
     }
 }

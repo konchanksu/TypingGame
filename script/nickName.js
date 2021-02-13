@@ -31,7 +31,7 @@ class NickNamePage {
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
         this.window.showWindow(this.inputKeyBoard.text);
-        this.window.playAudioCorrectType();
+        AudioUsedRegularly.playAudioCorrectType();
     }
 
     /**
@@ -92,12 +92,12 @@ class NickNameWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.title;
         }
         if(this.decision.onClick(x, y)) {
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.characterChoose;
         }

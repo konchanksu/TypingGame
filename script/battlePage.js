@@ -172,7 +172,7 @@ class FinishWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.aikotoba;
         }

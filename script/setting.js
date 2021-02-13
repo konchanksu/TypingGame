@@ -21,13 +21,13 @@ class SettingPage {
 
     inputKeyDown(key) {
         if(key == "ArrowLeft") {
-            AudioSetting.softSEVolume();
+            AudioOnWeb.softSEVolume();
             this.showWindow();
-            this.window.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
         } else if(key == "ArrowRight") {
-            AudioSetting.loudSEVolume();
+            AudioOnWeb.loudSEVolume();
             this.showWindow();
-            this.window.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
         }
     }
 
@@ -74,7 +74,7 @@ class SettingWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.title;
         }
@@ -85,7 +85,7 @@ class SettingWindow extends WindowParents {
      * SE音量ボリュームを表示する
      */
     showSEVolume() {
-        let boxQuantity = parseInt(AudioSetting.nowSEVolume * 10 + 0.1);
+        let boxQuantity = parseInt(AudioOnWeb.nowSEVolume * 10 + 0.1);
         let maxQuantity = 5;
         let startW = 300;
         let startH = 100;
@@ -107,44 +107,5 @@ class SettingWindow extends WindowParents {
             }
             startW += width + blank;
         }
-    }
-}
-
-/**
- * オーディオの設定を決めるクラス
- */
-class AudioSetting {
-    /**
-     * 今の音量
-     */
-    static nowSEVolume = 0.1;
-    static nowBGMvolume = 0.1;
-
-    /**
-     * 音量を大きくする
-     */
-    static loudSEVolume() {
-        if(AudioSetting.nowSEVolume < 0.45) { AudioSetting.nowSEVolume += 0.1; }
-    }
-
-    /**
-     * 音量を大きくする
-     */
-    static loudBGMVolume() {
-        if(AudioSetting.nowBGMvolume < 0.45) { AudioSetting.nowBGMvolume += 0.1; }
-    }
-    　
-    /**
-     * 音量を小さくする
-     */
-    static softSEVolume() {
-        if(AudioSetting.nowSEVolume > 0.05) { AudioSetting.nowSEVolume -= 0.1; }
-    }
-
-    /**
-     * 音量を小さくする
-     */
-    static softBGMVolume() {
-        if(AudioSetting.nowBGMvolume > 0.05) { AudioSetting.nowBGMvolume -= 0.1; }
     }
 }

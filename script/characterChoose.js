@@ -67,12 +67,12 @@ class CharacterChooseWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.nickName;
         } 
         if(this.decision.onClick(x, y)){
-            super.playAudioKettei();
+            AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.aikotoba;
         }
