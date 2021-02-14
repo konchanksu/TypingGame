@@ -20,10 +20,6 @@ class SettingPage {
         this.window.showSlideBarBGM();
     }
 
-    inputKeyDown(key) {
-
-    }
-
     /**
      * @param x
      * @param y
@@ -101,7 +97,7 @@ class SettingWindow extends WindowParents {
      * スライドバーを表示
      */
     showSlideBarSE() {
-        this.showText(370, "SE 音量");
+        this.showText(this.slideBarSE.getStartH(), "SE 音量");
         this.slideBarSE.showSlideButton();
     }
 
@@ -109,7 +105,7 @@ class SettingWindow extends WindowParents {
      * BGMをいじるスライドバーを表示
      */
     showSlideBarBGM() {
-        this.showText(200, "BGM 音量");
+        this.showText(this.slideBarBGM.getStartH(), "BGM 音量");
         this.slideBarBGM.showSlideButton();
     }
 }

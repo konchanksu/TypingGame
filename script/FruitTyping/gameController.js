@@ -43,9 +43,6 @@ class GameController {
             case GameController.single:
                 this.doSinglePlay(event.key);
                 break;
-            case GameController.setting:
-                this.doSettingPage(event.key);
-                break;
             case GameController.aikotoba:
                 this.doAikotobaPage(event.key);
                 break;
@@ -117,14 +114,6 @@ class GameController {
      */
     doNicknamePage(key) {
         this.nickNamePage.inputKeyDown(key);
-    }
-
-    /**
-     * 設定ページでの処理
-     * @param {*} key
-     */
-    doSettingPage(key) {
-        this.settingPage.inputKeyDown(key);
     }
 
     /**
