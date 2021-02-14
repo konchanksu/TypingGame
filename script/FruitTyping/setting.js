@@ -60,10 +60,10 @@ class SettingWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.slideBarSE = new SlideButtonOnCanvas(300, 600, 400, AudioOnWeb.nowSEVolume, "se", (event) => {
+        this.slideBarSE = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 370, AudioOnWeb.nowSEVolume, "se", (event) => {
             AudioOnWeb.setSEVolume(event.detail);
         });
-        this.slideBarBGM = new SlideButtonOnCanvas(300, 600, 300, AudioOnWeb.nowBGMVolume, "bgm", (event) => {
+        this.slideBarBGM = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 200, AudioOnWeb.nowBGMVolume, "bgm", (event) => {
             AudioOnWeb.setBGMVolume(event.detail);
         });
     }
@@ -83,9 +83,25 @@ class SettingWindow extends WindowParents {
     }
 
     /**
+     * バーと文字の設定
+     */
+    showText(height, text) {
+        let fontSize = 28;
+        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        let end = this.canvas.width/2 - 150;
+        this.ctx.fillStyle = "#ff9933";
+        height += fontSize/2;
+        let textWidth = this.ctx.measureText( text ).width;
+
+        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillText(text, (end - textWidth), height);
+    }
+
+    /**
      * スライドバーを表示
      */
     showSlideBarSE() {
+        this.showText(370, "SE 音量");
         this.slideBarSE.showSlideButton();
     }
 
@@ -93,6 +109,7 @@ class SettingWindow extends WindowParents {
      * BGMをいじるスライドバーを表示
      */
     showSlideBarBGM() {
+        this.showText(200, "BGM 音量");
         this.slideBarBGM.showSlideButton();
     }
 }

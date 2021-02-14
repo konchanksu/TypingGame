@@ -214,7 +214,7 @@ class SlideButtonOnCanvas {
         this.startH = startH;
 
         this.height = 10;
-        this.rect = 10;
+        this.rect = 20;
 
         this.isAbleClick = false;
         this.isDown = false;
@@ -242,7 +242,7 @@ class SlideButtonOnCanvas {
      * ボタンを消去する
      */
     buttonClear() {
-        this.ctx.clearRect(this.minWidth-this.rect-1, this.startH-5-1, this.maxWidth-this.minWidth+this.rect*2+2, this.rect*2+2);
+        this.ctx.clearRect(this.minWidth-this.rect-1, this.startH+5-this.rect-1, this.maxWidth-this.minWidth+this.rect*2+2, this.rect*2+2);
     }
 
     /**
