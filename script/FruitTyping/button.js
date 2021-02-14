@@ -347,6 +347,14 @@ class SlideButtonOnCanvas {
     }
 
     /**
+     * 高さ
+     * @return 返却する
+     */
+    getStartH() {
+        return this.startH;
+    }
+
+    /**
      * イベントの座標をキャンバスの座標に変更
      * @param {*} x
      * @param {*} y
