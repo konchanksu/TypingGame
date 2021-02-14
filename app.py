@@ -56,8 +56,7 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @app.get("/", response_class=HTMLResponse)
 async def read_item(request: Request, db: Session = Depends(get_db)):
     items = crud.get_items(db)
-    return templates.TemplateResponse("item.html", {"request": request, "item": items})
-
+    return templates.TemplateResponse("index.html", {"request": request, "item": items})
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

@@ -1,33 +1,97 @@
 /**
- * h1を緑にする
+ * ボディ全体の設定
  */
-h1 {
-    color: green;
-    margin: 10px;
-}
-
-/**
- * 入力した文字を青色で表示
- */
-#already {
-    color: skyblue;
+body {
+    background-image: url("/static/img/icon.png");
+    margin: 0%;
+    padding: 0%;
+    overflow-y: hidden;
 }
 
 /**
  * ゲームの表示画面全体の設定
  */
 #game {
-    position: absolute;
-    top: 50%;
-    left: 50%;
     padding: 0px;
-    margin: 0px;
+    margin: auto;
+    margin-top: 150px;
     border: 0px;
-    transform: translate(-50%, -50%);
+    left: calc((100% - 800px) / 2);
+    top: 50px;
     background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1ch;
+}
+
+/**
+ * 分割画面の設定
+ */
+.split{
+    display: flex;
+    width: 100%;
+}
+
+/**
+ * 分割画面の左側の設定
+ */
+.split-left {
+    width: 280px;
+    text-align: center;
+    word-break: break-all;
+    margin: 0%;
+    left: 0%;
+    overflow-y: scroll;
+    height: 92vh;
+    background: #fff;
+}
+
+/**
+ * 分割画面の右側の設定
+ */
+.split-right {
+    position: relative;
+    width: calc(100% - 280px);
+    right: 0px;
+    overflow-y: scroll;
+    height: 92vh;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.split-right h1 {
+    text-align: center;
+}
+
+.split-right p {
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.split-right img {
+    display: block;
+    margin: auto;
+}
+
+/**
+ * タイトルロゴの設定
+ */
+#title:hover {
+    opacity: .8;
+}
+
+/**
+ * フッターの処理
+ */
+footer {
+    background-color: #fff;
+    bottom: 0%;
+    position: absolute;
+    z-index: 1;
+    height: 8vh;
+    width: 100vw;
+}
+
+footer h3 {
+    text-align: center;
 }
