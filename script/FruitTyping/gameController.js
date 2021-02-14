@@ -31,6 +31,7 @@ class GameController {
         }
 
         this.character = undefined;
+        AudioUsedRegularly.playAudioBGM();
     }
 
     /**

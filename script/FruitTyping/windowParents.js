@@ -48,7 +48,7 @@ class WindowParents {
      * アンドゥ機能を表示する
      */
     showUndo() {
-        this.undo.drawImage(20, 20);
+        this.undo.drawImage(30, 25);
     }
 
     /**
@@ -81,5 +81,12 @@ class AudioUsedRegularly {
      */
     static playAudioCorrectType() {
         AudioUsedRegularly.type.playAudio();
+    }
+
+    /**
+     * bgmを鳴らす
+     */
+    static playAudioBGM() {
+        AudioUsedRegularly.bgm.playAudioLoop();
     }
 }

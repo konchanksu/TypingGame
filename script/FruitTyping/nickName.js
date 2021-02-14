@@ -117,7 +117,7 @@ class NickNameWindow extends WindowParents {
         this.ctx.drawImage(this.description, 200, 0);
         this.showFrame();
         this.showInputNickName(nickname);
-        super.showUndo();
+        this.showUndo();
         this.showDecisionButton();
     }
 

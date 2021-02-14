@@ -15,20 +15,13 @@ class SettingPage {
     showWindow() {
         this.window.canvasClear();
         this.window.showFrame();
-        this.window.showSEVolume();
         this.window.showUndo();
+        this.window.showSlideBarSE();
+        this.window.showSlideBarBGM();
     }
 
     inputKeyDown(key) {
-        if(key == "ArrowLeft") {
-            AudioOnWeb.softSEVolume();
-            this.showWindow();
-            AudioUsedRegularly.playAudioKettei();
-        } else if(key == "ArrowRight") {
-            AudioOnWeb.loudSEVolume();
-            this.showWindow();
-            AudioUsedRegularly.playAudioKettei();
-        }
+
     }
 
     /**
@@ -58,6 +51,8 @@ class SettingWindow extends WindowParents {
      */
     cannotClick() {
         this.undo.setAbleClick(false);
+        this.slideBarSE.setAbleClick(false);
+        this.slideBarBGM.setAbleClick(false);
     }
 
     /**
@@ -65,6 +60,12 @@ class SettingWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
+        this.slideBarSE = new SlideButtonOnCanvas(300, 600, 400, AudioOnWeb.nowSEVolume, "se", (event) => {
+            AudioOnWeb.setSEVolume(event.detail);
+        });
+        this.slideBarBGM = new SlideButtonOnCanvas(300, 600, 300, AudioOnWeb.nowBGMVolume, "bgm", (event) => {
+            AudioOnWeb.setBGMVolume(event.detail);
+        });
     }
 
     /**
@@ -82,30 +83,16 @@ class SettingWindow extends WindowParents {
     }
 
     /**
-     * SE音量ボリュームを表示する
+     * スライドバーを表示
      */
-    showSEVolume() {
-        let boxQuantity = parseInt(AudioOnWeb.nowSEVolume * 10 + 0.1);
-        let maxQuantity = 5;
-        let startW = 300;
-        let startH = 100;
-        let width = 30;
-        let height = 60;
-        let blank = 20;
+    showSlideBarSE() {
+        this.slideBarSE.showSlideButton();
+    }
 
-        this.ctx.fillStyle = "#ff9933";
-        this.ctx.strokeStyle = "#ff9933";
-        this.ctx.font = "32px Osaka";
-
-        this.ctx.fillText("効果音: ", 140, startH + height*2 / 3);
-
-        for(let i = 0; i < maxQuantity; i++) {
-            if(i < boxQuantity) {
-                this.ctx.fillRect(startW, startH, width, height);
-            } else {
-                this.ctx.strokeRect(startW, startH, width, height);
-            }
-            startW += width + blank;
-        }
+    /**
+     * BGMをいじるスライドバーを表示
+     */
+    showSlideBarBGM() {
+        this.slideBarBGM.showSlideButton();
     }
 }
