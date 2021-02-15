@@ -183,11 +183,8 @@ class FinishWindow extends WindowParents {
      */
     showWin() {
         this.canvasClear();
-        const chara = new Image();
-        chara.src = "/static/img/win.png";
-        chara.onload = () => {
-            this.ctx.drawImage(chara, 0, 0);
-        };
+        const chara = Images.getImage("win");
+        this.ctx.drawImage(chara, 0, 0);
     }
 
     /**
@@ -195,11 +192,8 @@ class FinishWindow extends WindowParents {
      */
     showLose() {
         this.canvasClear();
-        const chara = new Image();
-        chara.src = "/static/img/lose.png";
-        chara.onload = () => {
-            this.ctx.drawImage(chara, 0, 0);
-        };
+        const chara = Images.getImage("lose");
+        this.ctx.drawImage(chara, 0, 0);
     }
 
     /**
@@ -207,11 +201,8 @@ class FinishWindow extends WindowParents {
      */
     showWait() {
         this.canvasClear();
-        const chara = new Image();
-        chara.src = "/static/img/wait.png";
-        chara.onload = () => {
-            this.ctx.drawImage(chara, 0, 0);
-        };
+        const chara = Images.getImage("wait")
+        this.ctx.drawImage(chara, 0, 0);
 
         this.showFrame();
         this.showUndo();

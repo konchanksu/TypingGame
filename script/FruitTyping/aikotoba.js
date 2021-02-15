@@ -83,10 +83,8 @@ class AikotobaWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.aikotoba = new Image();
-        this.aikotoba.src = "/static/img/aikotoba.png";
-        this.input = new Image();
-        this.input.src = "/static/img/aikotoba_input.png";
+        this.aikotoba = Images.getImage("aikotoba");
+        this.input = Images.getImage("aikotoba_input");
     }
 
     /**

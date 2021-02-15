@@ -178,8 +178,7 @@ class BattleWindow extends WindowParents{
      */
     imageLoad() {
         super.imageLoad();
-        this.attack = new Image();
-        this.attack.src = "/static/img/attack.png";
+        this.attack = Images.getImage("attack");
     }
 
     /**

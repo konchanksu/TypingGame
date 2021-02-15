@@ -12,7 +12,7 @@ class Character1 extends CharacterStatus {
         const attackUpWidth = 10;
         const damageWaitMax = 200;
         const hp = 500;
-        const image = "/static/img/character/character1/pekora.png";
+        const image = Images.getImage("pekora");
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
         this.id = 1;
@@ -33,7 +33,7 @@ class Character2 extends CharacterStatus {
         const attackUpWidth = 10;
         const damageWaitMax = 150;
         const hp = 300;
-        const image = "/static/img/character/character2/mio.png";
+        const image = Images.getImage("mio");
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
         this.id = 2;
@@ -51,10 +51,5 @@ class Characters {
             case 2:
                 return new Character2();
         }
-    }
-
-    static imageload() {
-        const image1 = new Image();
-        image1.src = "/static/img/pekora.png";
     }
 }

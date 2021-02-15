@@ -18,20 +18,16 @@ class GameController {
      */
     constructor() {
         // ここに画面をすべて始めに読み込んでおくように変更する
+        AudioUsedRegularly.playAudioBGM();
+    }
+
+    makeEachWindow() {
+        this.titlePage = new TitlePage();
+        this.settingPage = new SettingPage();
         this.aikotobaPage = new AikotobaPage();
         this.characterChoosePage = new CharacterChoosePage();
         this.nickNamePage = new NickNamePage();
-        this.settingPage = new SettingPage();
-        this.titlePage = new TitlePage();
-
-        const chara = new Image();
-        chara.src = "/static/img/character/character1/pekora.png";
-        chara.onload = () => {
-            this.moveToTitlePage();
-        }
-
         this.character = undefined;
-        AudioUsedRegularly.playAudioBGM();
     }
 
     /**
@@ -305,8 +301,6 @@ class GameController {
 }
 
 function firstload() {
-    gameController = new GameController();
-    canvas = document.getElementById("gameWindow");
-    window.addEventListener("keydown", event => { gameController.keyDown(event) });
-    window.addEventListener("click", event => {gameController.onClick(event) });
+    let gameController = new GameController();
+    loadAllImages(gameController);
 }

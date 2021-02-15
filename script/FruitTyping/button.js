@@ -4,20 +4,15 @@
 class ButtonOnCanvas {
     /**
      * コンストラクタ
-     * @param {*} src 座標
+     * @param {*} name
      */
-    constructor(src) {
+    constructor(name) {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
 
-        this._image = new Image();
-        this._image.src = src;
-
-        this._imageHover = new Image();
-        this._imageHover.src = src.slice(0, -4) + "_hover" + src.slice(-4);
-
-        this._imageDown = new Image();
-        this._imageDown.src = src.slice(0, -4) + "_down" + src.slice(-4);
+        this._image = Images.getImage(name);
+        this._imageHover = Images.getImage(name+"_hover");
+        this._imageDown = Images.getImage(name+"_down");
 
         this.isAbleClick = false;
         this.isHover = false;

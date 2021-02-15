@@ -53,11 +53,10 @@ class TitleWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.chara = new Image();
-        this.chara.src = "/static/img/title.png";
-        this.single = new ButtonOnCanvas("/static/img/button/single_play/single_play.png");
-        this.multi = new ButtonOnCanvas("/static/img/button/multi_play/multi_play.png");
-        this.setting = new ButtonOnCanvas("/static/img/button/setting/setting.png");
+        this.chara = Images.getImage("title");
+        this.single = new ButtonOnCanvas("single_play");
+        this.multi = new ButtonOnCanvas("multi_play");
+        this.setting = new ButtonOnCanvas("setting");
     }
 
     onClick(x, y) {
@@ -85,7 +84,7 @@ class TitleWindow extends WindowParents {
      */
     showWindow() {
         this.canvasClear();
-        super.showFrame();
+        this.showFrame();
         this.showTitle();
         this.showButton();
     }

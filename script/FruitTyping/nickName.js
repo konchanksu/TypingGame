@@ -79,10 +79,8 @@ class NickNameWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.description = new Image();
-        this.description.src = "/static/img/nickname.png";
-        this.input = new Image();
-        this.input.src = "/static/img/nickname_input.png";
+        this.description = Images.getImage("nickname");
+        this.input = Images.getImage("nickname_input");
     }
 
     /**

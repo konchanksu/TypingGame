@@ -70,7 +70,7 @@ class CharacterChooseWindow extends WindowParents {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
             return GameController.nickName;
-        } 
+        }
         if(this.decision.onClick(x, y)){
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();

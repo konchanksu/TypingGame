@@ -31,10 +31,9 @@ class WindowParents {
      * 画像の読み込みを行う
      */
     imageLoad() {
-        this.frame = new Image();
-        this.frame.src = "/static/img/frame.png";
-        this.undo = new ButtonOnCanvas("/static/img/button/undo/undo.png");
-        this.decision = new ButtonOnCanvas("/static/img/button/decision/decision.png");
+        this.frame = Images.getImage("frame");
+        this.undo = new ButtonOnCanvas("undo");
+        this.decision = new ButtonOnCanvas("decision");
     }
 
     /**

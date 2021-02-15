@@ -25,8 +25,7 @@ class CharacterStatus {
         this._hp = hp;
         this._hpMax = hp;
 
-        this._image = new Image();
-        this._image.src = image;
+        this._image = image;
     }
 
     /**
