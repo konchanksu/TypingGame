@@ -29,7 +29,7 @@ battle = {}
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/script", StaticFiles(directory="script"), name="script")
-
+app.mount("/templates", StaticFiles(directory="templates"), name="tem")
 
 templates = Jinja2Templates(directory="templates")
 
@@ -57,6 +57,10 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 async def read_item(request: Request, db: Session = Depends(get_db)):
     items = crud.get_items(db)
     return templates.TemplateResponse("index.html", {"request": request, "item": items})
+
+@app.get("/chara/", response_class=HTMLResponse)
+async def read_item(request: Request):
+    return templates.TemplateResponse("character.html", {"request": request})
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

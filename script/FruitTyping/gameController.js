@@ -18,7 +18,7 @@ class GameController {
      */
     constructor() {
         // ここに画面をすべて始めに読み込んでおくように変更する
-        AudioUsedRegularly.playAudioBGM();
+        // AudioUsedRegularly.playAudioBGM();
     }
 
     makeEachWindow() {

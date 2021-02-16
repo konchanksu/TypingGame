@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Game</title>
+    <title>フルーツ×たいぴんぐっ！</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
     <script src="/script/FruitTyping/LoadImages.js"></script>
     <script src="/script/FruitTyping/audioSetting.js"></script>
@@ -26,23 +26,24 @@
 </head>
 
 <body onload="firstload();">
-    <div class=split>
+    <div class="split">
         <a id="title" href="/" style="position: absolute; margin: 20px; z-index: 1;">
             <img src="/static/img/mini_title.png" alt="フルーツタイピングっ！">
         </a>
         <section class="split-left split-item">
             <br>
-            <h3 style="margin-top: 150px;">作者のTwitter</h3>
-            <h3>今回使用させていただいた素材</h3>
+            <a class="button" href="/" style="margin-top: 150px;">ほーむ</a><br>
+            <a class="button" href="/chara/">きゃらくたー</a>
+            <h3>作者のTwitter</h3>
+            <h3>使用させていただいた素材</h3>
             <p>音楽：魔王魂</p>
             <a href="https://maoudamashii.jokersounds.com/" title="フリー音楽素材/魔王魂" target="_blank">フリー音楽素材/魔王魂</a>
         </section>
-
         <section class="split-right split-item">
             <div id="game" style="width: 800px; height: 550px;">
                 <canvas id="gameWindow" width="800" height="550"></canvas>
             </div>
-            <h1 style="margin-top: 60px;">遊び方</h1>
+            <h1 style="margin-top: 70px;">遊び方</h1>
             <img src="/static/img/title_description.png" alt="タイトルの説明" width="400px" height="275px" style="margin-bottom: 30px;">
         </section>
         <footer>
