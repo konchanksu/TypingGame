@@ -25,7 +25,10 @@ class CharacterChoosePage {
      * @return 遷移先のページ
      */
     onClick(x, y) {
-        return this.window.onClick(x, y);
+        let page, character;
+        [page, character] = this.window.onClick(x, y);
+        this.character = character;
+        return page;
     }
 
     /**
@@ -43,6 +46,11 @@ class CharacterChooseWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.characters = [];
+        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
+        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
+        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
+        this.characters.push([new ButtonForCharacters("character2_box"), this.characters.length+1]);
     }
 
     /**
@@ -50,7 +58,7 @@ class CharacterChooseWindow extends WindowParents {
      */
     cannotClick() {
         this.undo.setAbleClick(false);
-        this.decision.setAbleClick(false);
+        this.characters.forEach(character => character[0].setAbleClick(false));
     }
 
     /**
@@ -69,14 +77,15 @@ class CharacterChooseWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.nickName;
+            return [GameController.nickName, -1];
         }
-        if(this.decision.onClick(x, y)){
+        let filterList = this.characters.filter((character) => character[0].onClick(x, y));
+        if(filterList.length != 0) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.aikotoba;
+            return [GameController.aikotoba, 1];
         }
-        return -1;
+        return [-1, -1];
     }
 
     /**
@@ -86,14 +95,26 @@ class CharacterChooseWindow extends WindowParents {
         this.canvasClear();
         this.showFrame();
         this.showUndo();
-        this.showDecisionButton();
+        this.showCharacters();
     }
 
     /**
-     * 決定ボタンを表示する
+     * キャラクター1ボタンを表示する
      */
-    showDecisionButton() {
-        let startH = 450;
-        this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
+    showCharacters() {
+        let startW = 500;
+        let startH = 50;
+        this.characters[0][0].drawImage(startW, startH);
+
+        startH += this.characters[0][0].height();
+        startW -= this.characters[0][0].width() / 2;
+        this.characters[1][0].drawImage(startW, startH);
+
+        startW += this.characters[1][0].width();
+        this.characters[2][0].drawImage(startW, startH);
+
+        startH += this.characters[2][0].height();
+        startW -= this.characters[2][0].width() / 2;
+        this.characters[3][0].drawImage(startW, startH);
     }
 }

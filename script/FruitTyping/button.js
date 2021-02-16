@@ -409,3 +409,57 @@ class SlideButtonOnCanvas {
         return this.nowPosition;
     }
 }
+
+class ButtonForCharacters extends ButtonOnCanvas{
+    static isCharacterDraw = [];
+
+    /**
+     * コンストラクタ
+     * @param {*} name
+     */
+    constructor(name) {
+        super(name);
+        this.onHoverImage = Images.getImage(name + "_hover_chara");
+        this.charaStartH = 100;
+        this.charaStartW = 70;
+        ButtonForCharacters.isCharacterDraw.push(this);
+    }
+
+    /**
+     * ホバー時にキャラクターが表示されるように設定する
+     */
+    addEventHover() {
+        let self = this;
+        this.eventListeners.push([
+            "mousemove",
+            event => {
+                if(!self.isHover && self.onClick(event.x, event.y)) {
+                    self.isHover = !self.isHover;
+                    self.drawImage();
+                    self.drawCharacter();
+                }
+                else if(self.isHover && !self.onClick(event.x, event.y)) {
+                    self.isHover = !self.isHover;
+                    self.drawImage();
+                    if(ButtonForCharacters.isCharacterDraw.filter(button => button.onClick(event.x, event.y)).length == 0) {
+                        self.clearCharacter();
+                    }
+                }
+            }
+        ])
+        this.addEvent(this.eventListeners.slice(-1)[0]);
+    }
+
+    clearCharacter() {
+        this.ctx.clearRect(this.charaStartW, this.charaStartH, this.onHoverImage.width, this.onHoverImage.height);
+    }
+
+    /**
+     * キャラクターの表示
+     */
+    drawCharacter() {
+        this.clearCharacter(this.charaStartW, this.charaStartH);
+        this.ctx.drawImage(this.onHoverImage, this.charaStartW, this.charaStartH);
+    }
+
+}
