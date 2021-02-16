@@ -217,7 +217,7 @@ class GameController {
 
         switch(movePage) {
             case GameController.aikotoba:
-                this.character = 1;
+                this.character = this.characterChoosePage.getCharacterId();
                 this.moveToAikotobaPage();
                 break;
             case GameController.nickName:

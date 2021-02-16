@@ -160,7 +160,7 @@ class ButtonOnCanvas {
      * イベントを削除する
      */
     removeEventListener() {
-        this.eventListeners.map(
+        this.eventListeners.forEach(
             eventListener => removeEventListener(
                 eventListener[0],
                 eventListener[1]
@@ -420,8 +420,8 @@ class ButtonForCharacters extends ButtonOnCanvas{
     constructor(name) {
         super(name);
         this.onHoverImage = Images.getImage(name + "_hover_chara");
-        this.charaStartH = 100;
-        this.charaStartW = 70;
+        this.charaStartH = 25;
+        this.charaStartW = 110;
         ButtonForCharacters.isCharacterDraw.push(this);
     }
 

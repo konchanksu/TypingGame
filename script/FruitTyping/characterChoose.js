@@ -47,10 +47,10 @@ class CharacterChooseWindow extends WindowParents {
         super();
         this.imageLoad();
         this.characters = [];
-        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
-        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
-        this.characters.push([new ButtonForCharacters("character1_box"), this.characters.length+1]);
-        this.characters.push([new ButtonForCharacters("character2_box"), this.characters.length+1]);
+        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
+        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
+        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
+        this.characters.push([new ButtonForCharacters("character2_box"), Characters.mio]);
     }
 
     /**
@@ -83,7 +83,7 @@ class CharacterChooseWindow extends WindowParents {
         if(filterList.length != 0) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return [GameController.aikotoba, 1];
+            return [GameController.aikotoba, filterList[0][1]];
         }
         return [-1, -1];
     }

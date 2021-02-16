@@ -1,7 +1,7 @@
 /**
  * キャラクター名未定、キャラ1を設定する
  */
-class Character1 extends CharacterStatus {
+class LemonChara extends CharacterStatus {
     /**
      * コンストラクタ
      */
@@ -12,10 +12,10 @@ class Character1 extends CharacterStatus {
         const attackUpWidth = 10;
         const damageWaitMax = 200;
         const hp = 500;
-        const image = Images.getImage("pekora");
+        const image = Images.getImage("lemon");
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
-        this.id = 1;
+        this.id = Characters.lemon;
     }
 }
 
@@ -36,7 +36,7 @@ class Character2 extends CharacterStatus {
         const image = Images.getImage("mio");
         super(attack, attackDownWidth, attackMax, attackUpWidth, damageWaitMax, hp, image);
 
-        this.id = 2;
+        this.id = Characters.mio;
     }
 }
 
@@ -44,11 +44,14 @@ class Character2 extends CharacterStatus {
  * キャラクターたちを管理するクラス
  */
 class Characters {
+    static lemon = 1;
+    static mio = 2;
+
     static characters(characterId) {　
         switch(characterId) {
-            case 1:
-                return new Character1();
-            case 2:
+            case Characters.lemon:
+                return new LemonChara();
+            case Characters.mio:
                 return new Character2();
         }
     }
