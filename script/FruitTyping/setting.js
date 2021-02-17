@@ -71,7 +71,7 @@ class SettingWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
+            AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
             return MovePage.BEHIND_PAGE;
         }
@@ -83,7 +83,7 @@ class SettingWindow extends WindowParents {
      */
     showText(height, text) {
         let fontSize = 28;
-        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let end = this.canvas.width/2 - 150;
         this.ctx.fillStyle = "#ff9933";
         height += fontSize/2;

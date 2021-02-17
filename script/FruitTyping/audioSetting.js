@@ -8,8 +8,8 @@ class AudioOnWeb extends Audio {
     static nowSEVolume = 0.1;
     static nowBGMVolume = 0.1;
 
-    static se = 0;
-    static bgm = 1;
+    static SE = 0;
+    static BGM = 1;
 
     static seList = [];
     static bgmList = [];
@@ -24,11 +24,11 @@ class AudioOnWeb extends Audio {
         this.musicType = musicType;
         this.isNowPlayAudio = undefined;
         switch (this.musicType) {
-            case AudioOnWeb.se:
+            case AudioOnWeb.SE:
                 AudioOnWeb.seList.push(this);
                 this.volume = AudioOnWeb.nowSEVolume;
                 break;
-            case AudioOnWeb.bgm:
+            case AudioOnWeb.BGM:
                 AudioOnWeb.bgmList.push(this);
                 this.volume = AudioOnWeb.nowBGMVolume;
                 break;

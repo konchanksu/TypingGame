@@ -73,9 +73,10 @@ class MovePage {
  * よく使う音源を定義するクラス
  */
 class AudioUsedRegularly {
-    static BGM = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.bgm);
-    static KETTEI = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
-    static TYPING = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
+    static BGM = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.BGM);
+    static KETTEI = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.SE);
+    static TYPING = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.SE);
+    static CANCEL = new AudioOnWeb("/static/audio/cancel.mp3", AudioOnWeb.SE)
 
     /**
      * 決定の効果音を鳴らす
@@ -96,5 +97,12 @@ class AudioUsedRegularly {
      */
     static playAudioBGM() {
         AudioUsedRegularly.BGM.playAudioLoop();
+    }
+
+    /**
+     * キャンセル音を鳴らす
+     */
+    static playAudioCancel() {
+        AudioUsedRegularly.CANCEL.playAudio();
     }
 }

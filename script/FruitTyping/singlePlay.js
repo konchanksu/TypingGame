@@ -221,7 +221,7 @@ class SinglePlayWindow extends WindowParents {
     showTimerCountDown(time) {
         let fontSize = 32;
         time = time.toString();
-        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( time ).width;
         let height = 45;
 
@@ -238,7 +238,7 @@ class SinglePlayWindow extends WindowParents {
         let fontSize = 32;
         let text = "正しい入力: "+ correct.toString() + "  間違えた入力: " + miss.toString();
 
-        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( text ).width;
         let height = 450;
         let start = (this.canvas.width - textWidth) / 2;
@@ -311,7 +311,7 @@ class ResultWindow extends WindowParents {
         let fontSize = 32;
         let text = "正しい入力: "+ correct.toString() + "  間違えた入力: " + miss.toString();
 
-        this.ctx.font = fontSize.toString() + "px osaka-mono";
+        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( text ).width;
         let height = 450;
         let start = (this.canvas.width - textWidth) / 2;

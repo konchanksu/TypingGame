@@ -75,7 +75,7 @@ class CharacterChooseWindow extends WindowParents {
      */
     onClick(x, y) {
         if(this.undo.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
+            AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
             return [MovePage.BEHIND_PAGE, -1];
         }
