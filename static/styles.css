@@ -2,7 +2,7 @@
  * ボディ全体の設定
  */
 body {
-    background-image: url("/static/img/icon.png");
+    background-image: url("/static/img/background_image.png");
     margin: 0%;
     padding: 0%;
     overflow-y: hidden;

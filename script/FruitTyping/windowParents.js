@@ -61,31 +61,40 @@ class WindowParents {
 }
 
 /**
+ * ページ移動の固定の変数の定義
+ */
+class MovePage {
+    static BEHIND_PAGE = -1;
+    static AHEAD_PAGE = 1;
+    static CURRENT_PAGE = 0;
+}
+
+/**
  * よく使う音源を定義するクラス
  */
 class AudioUsedRegularly {
-    static bgm = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.bgm);
-    static kettei = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
-    static type = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
+    static BGM = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.bgm);
+    static KETTEI = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.se);
+    static TYPING = new AudioOnWeb("/static/audio/type.mp3", AudioOnWeb.se);
 
     /**
      * 決定の効果音を鳴らす
      */
     static playAudioKettei() {
-        AudioUsedRegularly.kettei.playAudio();
+        AudioUsedRegularly.KETTEI.playAudio();
     }
 
     /**
      * タイピング音を鳴らす
      */
     static playAudioCorrectType() {
-        AudioUsedRegularly.type.playAudio();
+        AudioUsedRegularly.TYPING.playAudio();
     }
 
     /**
      * bgmを鳴らす
      */
     static playAudioBGM() {
-        AudioUsedRegularly.bgm.playAudioLoop();
+        AudioUsedRegularly.BGM.playAudioLoop();
     }
 }

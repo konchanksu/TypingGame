@@ -1,7 +1,7 @@
 /**
  * 合言葉を入力するページ
  */
-class AikotobaPage{
+class AikotobaPage {
     /**
      * コンストラクタ
      */
@@ -42,9 +42,9 @@ class AikotobaPage{
      */
     onClick(x, y) {
         let movePage = this.window.onClick(x, y);
-        if(movePage == GameController.battle && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax) {
+        if( movePage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax ) {
             this.window.canClick();
-            return -1;
+            return MovePage.CURRENT_PAGE;
         }
         return movePage;
     }
@@ -96,14 +96,14 @@ class AikotobaWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.characterChoose;
+            return MovePage.BEHIND_PAGE;
         }
         if(this.decision.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.battle;
+            return MovePage.AHEAD_PAGE;
         }
-        return -1;
+        return MovePage.CURRENT_PAGE;
     }
 
     /**

@@ -63,17 +63,17 @@ class TitleWindow extends WindowParents {
         if(this.single.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.single;
+            return GameController.SINGLE;
         }
         if(this.multi.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.nickName;
+            return GameController.NICKNAME;
         }
         if(this.setting.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.setting;
+            return GameController.SETTING;
         }
         return -1;
     }

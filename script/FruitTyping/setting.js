@@ -73,9 +73,9 @@ class SettingWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.title;
+            return MovePage.BEHIND_PAGE;
         }
-        return -1;
+        return MovePage.CURRENT_PAGE;
     }
 
     /**

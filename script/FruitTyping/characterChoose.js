@@ -25,10 +25,10 @@ class CharacterChoosePage {
      * @return 遷移先のページ
      */
     onClick(x, y) {
-        let page, character;
-        [page, character] = this.window.onClick(x, y);
+        let movePage, character;
+        [movePage, character] = this.window.onClick(x, y);
         this.character = character;
-        return page;
+        return movePage;
     }
 
     /**
@@ -77,15 +77,15 @@ class CharacterChooseWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return [GameController.nickName, -1];
+            return [MovePage.BEHIND_PAGE, -1];
         }
         let filterList = this.characters.filter((character) => character[0].onClick(x, y));
         if(filterList.length != 0) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return [GameController.aikotoba, filterList[0][1]];
+            return [MovePage.AHEAD_PAGE, filterList[0][1]];
         }
-        return [-1, -1];
+        return [MovePage.CURRENT_PAGE, -1];
     }
 
     /**

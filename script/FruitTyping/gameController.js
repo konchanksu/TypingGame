@@ -5,13 +5,13 @@ class GameController {
     /**
      * タイトルページの番号
      */
-    static aikotoba = 0;
-    static battle = 1;
-    static characterChoose = 2;
-    static nickName = 3;
-    static setting = 4;
-    static single = 5;
-    static title = 6;
+    static AIKOTOBA = 0;
+    static BATTLE = 1;
+    static CHARACTER_CHOOSE = 2;
+    static NICKNAME = 3;
+    static SETTING = 4;
+    static SINGLE = 5;
+    static TITLE = 6;
 
     /**
      * コンストラクタ
@@ -36,16 +36,16 @@ class GameController {
      */
     keyDown(event) {
         switch (this.page) {
-            case GameController.single:
+            case GameController.SINGLE:
                 this.doSinglePlay(event.key);
                 break;
-            case GameController.aikotoba:
+            case GameController.AIKOTOBA:
                 this.doAikotobaPage(event.key);
                 break;
-            case GameController.nickName:
+            case GameController.NICKNAME:
                 this.doNicknamePage(event.key);
                 break;
-            case GameController.battle:
+            case GameController.BATTLE:
                 this.doBattlePage(event.key);
                 break;
         }
@@ -57,22 +57,22 @@ class GameController {
      */
     onClick(event) {
         switch(this.page) {
-            case GameController.title:
+            case GameController.TITLE:
                 this.onClickTitlePage(event.x, event.y);
                 break;
-            case GameController.nickName:
+            case GameController.NICKNAME:
                 this.onClickNickNamePage(event.x, event.y);
                 break;
-            case GameController.setting:
+            case GameController.SETTING:
                 this.onClickSettingPage(event.x, event.y);
                 break;
-            case GameController.aikotoba:
+            case GameController.AIKOTOBA:
                 this.onClickAikotobaPage(event.x, event.y);
                 break;
-            case GameController.battle:
+            case GameController.BATTLE:
                 this.onClickMultiPlayPage(event.x, event.y);
                 break;
-            case GameController.characterChoose:
+            case GameController.CHARACTER_CHOOSE:
                 this.onClickCharacterChoosePage(event.x, event.y);
                 break;
         }
@@ -144,7 +144,7 @@ class GameController {
      * 合言葉画面に移動
      */
     moveToAikotobaPage() {
-        this.page = GameController.aikotoba;
+        this.page = GameController.AIKOTOBA;
         this.aikotobaPage.showWindow();
     }
 
@@ -152,7 +152,7 @@ class GameController {
      * バトルページに移動
      */
     moveToBattlePage() {
-        this.page = GameController.battle;
+        this.page = GameController.BATTLE;
         this.battlePage = new BattlePage(this.aikotoba, this.nickName, this.character);
     }
 
@@ -160,7 +160,7 @@ class GameController {
      * キャラクター選択画面に移動
      */
     moveToCharacterChoosePage() {
-        this.page = GameController.characterChoose;
+        this.page = GameController.CHARACTER_CHOOSE;
         this.characterChoosePage.showWindow();
     }
 
@@ -168,7 +168,7 @@ class GameController {
      * ニックネーム入力画面に移動
      */
     moveToNickNamePage() {
-        this.page = GameController.nickName;
+        this.page = GameController.NICKNAME;
         this.nickNamePage.showWindow();
     }
 
@@ -176,7 +176,7 @@ class GameController {
      * 設定画面に移動
      */
     moveToSettingPage() {
-        this.page = GameController.setting;
+        this.page = GameController.SETTING;
         this.settingPage.showWindow();
     }
 
@@ -184,7 +184,7 @@ class GameController {
      * タイトル画面に移動
      */
     moveToTitlePage() {
-        this.page = GameController.title;
+        this.page = GameController.TITLE;
         this.titlePage.showWindow();
     }
 
@@ -197,10 +197,10 @@ class GameController {
         let movePage = this.aikotobaPage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.characterChoose:
+            case MovePage.BEHIND_PAGE:
                 this.moveToCharacterChoosePage();
                 break;
-            case GameController.battle:
+            case MovePage.AHEAD_PAGE:
                 this.aikotoba = this.aikotobaPage.getAikotoba();
                 this.moveToBattlePage();
                 break;
@@ -216,11 +216,11 @@ class GameController {
         let movePage = this.characterChoosePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.aikotoba:
+            case MovePage.AHEAD_PAGE:
                 this.character = this.characterChoosePage.getCharacterId();
                 this.moveToAikotobaPage();
                 break;
-            case GameController.nickName:
+            case MovePage.BEHIND_PAGE:
                 this.moveToNickNamePage();
                 break;
         }
@@ -235,7 +235,7 @@ class GameController {
         let movePage = this.battlePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.aikotoba:
+            case GameController.AIKOTOBA:
                 this.battlePage.ws.close();
                 delete this.battlePage;
                 this.moveToAikotobaPage();
@@ -252,10 +252,10 @@ class GameController {
         let movePage = this.nickNamePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.title:
+            case GameController.TITLE:
                 this.moveToTitlePage();
                 break;
-            case GameController.characterChoose:
+            case GameController.CHARACTER_CHOOSE:
                 this.nickName = this.nickNamePage.getNickName();
                 this.moveToCharacterChoosePage();
                 break;
@@ -271,7 +271,7 @@ class GameController {
         let movePage = this.settingPage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.title:
+            case MovePage.BEHIND_PAGE:
                 this.moveToTitlePage();
                 break;
         }
@@ -286,14 +286,14 @@ class GameController {
         let movePage = this.titlePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.single:
-                this.page = GameController.single;
+            case GameController.SINGLE:
+                this.page = GameController.SINGLE;
                 this.typingGame = new TypingGame();
                 break;
-            case GameController.nickName:
+            case GameController.NICKNAME:
                 this.moveToNickNamePage();
                 break;
-            case GameController.setting:
+            case GameController.SETTING:
                 this.moveToSettingPage();
                 break;
         }

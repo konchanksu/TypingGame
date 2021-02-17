@@ -41,7 +41,7 @@ class NickNamePage {
      */
     onClick(x, y) {
         let moveToPage = this.window.onClick(x, y);
-        if(moveToPage == GameController.characterChoose && this.inputKeyBoard.text.length == 0) {
+        if(moveToPage == GameController.CHARACTER_CHOOSE && this.inputKeyBoard.text.length == 0) {
             this.window.canClick();
             return -1;
         }
@@ -92,12 +92,12 @@ class NickNameWindow extends WindowParents {
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.title;
+            return GameController.TITLE;
         }
         if(this.decision.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.characterChoose;
+            return GameController.CHARACTER_CHOOSE;
         }
         return -1;
     }

@@ -408,7 +408,7 @@ class BattleWindow extends WindowParents{
 
         this.romajiClear();
 
-        this.ctx.fillStyle = "gray";
+        this.ctx.fillStyle = "#ff9933";
         this.ctx.fillText(already, start, height);
 
         this.ctx.fillStyle = "black";
