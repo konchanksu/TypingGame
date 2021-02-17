@@ -5,16 +5,33 @@ class Images {
     static images = {};
     static complete = 0;
 
+    /**
+     * イメージの名前と画像を結びつける
+     * @param {*} src
+     * @param {*} name
+     * @return 画像
+     */
     static imageAppend(src, name) {
         Images.images[name] = new Image();
         Images.images[name].src = src;
         return Images.images[name];
     }
 
+    /**
+     * あだ名に対応する画像を返却する
+     * @param {*} name
+     * @return 画像
+     */
     static getImage(name) {
         return Images.images[name];
     }
 
+    /**
+     * イメージのプロミスを作成する
+     * @param {*} src
+     * @param {*} name
+     * @return 読み込み完了時に進むPromise
+     */
     static loadImage(src, name) {
         Images.imageAppend(src, name);
         return new Promise((resolve, reject) => {
@@ -54,16 +71,21 @@ const loadAllImages = function(gameController) {
                          ["/static/img/character/character2/character2_box_hover.png", "character2_box_hover"],
                          ["/static/img/character/character2/character2_box_hover_chara.png", "character2_box_hover_chara"],
                          ["/static/img/character/character2/mio.png", "mio"],
+                         ["/static/img/countDown/count1.png", "count1"],
+                         ["/static/img/countDown/count2.png", "count2"],
+                         ["/static/img/countDown/count3.png", "count3"],
                          ["/static/img/frame.png", "frame"],
                          ["/static/img/lose.png", "lose"],
                          ["/static/img/nickname.png", "nickname"],
                          ["/static/img/nickname_input.png", "nickname_input"],
+                         ["/static/img/resultPage.png", "resultPage"],
                          ["/static/img/title.png", "title"],
                          ["/static/img/wait.png", "wait"],
                          ["/static/img/win.png", "win"]
     ]
 
-    const promises = srcNameList.map(([src, name]) => Images.loadImage(src, name))
+    const promises = srcNameList.map(([src, name]) => Images.loadImage(src, name));
+
     Promise.all(promises)
     .then(() => {
         gameController.makeEachWindow();

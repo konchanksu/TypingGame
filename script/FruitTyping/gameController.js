@@ -11,7 +11,8 @@ class GameController {
     static NICKNAME = 3;
     static SETTING = 4;
     static SINGLE = 5;
-    static TITLE = 6;
+    static SINGLE_WAIT = 6;
+    static TITLE = 7;
 
     /**
      * コンストラクタ
@@ -27,7 +28,7 @@ class GameController {
         this.aikotobaPage = new AikotobaPage();
         this.characterChoosePage = new CharacterChoosePage();
         this.nickNamePage = new NickNamePage();
-        this.character = undefined;
+        this.singleWaitPage = new SingleWaitPage();
     }
 
     /**
@@ -75,6 +76,12 @@ class GameController {
             case GameController.CHARACTER_CHOOSE:
                 this.onClickCharacterChoosePage(event.x, event.y);
                 break;
+            case GameController.SINGLE_WAIT:
+                this.onClickSingleWaitPage(event.x, event.y);
+                break;
+            case GameController.SINGLE:
+                this.onClickSinglePlayPage(event.x, event.y);
+                break;
         }
     }
 
@@ -117,27 +124,7 @@ class GameController {
      * @param {*} key
      */
     doSinglePlay(key) {
-        if(this.isGameStarted) {
-            if(key == "Escape") {
-                this.isGameStarted = false;
-                this.typingGame.gameReset();
-            } else {
-                this.typingGame.inputKey(key);
-                if(this.typingGame.isFinished()) {
-                    this.isGameStarted = false;
-                    this.typingGame.gameClear();
-                }
-            }
-
-        } else {
-            if(key == " ") {
-                this.isGameStarted = true;
-                this.typingGame.gameStart();
-            } else if(key == "Escape") {
-                this.typingGame.gameReset();
-                this.moveToTitlePage();
-            }
-        }
+        let movePage = this.singlePlayPage.keyDown(key);
     }
 
     /**
@@ -181,10 +168,28 @@ class GameController {
     }
 
     /**
+     * シングルプレイページに移動
+     */
+    moveToSinglePlayPage() {
+        this.page = GameController.SINGLE;
+        this.singlePlayPage = new SinglePlayPage();
+        this.singlePlayPage.showWindow();
+    }
+
+    /**
+     * シングルプレイページに移動
+     */
+    moveToSingleWaitPage() {
+        this.page = GameController.SINGLE_WAIT;
+        this.singleWaitPage.showWindow();
+    }
+
+    /**
      * タイトル画面に移動
      */
     moveToTitlePage() {
         this.page = GameController.TITLE;
+        this.character = undefined;
         this.titlePage.showWindow();
     }
 
@@ -277,6 +282,29 @@ class GameController {
         }
     }
 
+    onClickSingleWaitPage(x, y) {
+        let movePage = this.singleWaitPage.onClick(x, y);
+
+        switch(movePage) {
+            case MovePage.BEHIND_PAGE:
+                this.moveToTitlePage();
+                break;
+            case MovePage.AHEAD_PAGE:
+                this.moveToSinglePlayPage();
+                break;
+        }
+    }
+
+    onClickSinglePlayPage(x, y) {
+        let movePage = this.singlePlayPage.onClick(x, y);
+
+        switch(movePage) {
+            case MovePage.BEHIND_PAGE:
+                this.moveToTitlePage();
+                break;
+        }
+    }
+
     /**
      * タイトルページの処理
      * @param {*} x
@@ -286,9 +314,8 @@ class GameController {
         let movePage = this.titlePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.SINGLE:
-                this.page = GameController.SINGLE;
-                this.typingGame = new TypingGame();
+            case GameController.SINGLE_WAIT:
+                this.moveToSingleWaitPage();
                 break;
             case GameController.NICKNAME:
                 this.moveToNickNamePage();

@@ -59,11 +59,17 @@ class TitleWindow extends WindowParents {
         this.setting = new ButtonOnCanvas("setting");
     }
 
+    /**
+     * クリック後の遷移先のページを決定する
+     * @param {*} x
+     * @param {*} y
+     * @returns 先に進むページ
+     */
     onClick(x, y) {
         if(this.single.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.SINGLE;
+            return GameController.SINGLE_WAIT;
         }
         if(this.multi.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
