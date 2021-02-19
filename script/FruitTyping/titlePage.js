@@ -25,6 +25,24 @@ class TitlePage {
     onClick(x, y) {
         return this.window.onClick(x, y);
     }
+
+    /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y);
+    }
 }
 
 /**
@@ -53,10 +71,47 @@ class TitleWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.chara = Images.getImage("title");
+        this.logo = Images.getImage("title");
+        this.character = Images.getImage("lemon");
         this.single = new ButtonOnCanvas("single_play");
         this.multi = new ButtonOnCanvas("multi_play");
         this.setting = new ButtonOnCanvas("setting");
+    }
+
+    /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.single.mouseDown(x, y);
+        this.multi.mouseDown(x, y);
+        this.setting.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.single.mouseMove(x, y);
+        this.multi.mouseMove(x, y);
+        this.setting.mouseMove(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが上がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseUp(x, y) {
+        this.single.mouseUp(x, y);
+        this.multi.mouseUp(x, y);
+        this.setting.mouseUp(x, y);
+        this.showWindow();
     }
 
     /**
@@ -66,6 +121,7 @@ class TitleWindow extends WindowParents {
      * @returns 先に進むページ
      */
     onClick(x, y) {
+        this.mouseUp(x, y);
         if(this.single.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
@@ -81,6 +137,7 @@ class TitleWindow extends WindowParents {
             this.cannotClick();
             return GameController.SETTING;
         }
+        this.showWindow();
         return -1;
     }
 
@@ -90,8 +147,10 @@ class TitleWindow extends WindowParents {
      */
     showWindow() {
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showTitle();
+        this.showCharacter();
         this.showButton();
     }
 
@@ -99,7 +158,14 @@ class TitleWindow extends WindowParents {
      * titleの表示を行う
      */
     showTitle() {
-        this.ctx.drawImage(this.chara, 10, 40);
+        this.ctx.drawImage(this.logo, 350, 90);
+    }
+
+    /**
+     * キャラクターを表示する
+     */
+    showCharacter() {
+        this.ctx.drawImage(this.character, 60, 50);
     }
 
     /**
@@ -108,8 +174,8 @@ class TitleWindow extends WindowParents {
     showButton() {
         let startH = 310;
         let height = 70;
-        this.single.drawImage((this.windowWidth - this.single.width()) / 2, startH);
-        this.multi.drawImage((this.windowWidth - this.multi.width()) / 2, startH + height);
-        this.setting.drawImage((this.windowWidth - this.setting.width()) / 2, startH + height*2);
+        this.single.drawImage((this.windowWidth*3/4 - this.single.width()/2), startH);
+        this.multi.drawImage((this.windowWidth*3/4 - this.multi.width()/2), startH + height);
+        this.setting.drawImage((this.windowWidth*3/4 - this.setting.width()/2) , startH + height*2);
     }
 }

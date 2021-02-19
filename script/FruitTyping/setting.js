@@ -13,11 +13,7 @@ class SettingPage {
      * セッティング画面を表示する
      */
     showWindow() {
-        this.window.canvasClear();
-        this.window.showFrame();
-        this.window.showUndo();
-        this.window.showSlideBarSE();
-        this.window.showSlideBarBGM();
+        this.window.showWindow();
     }
 
     /**
@@ -27,6 +23,24 @@ class SettingPage {
      */
     onClick(x, y) {
         return this.window.onClick(x, y);
+    }
+
+    /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y);
     }
 }
 
@@ -65,16 +79,38 @@ class SettingWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        super.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        super.mouseMove(x, y);
+        this.showWindow();
+    }
+
+    /**
      * @param x
      * @param y
      * @return 移動先のサイト
      */
     onClick(x, y) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
             return MovePage.BEHIND_PAGE;
         }
+        this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
 
@@ -107,5 +143,13 @@ class SettingWindow extends WindowParents {
     showSlideBarBGM() {
         this.showText(this.slideBarBGM.getStartH(), "BGM 音量");
         this.slideBarBGM.showSlideButton();
+    }
+
+    showWindow() {
+        this.canvasClear();
+        this.showFrame();
+        this.showUndo();
+        this.showSlideBarSE();
+        this.showSlideBarBGM();
     }
 }

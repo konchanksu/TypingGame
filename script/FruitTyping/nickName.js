@@ -35,15 +35,33 @@ class NickNamePage {
     }
 
     /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y, this.inputKeyBoard.text);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y, this.inputKeyBoard.text);
+    }
+
+    /**
      * @param x
      * @param y
      * @return 移動先のサイト
      */
     onClick(x, y) {
-        let moveToPage = this.window.onClick(x, y);
-        if(moveToPage == GameController.CHARACTER_CHOOSE && this.inputKeyBoard.text.length == 0) {
+        let moveToPage = this.window.onClick(x, y, this.inputKeyBoard.text);
+        if(moveToPage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length == 0) {
             this.window.canClick();
-            return -1;
+            return MovePage.CURRENT_PAGE;
         }
         return moveToPage;
     }
@@ -84,22 +102,44 @@ class NickNameWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y, text) {
+        super.mouseDown(x, y);
+        this.showWindow(text);
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y, text) {
+        super.mouseMove(x, y);
+        this.showWindow(text);
+    }
+
+    /**
      * @param x
      * @param y
      * @return 移動先のサイト
      */
-    onClick(x, y) {
+    onClick(x, y, text) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
-            return GameController.TITLE;
+            return MovePage.BEHIND_PAGE;
         }
         if(this.decision.onClick(x, y)) {
             AudioUsedRegularly.playAudioKettei();
             this.cannotClick();
-            return GameController.CHARACTER_CHOOSE;
+            return MovePage.AHEAD_PAGE;
         }
-        return -1;
+        this.showWindow(text);
+        return MovePage.CURRENT_PAGE;
     }
 
     /**
@@ -108,6 +148,7 @@ class NickNameWindow extends WindowParents {
      */
     showWindow(nickname) {
         this.canvasClear();
+        this.showBackGround();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "#ff9933";

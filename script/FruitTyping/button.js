@@ -17,74 +17,6 @@ class ButtonOnCanvas {
         this.isAbleClick = false;
         this.isHover = false;
         this.isDown = false;
-        this.eventListeners = [];
-    }
-
-    /**
-     * 直前にリストに追加したイベントを登録する
-     */
-    addEvent(eventListener) {
-        addEventListener(
-            eventListener[0],
-            eventListener[1]
-        );
-    }
-
-    /**
-     * マウスダウンイベントを追加する
-     */
-    addEventDown() {
-        let self = this;
-        this.eventListeners.push([
-            "mousedown",
-            event => {
-            if(!self.isDown && this.onClick(event.x, event.y)) {
-                self.isDown = !self.isDown;
-                self.drawImage();
-            }
-        }])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    /**
-     * ホバーイベントを追加する
-     */
-    addEventHover() {
-        let self = this;
-        this.eventListeners.push([
-            "mousemove",
-            event => {
-                if(self.isHover != self.onClick(event.x, event.y)) {
-                    self.isHover = !self.isHover;
-                    self.drawImage();
-                }
-            }
-        ])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    /**
-     * マウスが上がった時のイベントを追加する
-     */
-    addEventUp() {
-        let self = this;
-        this.eventListeners.push([
-            "mouseup",
-            event => {
-                if(self.isDown) {
-                    self.isDown = !self.isDown;
-                    self.drawImage();
-                }
-            }
-        ])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    /**
-     * ボタンを消去する
-     */
-    buttonClear() {
-        this.ctx.clearRect(this.startW, this.startH, this._image.width, this._image.height);
     }
 
     /**
@@ -95,12 +27,33 @@ class ButtonOnCanvas {
     drawImage(startW, startH) {
         if(!this.isAbleClick) { this.doFirstDrawImage(startW, startH); }
 
-        this.buttonClear();
         if(!this.isHover && !this.isDown) { this.ctx.drawImage(this._image, this.startW, this.startH); }
         else if(this.isDown) { this.ctx.drawImage(this._imageDown, this.startW, this.startH); }
         else { this.ctx.drawImage(this._imageHover, this.startW, this.startH); }
+    }
 
-        this.isAbleClick = true;
+    /**
+     * マウスの押下を受け取った時の変数設定
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        if(this.onClick(x, y)) { this.isDown = true; }
+        else { this.isDown = false; }
+    }
+
+    /**
+     * マウスの動作を受け取った時の変数設定
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        if(this.onClick(x, y)) { this.isHover = true; }
+        else { this.isHover = false; }
+    }
+
+    mouseUp(x, y) {
+        this.isDown = false;
     }
 
     /**
@@ -109,13 +62,11 @@ class ButtonOnCanvas {
      * @param {*} startH 左上のy座標
      */
     doFirstDrawImage(startW, startH) {
-        this.addEventHover();
-        this.addEventDown();
-        this.addEventUp();
         this.startW = startW;
         this.startH = startH;
         this.endW = this.startW + this._image.width;
         this.endH = this.startH + this._image.height;
+        this.isAbleClick = true;
     }
 
     /**
@@ -157,29 +108,14 @@ class ButtonOnCanvas {
     }
 
     /**
-     * イベントを削除する
-     */
-    removeEventListener() {
-        this.eventListeners.forEach(
-            eventListener => removeEventListener(
-                eventListener[0],
-                eventListener[1]
-            )
-        );
-    }
-
-    /**
      * booleanに設定する
      * @param {*} bool
      */
     setAbleClick(bool) {
         this.isAbleClick = bool;
         if(!this.isAbleClick) {
-            this.removeEventListener();
-            this.isHover = false;
             this.isDown = false;
-        } else {
-            this.doFirstDrawImage(this.startW, this.startH);
+            this.isHover = false;
         }
     }
 }
@@ -194,6 +130,8 @@ class SlideButtonOnCanvas {
      * @param {*} maxWidth
      * @param {*} startH
      * @param {*} nowStatus 割合での現在ステータス
+     * @param {*} eventName
+     * @param {*} eventF
      */
     constructor(minWidth, maxWidth, startH, nowStatus, eventName, eventF) {
         this.canvas = document.getElementById("gameWindow");
@@ -209,7 +147,7 @@ class SlideButtonOnCanvas {
         this.startH = startH;
 
         this.height = 10;
-        this.rect = 20;
+        this.rect = 15;
 
         this.isAbleClick = false;
         this.isDown = false;
@@ -222,10 +160,10 @@ class SlideButtonOnCanvas {
             let x;
             let y;
             [x, y] = self.position(event.x, event.y);
-            if(self.minWidth > x) x = self.minWidth;
-            if(self.maxWidth < x) x = self.maxWidth;
+            if(self.minWidth + self.rect > x) x = self.minWidth + self.rect;
+            if(self.maxWidth - self.rect < x) x = self.maxWidth - self.rect;
             self.nowPosition = x;
-            self.nowStatus = (self.nowPosition - self.minWidth) / (self.maxWidth - self.minWidth);
+            self.nowStatus = (self.nowPosition - self.minWidth - self.rect) / (self.maxWidth - self.minWidth + self.rect);
             self.showSlideButton();
             dispatchEvent(new CustomEvent(self.eventName, {detail: self.nowStatus}));
         }];
@@ -408,58 +346,4 @@ class SlideButtonOnCanvas {
     getNowPosition() {
         return this.nowPosition;
     }
-}
-
-class ButtonForCharacters extends ButtonOnCanvas{
-    static isCharacterDraw = [];
-
-    /**
-     * コンストラクタ
-     * @param {*} name
-     */
-    constructor(name) {
-        super(name);
-        this.onHoverImage = Images.getImage(name + "_hover_chara");
-        this.charaStartH = 25;
-        this.charaStartW = 110;
-        ButtonForCharacters.isCharacterDraw.push(this);
-    }
-
-    /**
-     * ホバー時にキャラクターが表示されるように設定する
-     */
-    addEventHover() {
-        let self = this;
-        this.eventListeners.push([
-            "mousemove",
-            event => {
-                if(!self.isHover && self.onClick(event.x, event.y)) {
-                    self.isHover = !self.isHover;
-                    self.drawImage();
-                    self.drawCharacter();
-                }
-                else if(self.isHover && !self.onClick(event.x, event.y)) {
-                    self.isHover = !self.isHover;
-                    self.drawImage();
-                    if(ButtonForCharacters.isCharacterDraw.filter(button => button.onClick(event.x, event.y)).length == 0) {
-                        self.clearCharacter();
-                    }
-                }
-            }
-        ])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    clearCharacter() {
-        this.ctx.clearRect(this.charaStartW, this.charaStartH, this.onHoverImage.width, this.onHoverImage.height);
-    }
-
-    /**
-     * キャラクターの表示
-     */
-    drawCharacter() {
-        this.clearCharacter(this.charaStartW, this.charaStartH);
-        this.ctx.drawImage(this.onHoverImage, this.charaStartW, this.charaStartH);
-    }
-
 }

@@ -19,6 +19,24 @@ class CharacterChoosePage {
     }
 
     /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y);
+    }
+
+    /**
      * クリックがあった時の処理
      * @param {*} x
      * @param {*} y
@@ -46,11 +64,14 @@ class CharacterChooseWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.charaStartH = 50;
+        this.charaStartW = 125;
         this.characters = [];
-        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
-        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
-        this.characters.push([new ButtonForCharacters("lemon_box"), Characters.lemon]);
-        this.characters.push([new ButtonForCharacters("character2_box"), Characters.mio]);
+        this.onHoverImage = undefined;
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
+        this.characters.push([new ButtonOnCanvas("character2_box"), Characters.mio, Images.getImage("mio")]);
     }
 
     /**
@@ -69,11 +90,38 @@ class CharacterChooseWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        super.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        super.mouseMove(x, y);
+        this.showWindow();
+        let self = this;
+        this.characters.forEach((character) => {
+            if(character[0].onClick(x, y)) {
+                self.showACharacter(character[2]);
+            }
+        })
+    }
+
+    /**
      * クリックがあった時の処理
      * @param {*} x
      * @param {*} y
      */
     onClick(x, y) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
@@ -85,6 +133,7 @@ class CharacterChooseWindow extends WindowParents {
             this.cannotClick();
             return [MovePage.AHEAD_PAGE, filterList[0][1]];
         }
+        this.showWindow();
         return [MovePage.CURRENT_PAGE, -1];
     }
 
@@ -93,9 +142,15 @@ class CharacterChooseWindow extends WindowParents {
      */
     showWindow() {
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showUndo();
         this.showCharacters();
+    }
+
+    showACharacter(image) {
+        this.ctx.drawImage(image, this.charaStartW, this.charaStartH);
+        this.onHoverImage = image;
     }
 
     /**
@@ -104,17 +159,18 @@ class CharacterChooseWindow extends WindowParents {
     showCharacters() {
         let startW = 500;
         let startH = 50;
+        let blank = 1;
         this.characters[0][0].drawImage(startW, startH);
 
-        startH += this.characters[0][0].height();
-        startW -= this.characters[0][0].width() / 2;
+        startH += this.characters[0][0].height() + blank;
+        startW -= this.characters[0][0].width() / 2 + blank;
         this.characters[1][0].drawImage(startW, startH);
 
-        startW += this.characters[1][0].width();
+        startW += this.characters[1][0].width() + blank;
         this.characters[2][0].drawImage(startW, startH);
 
-        startH += this.characters[2][0].height();
-        startW -= this.characters[2][0].width() / 2;
+        startH += this.characters[2][0].height() + blank;
+        startW -= this.characters[2][0].width() / 2 - blank;
         this.characters[3][0].drawImage(startW, startH);
     }
 }

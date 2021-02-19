@@ -48,7 +48,7 @@ class BattlePage {
         this.ws.finish = false;
         this.ws.win = false;
         this.ws.window = new FinishWindow();
-        if(this.ws.first) this.ws.window.showWait();
+        if(this.ws.first) { this.ws.window.showWindow(); }
 
         /**
          * 勝利したときの処理
@@ -127,10 +127,25 @@ class BattlePage {
      * @param {*} y
      */
     onClick(x, y) {
-        if(this.ws.first) {
-            return this.ws.window.onClick(x, y);
-        }
-        return -1;
+        if(this.ws.first) { return this.ws.window.onClick(x, y); }
+    }
+
+    /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        if(this.ws.first) { this.ws.window.mouseDown(x, y); }
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        if(this.ws.first) { this.ws.window.mouseMove(x, y); }
     }
 
     /**
@@ -158,11 +173,36 @@ class BattlePage {
 class FinishWindow extends WindowParents {
     constructor() {
         super();
+        this.imageLoad();
+    }
+
+    imageLoad() {
         super.imageLoad();
+        this.wait = Images.getImage("wait");
     }
 
     cannotClick() {
         this.undo.setAbleClick(false);
+    }
+
+    /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.undo.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.undo.mouseMove(x, y);
+        this.showWindow();
     }
 
     /**
@@ -171,11 +211,14 @@ class FinishWindow extends WindowParents {
      * @param {*} y
      */
     onClick(x, y) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
-            return GameController.AIKOTOBA;
+            return MovePage.BEHIND_PAGE;
         }
+        this.showWindow();
+        return MovePage.CURRENT_PAGE;
     }
 
     /**
@@ -200,12 +243,15 @@ class FinishWindow extends WindowParents {
      * 待機画面の表示
      */
     showWait() {
-        this.canvasClear();
-        const chara = Images.getImage("wait")
-        this.ctx.drawImage(chara, 0, 0);
+        this.ctx.drawImage(this.wait, 0, 0);
+    }
 
+    showWindow() {
+        this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showUndo();
+        this.showWait();
     }
 }
 

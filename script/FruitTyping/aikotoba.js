@@ -35,13 +35,31 @@ class AikotobaPage {
     }
 
     /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y, this.inputKeyBoard.text);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y, this.inputKeyBoard.text);
+    }
+
+    /**
      * クリックした時の処理
      * @param {*} x
      * @param {*} y
      * @return クリックした後の遷移先
      */
     onClick(x, y) {
-        let movePage = this.window.onClick(x, y);
+        let movePage = this.window.onClick(x, y, this.inputKeyBoard.text);
         if( movePage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax ) {
             this.window.canClick();
             return MovePage.CURRENT_PAGE;
@@ -88,11 +106,32 @@ class AikotobaWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y, text) {
+        super.mouseDown(x, y);
+        this.showWindow(text);
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y, text) {
+        super.mouseMove(x, y);
+        this.showWindow(text);
+    }
+
+    /**
      * @param x
      * @param y
      * @return 移動先のサイト
      */
-    onClick(x, y) {
+    onClick(x, y, text) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
@@ -103,6 +142,7 @@ class AikotobaWindow extends WindowParents {
             this.cannotClick();
             return MovePage.AHEAD_PAGE;
         }
+        this.showWindow(text);
         return MovePage.CURRENT_PAGE;
     }
 
@@ -111,6 +151,7 @@ class AikotobaWindow extends WindowParents {
      */
     showWindow(aikotoba) {
         this.canvasClear();
+        this.showBackGround();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "#ff9933";

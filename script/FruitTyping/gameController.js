@@ -13,6 +13,7 @@ class GameController {
     static SINGLE = 5;
     static SINGLE_WAIT = 6;
     static TITLE = 7;
+    static MULTI_WAIT = 8;
 
     /**
      * コンストラクタ
@@ -57,30 +58,102 @@ class GameController {
      * @param {*} event
      */
     onClick(event) {
+        const x = event.x;
+        const y = event.y;
         switch(this.page) {
             case GameController.TITLE:
-                this.onClickTitlePage(event.x, event.y);
+                this.onClickTitlePage(x, y);
                 break;
             case GameController.NICKNAME:
-                this.onClickNickNamePage(event.x, event.y);
+                this.onClickNickNamePage(x, y);
                 break;
             case GameController.SETTING:
-                this.onClickSettingPage(event.x, event.y);
+                this.onClickSettingPage(x, y);
                 break;
             case GameController.AIKOTOBA:
-                this.onClickAikotobaPage(event.x, event.y);
-                break;
-            case GameController.BATTLE:
-                this.onClickMultiPlayPage(event.x, event.y);
+                this.onClickAikotobaPage(x, y);
                 break;
             case GameController.CHARACTER_CHOOSE:
-                this.onClickCharacterChoosePage(event.x, event.y);
+                this.onClickCharacterChoosePage(x, y);
                 break;
             case GameController.SINGLE_WAIT:
-                this.onClickSingleWaitPage(event.x, event.y);
+                this.onClickSingleWaitPage(x, y);
                 break;
             case GameController.SINGLE:
-                this.onClickSinglePlayPage(event.x, event.y);
+                this.onClickSinglePlayPage(x, y);
+                break;
+            case GameController.BATTLE:
+                this.onClickMultiPlayPage(x, y);
+                break;
+        }
+    }
+
+    /**
+     * マウスダウンの処理
+     * @param {*} event
+     */
+    mouseDown(event) {
+        const x = event.x;
+        const y = event.y;
+        switch(this.page) {
+            case GameController.TITLE:
+                this.titlePage.mouseDown(x, y);
+                break;
+            case GameController.SETTING:
+                this.settingPage.mouseDown(x, y);
+                break;
+            case GameController.NICKNAME:
+                this.nickNamePage.mouseDown(x, y);
+                break;
+            case GameController.CHARACTER_CHOOSE:
+                this.characterChoosePage.mouseDown(x, y);
+                break;
+            case GameController.AIKOTOBA:
+                this.aikotobaPage.mouseDown(x, y);
+                break;
+            case GameController.BATTLE:
+                this.battlePage.mouseDown(x, y);
+                break;
+            case GameController.SINGLE_WAIT:
+                this.singleWaitPage.mouseDown(x, y);
+                break;
+            case GameController.SINGLE:
+                this.singlePlayPage.mouseDown(x, y);
+                break;
+        }
+    }
+
+    /**
+     * ホバーの処理
+     * @param {*} event
+     */
+    mouseMove(event) {
+        const x = event.x;
+        const y = event.y;
+        switch(this.page) {
+            case GameController.TITLE:
+                this.titlePage.mouseMove(x, y);
+                break;
+            case GameController.SETTING:
+                this.settingPage.mouseMove(x, y);
+                break;
+            case GameController.NICKNAME:
+                this.nickNamePage.mouseMove(x, y);
+                break;
+            case GameController.CHARACTER_CHOOSE:
+                this.characterChoosePage.mouseMove(x, y);
+                break;
+            case GameController.AIKOTOBA:
+                this.aikotobaPage.mouseMove(x, y);
+                break;
+            case GameController.BATTLE:
+                this.battlePage.mouseMove(x, y);
+                break;
+            case GameController.SINGLE_WAIT:
+                this.singleWaitPage.mouseMove(x, y);
+                break;
+            case GameController.SINGLE:
+                this.singlePlayPage.mouseMove(x, y);
                 break;
         }
     }
@@ -240,7 +313,7 @@ class GameController {
         let movePage = this.battlePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.AIKOTOBA:
+            case MovePage.BEHIND_PAGE:
                 this.battlePage.ws.close();
                 delete this.battlePage;
                 this.moveToAikotobaPage();
@@ -257,10 +330,10 @@ class GameController {
         let movePage = this.nickNamePage.onClick(x, y);
 
         switch(movePage) {
-            case GameController.TITLE:
+            case MovePage.BEHIND_PAGE:
                 this.moveToTitlePage();
                 break;
-            case GameController.CHARACTER_CHOOSE:
+            case MovePage.AHEAD_PAGE:
                 this.nickName = this.nickNamePage.getNickName();
                 this.moveToCharacterChoosePage();
                 break;

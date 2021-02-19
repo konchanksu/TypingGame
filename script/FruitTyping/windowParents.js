@@ -32,8 +32,39 @@ class WindowParents {
      */
     imageLoad() {
         this.frame = Images.getImage("frame");
+        this.background = Images.getImage("background");
         this.undo = new ButtonOnCanvas("undo");
         this.decision = new ButtonOnCanvas("decision");
+    }
+
+    /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.undo.mouseDown(x, y);
+        this.decision.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.undo.mouseMove(x, y);
+        this.decision.mouseMove(x, y);
+    }
+
+    /**
+     * マウスが上がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseUp(x, y) {
+        this.undo.mouseUp(x, y);
+        this.decision.mouseUp(x, y);
     }
 
     /**
@@ -44,10 +75,17 @@ class WindowParents {
     }
 
     /**
+     * 背景を表示する
+     */
+    showBackGround() {
+        this.ctx.drawImage(this.background, 0, 0);
+    }
+
+    /**
      * アンドゥ機能を表示する
      */
     showUndo() {
-        this.undo.drawImage(30, 25);
+        this.undo.drawImage(45, 40);
     }
 
     /**

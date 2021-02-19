@@ -46,6 +46,7 @@ const loadAllImages = function(gameController) {
     const srcNameList = [["/static/img/aikotoba.png", "aikotoba"],
                          ["/static/img/aikotoba_input.png", "aikotoba_input"],
                          ["/static/img/attack.png", "attack"],
+                         ["/static/img/background.png", "background"],
                          ["/static/img/button/decision/decision.png", "decision"],
                          ["/static/img/button/decision/decision_down.png", "decision_down"],
                          ["/static/img/button/decision/decision_hover.png", "decision_hover"],
@@ -94,5 +95,7 @@ const loadAllImages = function(gameController) {
     }).then(() => {
         window.addEventListener("keydown", event => { gameController.keyDown(event) });
         window.addEventListener("click", event => { gameController.onClick(event) });
+        window.addEventListener("mousemove", event => { gameController.mouseMove(event) });
+        window.addEventListener("mousedown", event => { gameController.mouseDown(event) });
     });
 }

@@ -39,6 +39,24 @@ class SinglePlayPage {
     }
 
     /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        if(this.finish) { this.window.mouseDown(x, y); }
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        if(this.finish) { this.window.mouseMove(x, y); }
+    }
+
+    /**
      * クリック処理をする
      * @param x
      * @param y
@@ -98,8 +116,8 @@ class SinglePlayPage {
         await this.gameCountDown();
         this.start = false;
         this.finish = true;
-        this.window = new ResultWindow();
-        this.window.showWindow(this.rightTypeCount, this.missTypeCount);
+        this.window = new ResultWindow(this.rightTypeCount, this.missTypeCount);
+        this.window.showWindow();
     }
 
     /**
@@ -153,7 +171,7 @@ class SinglePlayWindow extends WindowParents {
      * タイマーを消去する
      */
     timerClear() {
-        this.ctx.clearRect(20, 20, 50, 50);
+        this.ctx.clearRect(15, 15, 55, 55);
     }
 
     /**
@@ -257,8 +275,10 @@ class ResultWindow extends WindowParents {
     /**
      * コンストラクタ
      */
-    constructor() {
+    constructor(correct, miss) {
         super();
+        this.correct = correct.toString();
+        this.miss = miss.toString();
         this.imageLoad();
     }
 
@@ -277,39 +297,60 @@ class ResultWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        super.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        super.mouseMove(x, y);
+        this.showWindow();
+    }
+
+    /**
      * クリック後の遷移先のページを決定する
      * @param {*} x
      * @param {*} y
      * @returns 先に進むページ
      */
     onClick(x, y) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
+            AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
             return MovePage.BEHIND_PAGE;
         }
+        this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
 
     /**
      * 結果を表示する
-     * @param {*} correct
-     * @param {*} miss
      */
-    showWindow(correct, miss) {
+    showWindow() {
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showResult();
-        this.showCorrectAndMissCount(correct, miss);
+        this.showCorrectAndMissCount();
         this.showUndo();
     }
 
     /**
      * 正しく打てた数と間違えた数を表示する
      */
-    showCorrectAndMissCount(correct, miss) {
+    showCorrectAndMissCount() {
         let fontSize = 32;
-        let text = "正しい入力: "+ correct.toString() + "  間違えた入力: " + miss.toString();
+        let text = "正しい入力: "+ this.correct + "  間違えた入力: " + this.miss;
 
         this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( text ).width;

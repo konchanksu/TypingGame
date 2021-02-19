@@ -14,6 +14,25 @@ class SingleWaitPage {
     }
 
     /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y);
+    }
+
+
+    /**
      * クリック時の動作
      * @param {*} x
      * @param {*} y
@@ -45,12 +64,33 @@ class SingleWaitWindow extends WindowParents {
     }
 
     /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        super.mouseDown(x, y);
+        this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        super.mouseMove(x, y);
+        this.showWindow();
+    }
+
+    /**
      * クリック後の遷移先のページを決定する
      * @param {*} x
      * @param {*} y
      * @returns クリック後の遷移先
      */
     onClick(x, y) {
+        super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
@@ -61,6 +101,7 @@ class SingleWaitWindow extends WindowParents {
             this.cannotClick();
             return MovePage.AHEAD_PAGE;
         }
+        this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
 
@@ -76,6 +117,7 @@ class SingleWaitWindow extends WindowParents {
      */
     showWindow() {
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showUndo();
         this.showDecisionButton();
