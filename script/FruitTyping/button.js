@@ -130,10 +130,8 @@ class SlideButtonOnCanvas {
      * @param {*} maxWidth
      * @param {*} startH
      * @param {*} nowStatus 割合での現在ステータス
-     * @param {*} eventName
-     * @param {*} eventF
      */
-    constructor(minWidth, maxWidth, startH, nowStatus, eventName, eventF) {
+    constructor(minWidth, maxWidth, startH, nowStatus) {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
 
@@ -151,31 +149,6 @@ class SlideButtonOnCanvas {
 
         this.isAbleClick = false;
         this.isDown = false;
-
-        this.eventName = eventName;
-        this.eventF = eventF;
-
-        let self = this;
-        this.mouseMove = ["mousemove", (event) => {
-            let x;
-            let y;
-            [x, y] = self.position(event.x, event.y);
-            if(self.minWidth + self.rect > x) x = self.minWidth + self.rect;
-            if(self.maxWidth - self.rect < x) x = self.maxWidth - self.rect;
-            self.nowPosition = x;
-            self.nowStatus = (self.nowPosition - self.minWidth - self.rect) / (self.maxWidth - self.minWidth + self.rect);
-            self.showSlideButton();
-            dispatchEvent(new CustomEvent(self.eventName, {detail: self.nowStatus}));
-        }];
-
-        this.eventListeners = [];
-    }
-
-    /**
-     * ボタンを消去する
-     */
-    buttonClear() {
-        this.ctx.clearRect(this.minWidth-this.rect-1, this.startH+5-this.rect-1, this.maxWidth-this.minWidth+this.rect*2+2, this.rect*2+2);
     }
 
     /**
@@ -186,8 +159,6 @@ class SlideButtonOnCanvas {
 
         let minToNowWidth = this.nowPosition-this.minWidth;
         let maxToNowWidth = this.maxWidth-this.nowPosition;
-
-        this.buttonClear();
 
         this.ctx.fillStyle = "#ff9933";
         this.ctx.fillRect(this.minWidth, this.startH, minToNowWidth, this.height);
@@ -203,80 +174,47 @@ class SlideButtonOnCanvas {
 
         this.ctx.fill(circle);
         this.ctx.stroke(circle);
+
+        this.isAbleClick = true;
     }
 
     /**
-     * 直前にリストに追加したイベントを登録する
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
      */
-    addEvent(eventListener) {
-        addEventListener(
-            eventListener[0],
-            eventListener[1]
-        );
+    mouseMove(x, y) {
+        if(!this.isDown) return;
+        [x, y] = this.position(x, y);
+        if(this.minWidth + this.rect > x) x = this.minWidth + this.rect;
+        if(this.maxWidth - this.rect < x) x = this.maxWidth - this.rect;
+        this.nowPosition = x;
+        this.nowStatus = (this.nowPosition - this.minWidth - this.rect) / (this.maxWidth - this.minWidth + this.rect);
     }
 
     /**
-     * イベントを消去する
+     * マウスをおろす処理
+     * @param {*} x
+     * @param {*} y
      */
-    removeEvent(eventListener) {
-        removeEventListener(
-            eventListener[0],
-            eventListener[1]
-        )
+    mouseDown(x, y) {
+        if(this.onClick(x, y)) { this.isDown = true; }
     }
 
     /**
-     * マウスダウンイベントを追加する
+     * マウスを上げる処理
+     * @param {*} x
+     * @param {*} y
      */
-    addEventDown() {
-        let self = this;
-        this.eventListeners.push([
-            "mousedown",
-            event => {
-            if(!self.isDown && this.onClick(event.x, event.y)) {
-                self.isDown = !self.isDown;
-                self.addEvent(self.mouseMove);
-            }
-        }])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    /**
-     * マウスが上がった時のイベントを追加する
-     */
-    addEventUp() {
-        let self = this;
-        this.eventListeners.push([
-            "mouseup",
-            event => {
-                if(self.isDown) {
-                    self.isDown = !self.isDown;
-                    self.removeEvent(self.mouseMove);
-                }
-            }
-        ])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
-    }
-
-    /**
-     * 自作イベントを追加する
-     */
-    addEventSelf() {
-        let self = this;
-        this.eventListeners.push([
-            self.eventName,
-            self.eventF
-        ])
-        this.addEvent(this.eventListeners.slice(-1)[0]);
+    mouseUp(x, y) {
+        this.isDown = false;
     }
 
     /**
      * ボタンが表示されたタイミングで行う操作
      */
     doFirstDrawImage() {
-        this.addEventDown();
-        this.addEventUp();
-        this.addEventSelf();
+        this.isDown = false;
     }
 
     /**
@@ -300,23 +238,6 @@ class SlideButtonOnCanvas {
     }
 
     /**
-     * イベントを削除する
-     */
-    removeEventListener() {
-        this.eventListeners.map(
-            eventListener => removeEventListener(
-                eventListener[0],
-                eventListener[1]
-            )
-        );
-
-        removeEventListener(
-            this.mouseMove[0],
-            this.mouseMove[1]
-        )
-    }
-
-    /**
      * 丸いボタンでクリックできているかどうか
      * @param x
      * @param y
@@ -335,15 +256,14 @@ class SlideButtonOnCanvas {
      */
     setAbleClick(bool) {
         this.isAbleClick = bool;
-        if(!this.isAbleClick) {
-            this.removeEventListener();
-            this.isDown = false;
-        } else {
-            this.doFirstDrawImage();
-        }
+        this.doFirstDrawImage();
     }
 
     getNowPosition() {
         return this.nowPosition;
+    }
+
+    getNowStatus() {
+        return this.nowStatus;
     }
 }

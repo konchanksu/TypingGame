@@ -71,7 +71,7 @@ class CharacterChooseWindow extends WindowParents {
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
-        this.characters.push([new ButtonOnCanvas("character2_box"), Characters.mio, Images.getImage("mio")]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
     }
 
     /**

@@ -85,6 +85,8 @@ class SettingWindow extends WindowParents {
      */
     mouseDown(x, y) {
         super.mouseDown(x, y);
+        this.slideBarBGM.mouseDown(x, y);
+        this.slideBarSE.mouseDown(x, y);
         this.showWindow();
     }
 
@@ -95,7 +97,29 @@ class SettingWindow extends WindowParents {
      */
     mouseMove(x, y) {
         super.mouseMove(x, y);
+        this.mouseMoveSlideBarBGM(x, y);
+        this.mouseMoveSlideBarSE(x, y);
         this.showWindow();
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMoveSlideBarSE(x, y) {
+        this.slideBarSE.mouseMove(x, y);
+        AudioOnWeb.setSEVolume(this.slideBarSE.getNowStatus());
+    }
+
+    /**
+     * マウスが動いた時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMoveSlideBarBGM(x, y) {
+        this.slideBarBGM.mouseMove(x, y);
+        AudioOnWeb.setBGMVolume(this.slideBarBGM.getNowStatus());
     }
 
     /**
@@ -105,6 +129,8 @@ class SettingWindow extends WindowParents {
      */
     onClick(x, y) {
         super.mouseUp(x, y);
+        this.slideBarBGM.mouseUp(x, y);
+        this.slideBarSE.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
@@ -147,6 +173,7 @@ class SettingWindow extends WindowParents {
 
     showWindow() {
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
         this.showUndo();
         this.showSlideBarSE();
