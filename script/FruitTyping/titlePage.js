@@ -1,19 +1,13 @@
 /**
  * タイトルを表示するページ
  */
-class TitlePage {
+class TitlePage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.window = new TitleWindow();
-    }
-
-    /**
-     * タイトルウィンドウの表示
-     */
-    showWindow() {
-        this.window.showWindow();
     }
 
     /**
@@ -24,24 +18,6 @@ class TitlePage {
      */
     onClick(x, y) {
         return this.window.onClick(x, y);
-    }
-
-    /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y);
     }
 }
 

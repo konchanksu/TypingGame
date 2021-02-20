@@ -45,6 +45,7 @@ class WindowParents {
     mouseDown(x, y) {
         this.undo.mouseDown(x, y);
         this.decision.mouseDown(x, y);
+        this.showWindow();
     }
 
     /**
@@ -55,6 +56,7 @@ class WindowParents {
     mouseMove(x, y) {
         this.undo.mouseMove(x, y);
         this.decision.mouseMove(x, y);
+        this.showWindow();
     }
 
     /**
@@ -68,24 +70,10 @@ class WindowParents {
     }
 
     /**
-     * 外枠を表示する
-     */
-    showFrame() {
-        this.ctx.drawImage(this.frame, 0, 0);
-    }
-
-    /**
      * 背景を表示する
      */
     showBackGround() {
         this.ctx.drawImage(this.background, 0, 0);
-    }
-
-    /**
-     * アンドゥ機能を表示する
-     */
-    showUndo() {
-        this.undo.drawImage(45, 40);
     }
 
     /**
@@ -96,14 +84,90 @@ class WindowParents {
     showDecision(startW, startH) {
         this.decision.drawImage(startW, startH);
     }
+
+    /**
+     * 説明を同じ位置に表示する
+     */
+    showDescription() {
+        this.ctx.drawImage(this.description, 115, 23);
+    }
+
+    /**
+     * 外枠を表示する
+     */
+    showFrame() {
+        this.ctx.drawImage(this.frame, 0, 0);
+    }
+
+    /**
+     * 画面全体を表示する
+     */
+    showWindow() {}
+
+    /**
+     * アンドゥ機能を表示する
+     */
+    showUndo() {
+        this.undo.drawImage(40, 35);
+    }
+}
+
+/**
+ * それぞれのページの親を実装する
+ */
+class PageParents {
+    /**
+     * コンストラクタ
+     */
+    constructor() {
+        this.window = undefined;
+    }
+
+    /**
+     * キー入力があった時の処理
+     * @param key
+     */
+    inputKeyDown(key) {}
+
+    /**
+     * マウスが下がった時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        this.window.mouseDown(x, y);
+    }
+
+    /**
+     * マウスが動いた時に行う処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseMove(x, y) {
+        this.window.mouseMove(x, y);
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @return 移動先のサイト
+     */
+    onClick(x, y) {}
+
+    /**
+     * ページを表示する
+     */
+    showWindow() {
+        this.window.showWindow();
+    }
 }
 
 /**
  * ページ移動の固定の変数の定義
  */
 class MovePage {
-    static BEHIND_PAGE = -1;
     static AHEAD_PAGE = 1;
+    static BEHIND_PAGE = -1;
     static CURRENT_PAGE = 0;
 }
 

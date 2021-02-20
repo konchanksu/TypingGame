@@ -1,11 +1,12 @@
 /**
  * キャラクター選択画面を管理するクラス
  */
-class CharacterChoosePage {
+class CharacterChoosePage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.window = new CharacterChooseWindow();
         this.character = -1;
     }
@@ -19,24 +20,6 @@ class CharacterChoosePage {
     }
 
     /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y);
-    }
-
-    /**
      * クリックがあった時の処理
      * @param {*} x
      * @param {*} y
@@ -47,13 +30,6 @@ class CharacterChoosePage {
         [movePage, character] = this.window.onClick(x, y);
         this.character = character;
         return movePage;
-    }
-
-    /**
-     * ウィンドウ表示する
-     */
-    showWindow() {
-        this.window.showWindow();
     }
 }
 
@@ -90,24 +66,13 @@ class CharacterChooseWindow extends WindowParents {
     }
 
     /**
-     * マウスが押下された時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        super.mouseDown(x, y);
-        this.showWindow();
-    }
-
-    /**
      * マウスが動いた時の処理
      * @param {*} x
      * @param {*} y
      */
     mouseMove(x, y) {
         super.mouseMove(x, y);
-        this.showWindow();
-        let self = this;
+        const self = this;
         this.characters.forEach((character) => {
             if(character[0].onClick(x, y)) {
                 self.showACharacter(character[2]);

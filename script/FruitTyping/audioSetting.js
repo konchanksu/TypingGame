@@ -11,8 +11,8 @@ class AudioOnWeb extends Audio {
     static SE = 0;
     static BGM = 1;
 
-    static seList = [];
-    static bgmList = [];
+    static #SE_LIST = [];
+    static #BGM_LIST = [];
 
     /**
      * コンストラクタ
@@ -25,11 +25,11 @@ class AudioOnWeb extends Audio {
         this.isNowPlayAudio = undefined;
         switch (this.musicType) {
             case AudioOnWeb.SE:
-                AudioOnWeb.seList.push(this);
+                AudioOnWeb.#SE_LIST.push(this);
                 this.volume = AudioOnWeb.nowSEVolume;
                 break;
             case AudioOnWeb.BGM:
-                AudioOnWeb.bgmList.push(this);
+                AudioOnWeb.#BGM_LIST.push(this);
                 this.volume = AudioOnWeb.nowBGMVolume;
                 break;
         }
@@ -73,7 +73,7 @@ class AudioOnWeb extends Audio {
      * 音量を変更する
      */
     static changeAudioVolumeSE() {
-        AudioOnWeb.seList.map( seItem => {
+        AudioOnWeb.#SE_LIST.map( seItem => {
             seItem.volume = AudioOnWeb.nowSEVolume;
         })
     }
@@ -82,7 +82,7 @@ class AudioOnWeb extends Audio {
      * bgmの音量を変更する
      */
     static changeAudioVolumeBGM() {
-        AudioOnWeb.bgmList.map( bgmItem => {
+        AudioOnWeb.#BGM_LIST.map( bgmItem => {
             bgmItem.volume = AudioOnWeb.nowBGMVolume;
         })
     }

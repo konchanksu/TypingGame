@@ -297,26 +297,6 @@ class ResultWindow extends WindowParents {
     }
 
     /**
-     * マウスが押下された時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        super.mouseDown(x, y);
-        this.showWindow();
-    }
-
-    /**
-     * マウスが動いた時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        super.mouseMove(x, y);
-        this.showWindow();
-    }
-
-    /**
      * クリック後の遷移先のページを決定する
      * @param {*} x
      * @param {*} y

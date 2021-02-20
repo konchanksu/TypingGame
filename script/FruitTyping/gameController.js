@@ -19,7 +19,6 @@ class GameController {
      * コンストラクタ
      */
     constructor() {
-        // ここに画面をすべて始めに読み込んでおくように変更する
         // AudioUsedRegularly.playAudioBGM();
     }
 
@@ -37,18 +36,19 @@ class GameController {
      * @param {*} event
      */
     keyDown(event) {
+        const key = event.key;
         switch (this.page) {
             case GameController.SINGLE:
-                this.doSinglePlay(event.key);
+                this.singlePlayPage.keyDown(key);
                 break;
             case GameController.AIKOTOBA:
-                this.doAikotobaPage(event.key);
+                this.aikotobaPage.inputKeyDown(key);
                 break;
             case GameController.NICKNAME:
-                this.doNicknamePage(event.key);
+                this.nickNamePage.inputKeyDown(key);
                 break;
             case GameController.BATTLE:
-                this.doBattlePage(event.key);
+                this.doBattlePage(key);
                 break;
         }
     }
@@ -159,14 +159,6 @@ class GameController {
     }
 
     /**
-     * 合言葉ページでの処理
-     * @param {*} key
-     */
-    doAikotobaPage(key) {
-        this.aikotobaPage.inputKeyDown(key);
-    }
-
-    /**
      * バトルページでの処理
      * @param {*} key
      */
@@ -182,22 +174,6 @@ class GameController {
                 delete this.battlePage;
             }
         }
-    }
-
-    /**
-     * ニックネームページでの処理
-     * @param {*} key
-     */
-    doNicknamePage(key) {
-        this.nickNamePage.inputKeyDown(key);
-    }
-
-    /**
-     * ゲームが始まっている時にキーボードの入力を受けた際の処理
-     * @param {*} key
-     */
-    doSinglePlay(key) {
-        let movePage = this.singlePlayPage.keyDown(key);
     }
 
     /**
@@ -272,7 +248,7 @@ class GameController {
      * @param {*} y
      */
     onClickAikotobaPage(x, y) {
-        let movePage = this.aikotobaPage.onClick(x, y);
+        const movePage = this.aikotobaPage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -291,7 +267,7 @@ class GameController {
      * @param {*} y
      */
     onClickCharacterChoosePage(x, y) {
-        let movePage = this.characterChoosePage.onClick(x, y);
+        const movePage = this.characterChoosePage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.AHEAD_PAGE:
@@ -310,7 +286,7 @@ class GameController {
      * @param {*} y
      */
     onClickMultiPlayPage(x, y) {
-        let movePage = this.battlePage.onClick(x, y);
+        const movePage = this.battlePage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -327,7 +303,7 @@ class GameController {
      * @param {*} y
      */
     onClickNickNamePage(x, y) {
-        let movePage = this.nickNamePage.onClick(x, y);
+        const movePage = this.nickNamePage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -346,7 +322,7 @@ class GameController {
      * @param {*} y
      */
     onClickSettingPage(x, y) {
-        let movePage = this.settingPage.onClick(x, y);
+        const movePage = this.settingPage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -355,8 +331,13 @@ class GameController {
         }
     }
 
+    /**
+     * シングルプレイ待機ページでクリック処理
+     * @param {*} x
+     * @param {*} y
+     */
     onClickSingleWaitPage(x, y) {
-        let movePage = this.singleWaitPage.onClick(x, y);
+        const movePage = this.singleWaitPage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -368,8 +349,13 @@ class GameController {
         }
     }
 
+    /**
+     * シングルプレイページでクリック処理
+     * @param {*} x
+     * @param {*} y
+     */
     onClickSinglePlayPage(x, y) {
-        let movePage = this.singlePlayPage.onClick(x, y);
+        const movePage = this.singlePlayPage.onClick(x, y);
 
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
@@ -384,7 +370,7 @@ class GameController {
      * @param {*} y
      */
     onClickTitlePage(x, y) {
-        let movePage = this.titlePage.onClick(x, y);
+        const movePage = this.titlePage.onClick(x, y);
 
         switch(movePage) {
             case GameController.SINGLE_WAIT:
@@ -401,6 +387,6 @@ class GameController {
 }
 
 function firstload() {
-    let gameController = new GameController();
+    const gameController = new GameController();
     loadAllImages(gameController);
 }

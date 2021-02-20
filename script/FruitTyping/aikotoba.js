@@ -1,20 +1,14 @@
 /**
  * 合言葉を入力するページ
  */
-class AikotobaPage {
+class AikotobaPage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.inputKeyBoard = new InputKeyBoard(6);
         this.window = new AikotobaWindow();
-    }
-
-    /**
-     * 合言葉画面を表示する
-     */
-    showWindow() {
-        this.window.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -30,26 +24,9 @@ class AikotobaPage {
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDownOnlyNumber(key);
-        this.window.showWindow(this.inputKeyBoard.text);
+        this.window.setAikotoba(this.inputKeyBoard.text);
+        this.showWindow();
         AudioUsedRegularly.playAudioCorrectType();
-    }
-
-    /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y, this.inputKeyBoard.text);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y, this.inputKeyBoard.text);
     }
 
     /**
@@ -59,7 +36,7 @@ class AikotobaPage {
      * @return クリックした後の遷移先
      */
     onClick(x, y) {
-        let movePage = this.window.onClick(x, y, this.inputKeyBoard.text);
+        const movePage = this.window.onClick(x, y);
         if( movePage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax ) {
             this.window.canClick();
             return MovePage.CURRENT_PAGE;
@@ -78,6 +55,7 @@ class AikotobaWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.text = "";
     }
 
     /**
@@ -101,28 +79,8 @@ class AikotobaWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.aikotoba = Images.getImage("aikotoba");
+        this.description = Images.getImage("aikotoba");
         this.input = Images.getImage("aikotoba_input");
-    }
-
-    /**
-     * マウスが押下された時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y, text) {
-        super.mouseDown(x, y);
-        this.showWindow(text);
-    }
-
-    /**
-     * マウスが動いた時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y, text) {
-        super.mouseMove(x, y);
-        this.showWindow(text);
     }
 
     /**
@@ -130,7 +88,7 @@ class AikotobaWindow extends WindowParents {
      * @param y
      * @return 移動先のサイト
      */
-    onClick(x, y, text) {
+    onClick(x, y) {
         super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
@@ -142,23 +100,23 @@ class AikotobaWindow extends WindowParents {
             this.cannotClick();
             return MovePage.AHEAD_PAGE;
         }
-        this.showWindow(text);
+        this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
 
     /**
      * ニックネームページの表示を行う
      */
-    showWindow(aikotoba) {
+    showWindow() {
         this.canvasClear();
         this.showBackGround();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "#ff9933";
 
-        this.ctx.drawImage(this.aikotoba, 200, 0);
+        this.showDescription();
         this.showFrame();
-        this.showInputAikotoba(aikotoba);
+        this.showInputAikotoba();
         this.showUndo();
         this.showDecisionButton();
     }
@@ -166,16 +124,24 @@ class AikotobaWindow extends WindowParents {
     /**
      * 入力した合言葉を表示する
      */
-    showInputAikotoba(aikotoba) {
+    showInputAikotoba() {
         this.ctx.drawImage(this.input, 140, 130);
-        this.ctx.fillText(aikotoba, 330, 300);
+        this.ctx.fillText(this.text, 330, 300);
+    }
+
+    /**
+     * 合言葉を設定する
+     * @param {*} aikotoba
+     */
+    setAikotoba(aikotoba) {
+        this.text = aikotoba;
     }
 
     /**
      * 決定ボタンを表示する
      */
     showDecisionButton() {
-        let startH = 450;
+        const startH = 450;
         this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
     }
 }

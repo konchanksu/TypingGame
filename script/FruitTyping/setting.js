@@ -1,19 +1,13 @@
 /**
  * 設定を表示するページ
  */
-class SettingPage {
+class SettingPage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.window = new SettingWindow();
-    }
-
-    /**
-     * セッティング画面を表示する
-     */
-    showWindow() {
-        this.window.showWindow();
     }
 
     /**
@@ -23,24 +17,6 @@ class SettingPage {
      */
     onClick(x, y) {
         return this.window.onClick(x, y);
-    }
-
-    /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y);
     }
 }
 
@@ -87,7 +63,6 @@ class SettingWindow extends WindowParents {
         super.mouseDown(x, y);
         this.slideBarBGM.mouseDown(x, y);
         this.slideBarSE.mouseDown(x, y);
-        this.showWindow();
     }
 
     /**
@@ -99,7 +74,6 @@ class SettingWindow extends WindowParents {
         super.mouseMove(x, y);
         this.mouseMoveSlideBarBGM(x, y);
         this.mouseMoveSlideBarSE(x, y);
-        this.showWindow();
     }
 
     /**

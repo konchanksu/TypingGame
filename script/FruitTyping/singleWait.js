@@ -1,36 +1,11 @@
-class SingleWaitPage {
+class SingleWaitPage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.window = new SingleWaitWindow();
     }
-
-    /**
-     * ウィンドウを表示する
-     */
-    showWindow() {
-        this.window.showWindow();
-    }
-
-    /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y);
-    }
-
 
     /**
      * クリック時の動作
@@ -61,26 +36,6 @@ class SingleWaitWindow extends WindowParents {
     cannotClick() {
         this.undo.setAbleClick(false);
         this.decision.setAbleClick(false);
-    }
-
-    /**
-     * マウスが押下された時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        super.mouseDown(x, y);
-        this.showWindow();
-    }
-
-    /**
-     * マウスが動いた時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        super.mouseMove(x, y);
-        this.showWindow();
     }
 
     /**

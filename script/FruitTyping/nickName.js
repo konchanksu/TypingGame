@@ -1,20 +1,14 @@
 /**
  * ニックネームを入力するページを管理するクラス
  */
-class NickNamePage {
+class NickNamePage extends PageParents {
     /**
      * コンストラクタ
      */
     constructor() {
+        super();
         this.inputKeyBoard = new InputKeyBoard(10);
         this.window = new NickNameWindow();
-    }
-
-    /**
-     * ニックネームページの表示を行う
-     */
-    showWindow() {
-        this.window.showWindow(this.inputKeyBoard.text);
     }
 
     /**
@@ -30,26 +24,9 @@ class NickNamePage {
      */
     inputKeyDown(key) {
         this.inputKeyBoard.inputKeyDown(key);
-        this.window.showWindow(this.inputKeyBoard.text);
+        this.window.setNickName(this.inputKeyBoard.text);
+        this.showWindow();
         AudioUsedRegularly.playAudioCorrectType();
-    }
-
-    /**
-     * マウスが下がった時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y) {
-        this.window.mouseDown(x, y, this.inputKeyBoard.text);
-    }
-
-    /**
-     * マウスが動いた時に行う処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y) {
-        this.window.mouseMove(x, y, this.inputKeyBoard.text);
     }
 
     /**
@@ -58,7 +35,7 @@ class NickNamePage {
      * @return 移動先のサイト
      */
     onClick(x, y) {
-        let moveToPage = this.window.onClick(x, y, this.inputKeyBoard.text);
+        const moveToPage = this.window.onClick(x, y);
         if(moveToPage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length == 0) {
             this.window.canClick();
             return MovePage.CURRENT_PAGE;
@@ -74,6 +51,7 @@ class NickNameWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.text = "";
     }
 
     /**
@@ -102,31 +80,11 @@ class NickNameWindow extends WindowParents {
     }
 
     /**
-     * マウスが押下された時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseDown(x, y, text) {
-        super.mouseDown(x, y);
-        this.showWindow(text);
-    }
-
-    /**
-     * マウスが動いた時の処理
-     * @param {*} x
-     * @param {*} y
-     */
-    mouseMove(x, y, text) {
-        super.mouseMove(x, y);
-        this.showWindow(text);
-    }
-
-    /**
      * @param x
      * @param y
      * @return 移動先のサイト
      */
-    onClick(x, y, text) {
+    onClick(x, y) {
         super.mouseUp(x, y);
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
@@ -138,34 +96,41 @@ class NickNameWindow extends WindowParents {
             this.cannotClick();
             return MovePage.AHEAD_PAGE;
         }
-        this.showWindow(text);
+        this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
 
     /**
      * ニックネームページの表示を行う
-     * @param nickname ニックネーム
      */
-    showWindow(nickname) {
+    showWindow() {
         this.canvasClear();
         this.showBackGround();
         this.ctx.font = "56px osaka-mono"
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "#ff9933";
 
-        this.ctx.drawImage(this.description, 200, 0);
+        this.showDescription();
         this.showFrame();
-        this.showInputNickName(nickname);
+        this.showInputNickName();
         this.showUndo();
         this.showDecisionButton();
     }
 
     /**
+     * ニックネームをセットする
+     * @param {*} nickname
+     */
+    setNickName(nickname) {
+        this.text = nickname;
+    }
+
+    /**
      * 入力したニックネームを表示する
      */
-    showInputNickName(nickname) {
+    showInputNickName() {
         this.ctx.drawImage(this.input, 140, 130);
-        this.ctx.fillText(nickname, 330, 300);
+        this.ctx.fillText(this.text, 330, 300);
     }
 
     /**
