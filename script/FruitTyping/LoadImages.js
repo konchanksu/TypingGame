@@ -43,8 +43,7 @@ class Images {
 }
 
 const loadAllImages = function(gameController) {
-    const srcNameList = [["/static/img/aikotoba.png", "aikotoba"],
-                         ["/static/img/aikotoba_input.png", "aikotoba_input"],
+    const srcNameList = [["/static/img/aikotoba_input.png", "aikotoba_input"],
                          ["/static/img/attack.png", "attack"],
                          ["/static/img/background.png", "background"],
                          ["/static/img/button/decision/decision.png", "decision"],
@@ -77,10 +76,13 @@ const loadAllImages = function(gameController) {
                          ["/static/img/countDown/count3.png", "count3"],
                          ["/static/img/frame.png", "frame"],
                          ["/static/img/lose.png", "lose"],
-                         ["/static/img/nickname.png", "nickname"],
                          ["/static/img/nickname_input.png", "nickname_input"],
                          ["/static/img/resultPage.png", "resultPage"],
-                         ["/static/img/title.png", "title"],
+                         ["/static/img/title/aikotoba.png", "aikotoba"],
+                         ["/static/img/title/characterChoose.png", "characterChoose"],
+                         ["/static/img/title/nickname.png", "nickname"],
+                         ["/static/img/title/setting.png", "setting_title"],
+                         ["/static/img/title/title.png", "title"],
                          ["/static/img/wait.png", "wait"],
                          ["/static/img/win.png", "win"]
     ]

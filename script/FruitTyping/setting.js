@@ -46,12 +46,9 @@ class SettingWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.slideBarSE = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 370, AudioOnWeb.nowSEVolume, "se", (event) => {
-            AudioOnWeb.setSEVolume(event.detail);
-        });
-        this.slideBarBGM = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 200, AudioOnWeb.nowBGMVolume, "bgm", (event) => {
-            AudioOnWeb.setBGMVolume(event.detail);
-        });
+        this.slideBarSE = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 370, AudioOnWeb.nowSEVolume);
+        this.slideBarBGM = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 200, AudioOnWeb.nowBGMVolume);
+        this.description = Images.getImage("setting_title");
     }
 
     /**
@@ -152,5 +149,6 @@ class SettingWindow extends WindowParents {
         this.showUndo();
         this.showSlideBarSE();
         this.showSlideBarBGM();
+        this.showDescription();
     }
 }

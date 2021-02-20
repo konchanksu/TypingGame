@@ -46,7 +46,7 @@ class AikotobaPage extends PageParents {
 }
 
 /**
- * ニックネーム入力画面を表示するウィンドウ
+ * 合言葉入力画面を表示するウィンドウ
  */
 class AikotobaWindow extends WindowParents {
     /**
@@ -56,22 +56,6 @@ class AikotobaWindow extends WindowParents {
         super();
         this.imageLoad();
         this.text = "";
-    }
-
-    /**
-     * クリックできなくする
-     */
-    cannotClick() {
-        this.undo.setAbleClick(false);
-        this.decision.setAbleClick(false);
-    }
-
-    /**
-     * ボタンを押せるようにする
-     */
-    canClick() {
-        this.undo.setAbleClick(true);
-        this.decision.setAbleClick(true);
     }
 
     /**

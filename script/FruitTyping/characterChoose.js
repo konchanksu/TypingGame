@@ -42,8 +42,8 @@ class CharacterChooseWindow extends WindowParents {
         this.imageLoad();
         this.charaStartH = 50;
         this.charaStartW = 125;
-        this.characters = [];
         this.onHoverImage = undefined;
+        this.characters = [];
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
         this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
@@ -63,6 +63,8 @@ class CharacterChooseWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
+
+        this.description = Images.getImage("characterChoose");
     }
 
     /**
@@ -110,6 +112,7 @@ class CharacterChooseWindow extends WindowParents {
         this.showBackGround();
         this.showFrame();
         this.showUndo();
+        this.showDescription();
         this.showCharacters();
     }
 
@@ -122,20 +125,20 @@ class CharacterChooseWindow extends WindowParents {
      * キャラクター1ボタンを表示する
      */
     showCharacters() {
-        let startW = 500;
-        let startH = 50;
-        let blank = 1;
+        let startW = 390;
+        let startH = 200;
+        const blank = 1;
+
         this.characters[0][0].drawImage(startW, startH);
 
-        startH += this.characters[0][0].height() + blank;
-        startW -= this.characters[0][0].width() / 2 + blank;
+        startW += this.characters[0][0].width() + blank;
         this.characters[1][0].drawImage(startW, startH);
 
-        startW += this.characters[1][0].width() + blank;
+        startH += this.characters[1][0].height() + blank;
+        startW -= this.characters[1][0].width() / 2 - blank;
         this.characters[2][0].drawImage(startW, startH);
 
-        startH += this.characters[2][0].height() + blank;
-        startW -= this.characters[2][0].width() / 2 - blank;
+        startW += this.characters[2][0].width() + blank;
         this.characters[3][0].drawImage(startW, startH);
     }
 }

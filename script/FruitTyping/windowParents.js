@@ -21,6 +21,22 @@ class WindowParents {
     }
 
     /**
+     * クリックできるようにする
+     */
+    canClick() {
+        this.undo.setAbleClick(true);
+        this.decision.setAbleClick(true);
+    }
+
+    /**
+     * クリックできなくする
+     */
+    cannotClick() {
+        this.undo.setAbleClick(false);
+        this.decision.setAbleClick(false);
+    }
+
+    /**
      * キャンバスを消去する
      */
     canvasClear() {

@@ -55,22 +55,6 @@ class NickNameWindow extends WindowParents {
     }
 
     /**
-     * クリックできなくする
-     */
-    cannotClick() {
-        this.undo.setAbleClick(false);
-        this.decision.setAbleClick(false);
-    }
-
-    /**
-     * ボタンを押せるようにする
-     */
-    canClick() {
-        this.undo.setAbleClick(true);
-        this.decision.setAbleClick(true);
-    }
-
-    /**
      * 画像の読み込みを行う
      */
     imageLoad() {

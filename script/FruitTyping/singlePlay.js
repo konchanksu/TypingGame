@@ -290,13 +290,6 @@ class ResultWindow extends WindowParents {
     }
 
     /**
-     * ボタンを押せなくする
-     */
-    cannotClick() {
-        this.undo.setAbleClick(false);
-    }
-
-    /**
      * クリック後の遷移先のページを決定する
      * @param {*} x
      * @param {*} y
