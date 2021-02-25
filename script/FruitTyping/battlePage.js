@@ -178,7 +178,7 @@ class FinishWindow extends WindowParents {
 
     imageLoad() {
         super.imageLoad();
-        this.wait = Images.getImage("wait");
+        this.description = Images.getImage("matching");
     }
 
     cannotClick() {
@@ -239,19 +239,12 @@ class FinishWindow extends WindowParents {
         this.ctx.drawImage(chara, 0, 0);
     }
 
-    /**
-     * 待機画面の表示
-     */
-    showWait() {
-        this.ctx.drawImage(this.wait, 0, 0);
-    }
-
     showWindow() {
         this.canvasClear();
         this.showBackGround();
+        this.showDescription();
         this.showFrame();
         this.showUndo();
-        this.showWait();
     }
 }
 

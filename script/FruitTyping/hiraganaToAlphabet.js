@@ -109,6 +109,7 @@ class HiraganaToAlphabet {
             });
 
             returnList = tmpList.slice(0);
+            console.log(returnList);
 
             tmpList = [];
 
