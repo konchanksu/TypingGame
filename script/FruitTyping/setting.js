@@ -30,6 +30,7 @@ class SettingWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.center = 250;
     }
 
     /**
@@ -46,9 +47,10 @@ class SettingWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
-        this.slideBarSE = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 370, AudioOnWeb.nowSEVolume);
-        this.slideBarBGM = new SlideButtonOnCanvas(this.canvas.width/2 - 100, this.canvas.width/2 + 200, 200, AudioOnWeb.nowBGMVolume);
+        this.slideBarSE = new SlideButtonOnCanvas(this.canvas.width/2 - 50, this.canvas.width/2 + 250, 330, AudioOnWeb.nowSEVolume);
+        this.slideBarBGM = new SlideButtonOnCanvas(this.canvas.width/2 - 50, this.canvas.width/2 + 250, 230, AudioOnWeb.nowBGMVolume);
         this.description = Images.getImage("setting_title");
+        this.frame_mini = Images.getImage("frame_mini");
     }
 
     /**
@@ -116,21 +118,18 @@ class SettingWindow extends WindowParents {
      */
     showText(height, text) {
         let fontSize = 28;
-        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
-        let end = this.canvas.width/2 - 150;
+        this.ctx.font = fontSize.toString() + "px Noto Sans JP";
         this.ctx.fillStyle = "#ff9933";
         height += fontSize/2;
-        let textWidth = this.ctx.measureText( text ).width;
 
-        this.ctx.fillStyle = "#ff9933";
-        this.ctx.fillText(text, (end - textWidth), height);
+        this.ctx.fillText(text, 100, height);
     }
 
     /**
      * スライドバーを表示
      */
     showSlideBarSE() {
-        this.showText(this.slideBarSE.getStartH(), "SE 音量");
+        this.showText(this.slideBarSE.getStartH(), "効果音 音量");
         this.slideBarSE.showSlideButton();
     }
 

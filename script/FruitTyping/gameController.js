@@ -14,6 +14,7 @@ class GameController {
     static SINGLE_WAIT = 6;
     static TITLE = 7;
     static MULTI_WAIT = 8;
+    static SINGLE_CHARACTER_CHOOSE = 9;
 
     /**
      * コンストラクタ
@@ -85,6 +86,9 @@ class GameController {
             case GameController.BATTLE:
                 this.onClickMultiPlayPage(x, y);
                 break;
+            case GameController.SINGLE_CHARACTER_CHOOSE:
+                this.onClickSingleCharacterChoosePage(x, y);
+                break;
         }
     }
 
@@ -120,6 +124,9 @@ class GameController {
             case GameController.SINGLE:
                 this.singlePlayPage.mouseDown(x, y);
                 break;
+            case GameController.SINGLE_CHARACTER_CHOOSE:
+                this.characterChoosePage.mouseDown(x, y);
+                break;
         }
     }
 
@@ -154,6 +161,9 @@ class GameController {
                 break;
             case GameController.SINGLE:
                 this.singlePlayPage.mouseMove(x, y);
+                break;
+            case GameController.SINGLE_CHARACTER_CHOOSE:
+                this.characterChoosePage.mouseMove(x, y);
                 break;
         }
     }
@@ -217,6 +227,14 @@ class GameController {
     }
 
     /**
+     * 人利用キャラクター選択画面に移動
+     */
+    moveToSingleCharacterChoose() {
+        this.page = GameController.SINGLE_CHARACTER_CHOOSE;
+        this.characterChoosePage.showWindow();
+    }
+
+    /**
      * シングルプレイページに移動
      */
     moveToSinglePlayPage() {
@@ -239,6 +257,7 @@ class GameController {
     moveToTitlePage() {
         this.page = GameController.TITLE;
         this.character = undefined;
+        this.titlePage.canClick();
         this.titlePage.showWindow();
     }
 
@@ -268,16 +287,17 @@ class GameController {
      */
     onClickCharacterChoosePage(x, y) {
         const movePage = this.characterChoosePage.onClick(x, y);
-
-        switch(movePage) {
-            case MovePage.AHEAD_PAGE:
-                this.character = this.characterChoosePage.getCharacterId();
-                this.moveToAikotobaPage();
-                break;
-            case MovePage.BEHIND_PAGE:
-                this.moveToNickNamePage();
-                break;
-        }
+        Promise.resolve(movePage).then(resolve => {
+            switch(resolve) {
+                case MovePage.AHEAD_PAGE:
+                    this.character = this.characterChoosePage.getCharacterId();
+                    this.moveToAikotobaPage();
+                    break;
+                case MovePage.BEHIND_PAGE:
+                    this.moveToNickNamePage();
+                    break;
+            }
+        });
     }
 
     /**
@@ -332,6 +352,27 @@ class GameController {
     }
 
     /**
+     * シングルページでキャラクター選択画面でのキャラクター表示
+     * @param {*} x
+     * @param {*} y
+     */
+    onClickSingleCharacterChoosePage(x, y) {
+        const movePage = this.characterChoosePage.onClick(x, y);
+
+        Promise.resolve(movePage).then(resolve => {
+            switch(resolve) {
+                case MovePage.BEHIND_PAGE:
+                    this.moveToTitlePage();
+                    break;
+                case MovePage.AHEAD_PAGE:
+                    this.character = this.characterChoosePage.getCharacterId();
+                    this.moveToSingleWaitPage();
+                    break;
+            }
+        });
+    }
+
+    /**
      * シングルプレイ待機ページでクリック処理
      * @param {*} x
      * @param {*} y
@@ -371,22 +412,24 @@ class GameController {
      */
     onClickTitlePage(x, y) {
         const movePage = this.titlePage.onClick(x, y);
-
-        switch(movePage) {
-            case GameController.SINGLE_WAIT:
-                this.moveToSingleWaitPage();
-                break;
-            case GameController.NICKNAME:
-                this.moveToNickNamePage();
-                break;
-            case GameController.SETTING:
-                this.moveToSettingPage();
-                break;
-        }
+        Promise.resolve(movePage).then(resolve => {
+            switch(resolve) {
+                case GameController.SINGLE_CHARACTER_CHOOSE:
+                    this.moveToSingleCharacterChoose();
+                    break;
+                case GameController.NICKNAME:
+                    this.moveToNickNamePage();
+                    break;
+                case GameController.SETTING:
+                    this.moveToSettingPage();
+                    break;
+            };
+        });
     }
 }
 
 function firstload() {
+    itemSet();
     const gameController = new GameController();
     loadAllImages(gameController);
 }

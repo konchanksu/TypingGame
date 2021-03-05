@@ -12,6 +12,14 @@ class CharacterChoosePage extends PageParents {
     }
 
     /**
+     * 画面表示を行う
+     */
+    showWindow() {
+        this.window.canClick();
+        this.window.showWindow({});
+    }
+
+    /**
      * 決定したキャラクターidを返却する
      * @return キャラクターのid
      */
@@ -26,10 +34,11 @@ class CharacterChoosePage extends PageParents {
      * @return 遷移先のページ
      */
     onClick(x, y) {
-        let movePage, character;
-        [movePage, character] = this.window.onClick(x, y);
-        this.character = character;
-        return movePage;
+        const result = this.window.onClick(x, y);
+        return Promise.resolve(result).then( resolve => {
+            this.character = resolve[1];
+            return resolve[0];
+        });
     }
 }
 
@@ -40,14 +49,36 @@ class CharacterChooseWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
-        this.charaStartH = 50;
-        this.charaStartW = 125;
+        this.charaHeight = 100;
+        this.charaWidth = 30;
         this.onHoverImage = undefined;
+        this.canMoveFlag = true;
         this.characters = [];
-        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
-        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
-        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
-        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, Images.getImage("lemon")]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, "lemon_small"]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, "lemon_small"]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, "lemon_small"]);
+        this.characters.push([new ButtonOnCanvas("lemon_box"), Characters.lemon, "lemon_small"]);
+    }
+
+    /**
+     * 小さいジャンプのアニメーションの表示
+     */
+    async movePageAnimation() {
+        const max = 9;
+        const waitTime = 30;
+
+        const movePosition = upAndDownAnimation(max, this.charaHeight, this.charaHeight - 30);
+        for(const value of movePosition) {
+            await sleep(waitTime);
+            this.charaHeight = value;
+            this.showWindow( {imageStr:this.onHoverImage} );
+        }
+
+        return new Promise(resolve => resolve());
+    }
+
+    canClick() {
+        this.canMoveFlag = true;
     }
 
     /**
@@ -56,6 +87,7 @@ class CharacterChooseWindow extends WindowParents {
     cannotClick() {
         this.undo.setAbleClick(false);
         this.characters.forEach(character => character[0].setAbleClick(false));
+        this.canMoveFlag = false;
     }
 
     /**
@@ -68,18 +100,41 @@ class CharacterChooseWindow extends WindowParents {
     }
 
     /**
+     * ページ移動する時に行う処理
+     */
+    async movePage() {
+        this.cannotClick();
+        AudioUsedRegularly.playAudioKettei();
+        await this.movePageAnimation();
+        await sleep(300);
+        return new Promise(resolve => resolve());
+    }
+
+    /**
      * マウスが動いた時の処理
      * @param {*} x
      * @param {*} y
      */
     mouseMove(x, y) {
-        super.mouseMove(x, y);
-        const self = this;
-        this.characters.forEach((character) => {
-            if(character[0].onClick(x, y)) {
-                self.showACharacter(character[2]);
-            }
-        })
+        if(!this.canMoveFlag) { return; }
+        this.characters.forEach(character => { character[0].mouseMove(x, y); });
+        const onChara = this.characters.filter((character) => { return character[0].onClick(x, y); });
+        if(onChara.length != 0) {
+            onChara.forEach(character => { this.showWindow( {imageStr:character[2]} ); });
+        }
+        else{ this.showWindow(); }
+    }
+
+    /**
+     * マウスが押下された時の処理
+     * @param {*} x
+     * @param {*} y
+     */
+    mouseDown(x, y) {
+        if(!this.canMoveFlag) { return; }
+        this.undo.mouseDown(x, y);
+        this.characters.forEach(character => { character[0].mouseDown(x, y); });
+        this.showWindow( {imageStr:this.onHoverImage} );
     }
 
     /**
@@ -87,17 +142,18 @@ class CharacterChooseWindow extends WindowParents {
      * @param {*} x
      * @param {*} y
      */
-    onClick(x, y) {
+    async onClick(x, y) {
+        if(!this.canMoveFlag) { return; }
         super.mouseUp(x, y);
+        this.characters.forEach(character => { character[0].mouseUp(x, y); });
         if(this.undo.onClick(x, y)) {
             AudioUsedRegularly.playAudioCancel();
             this.cannotClick();
             return [MovePage.BEHIND_PAGE, -1];
         }
-        let filterList = this.characters.filter((character) => character[0].onClick(x, y));
+        const filterList = this.characters.filter((character) => character[0].onClick(x, y));
         if(filterList.length != 0) {
-            AudioUsedRegularly.playAudioKettei();
-            this.cannotClick();
+            await this.movePage();
             return [MovePage.AHEAD_PAGE, filterList[0][1]];
         }
         this.showWindow();
@@ -106,39 +162,48 @@ class CharacterChooseWindow extends WindowParents {
 
     /**
      * ウィンドウを表示する
+     * @param imageStr 文字列を表示する
      */
-    showWindow() {
+    showWindow({imageStr} = {}) {
         this.canvasClear();
         this.showBackGround();
         this.showFrame();
         this.showUndo();
         this.showDescription();
         this.showCharacters();
+        this.showACharacter(imageStr);
     }
 
-    showACharacter(image) {
-        this.ctx.drawImage(image, this.charaStartW, this.charaStartH);
-        this.onHoverImage = image;
+    /**
+     * ホバー時にキャラを表示する
+     * @param {str} imageStr イメージの文字列
+     */
+    showACharacter(imageStr) {
+        this.onHoverImage = imageStr;
+        if(this.onHoverImage != undefined) {
+            const showImage = Images.getImage(this.onHoverImage);
+            this.ctx.drawImage(showImage, this.charaWidth, this.charaHeight);
+        }
     }
 
     /**
      * キャラクター1ボタンを表示する
      */
     showCharacters() {
-        let startW = 390;
-        let startH = 200;
-        const blank = 1;
+        let startW = 470;
+        const move = 130;
+        let startH = 320;
 
-        this.characters[0][0].drawImage(startW, startH);
+        this.characters[0][0].drawImage(startW - this.characters[0][0].width()/2, startH - this.characters[0][0].height()/2);
 
-        startW += this.characters[0][0].width() + blank;
-        this.characters[1][0].drawImage(startW, startH);
+        startW += move;
+        this.characters[1][0].drawImage(startW - this.characters[1][0].width()/2, startH - this.characters[1][0].height()/2);
 
-        startH += this.characters[1][0].height() + blank;
-        startW -= this.characters[1][0].width() / 2 - blank;
-        this.characters[2][0].drawImage(startW, startH);
+        startH += move;
+        startW -= parseInt(move * (1/2));
+        this.characters[2][0].drawImage(startW - this.characters[2][0].width()/2, startH - this.characters[2][0].height()/2);
 
-        startW += this.characters[2][0].width() + blank;
-        this.characters[3][0].drawImage(startW, startH);
+        startW += move;
+        this.characters[3][0].drawImage(startW - this.characters[3][0].width()/2, startH - this.characters[3][0].height()/2);
     }
 }

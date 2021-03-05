@@ -75,7 +75,7 @@ class AudioOnWeb extends Audio {
     static changeAudioVolumeSE() {
         AudioOnWeb.SE_LIST.map( seItem => {
             seItem.volume = AudioOnWeb.nowSEVolume;
-        })
+        });
     }
 
     /**
@@ -84,7 +84,7 @@ class AudioOnWeb extends Audio {
     static changeAudioVolumeBGM() {
         AudioOnWeb.BGM_LIST.map( bgmItem => {
             bgmItem.volume = AudioOnWeb.nowBGMVolume;
-        })
+        });
     }
 }
 

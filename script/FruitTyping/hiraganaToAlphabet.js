@@ -65,6 +65,7 @@ class HiraganaToAlphabet {
         let next_char = "";
         if (this.nowInputText.length > 1) { next_char = this.nowInputText.charAt(1); }
 
+        // 現在の文字がんの時の処理
         if(now_char == "ん") {
             this.nowInputText = this.nowInputText.slice(1);
 
@@ -73,25 +74,20 @@ class HiraganaToAlphabet {
             } else {
                 return HiraganaToAlphabet.hiraganaDictionary[now_char];
             }
+        }
 
-        } else if(HiraganaToAlphabet.hiraganaSpecialListSmall.includes(next_char)) {
+        // 次の文字が小文字の時の処理
+        else if(HiraganaToAlphabet.hiraganaSpecialListSmall.includes(next_char)) {
             this.nowInputText = this.nowInputText.slice(2);
 
             let returnList = [""];
-            let tmpList = [];
-            HiraganaToAlphabet.hiraganaDictionary[now_char].forEach(element => {
-                returnList.forEach(element2 => { tmpList.push(element2.concat(element)); })
+            returnList = HiraganaToAlphabet.hiraganaDictionary[now_char].flatMap(element => {
+                return returnList.map(element2 => { return element2.concat(element); });
+            })
+
+            returnList = HiraganaToAlphabet.hiraganaDictionary[next_char].flatMap(element => {
+                return returnList.map(element2 => { return element2 + element; });
             });
-
-            returnList = tmpList.slice(0);
-
-            tmpList = [];
-
-            HiraganaToAlphabet.hiraganaDictionary[next_char].forEach(element => {
-                returnList.forEach(element2 => { tmpList.push(element2 + element); })
-            });
-
-            returnList = tmpList.slice(0);
 
             if(Object.keys(HiraganaToAlphabet.hiraganaDictionary).includes(now_char + next_char)) {
                 returnList = returnList.concat(HiraganaToAlphabet.hiraganaDictionary[now_char+next_char]);
@@ -99,25 +95,20 @@ class HiraganaToAlphabet {
 
             return returnList;
 
-        } else if(now_char == "っ") {
+        }
+
+        // 現在の文字がっの時の処理
+        else if(now_char == "っ") {
             this.nowInputText = this.nowInputText.slice(2);
 
             let returnList = [""];
-            let tmpList = [];
-            HiraganaToAlphabet.hiraganaDictionary[now_char].forEach(element => {
-                returnList.forEach(element2 => { tmpList.push(element2 + element); })
+            returnList = HiraganaToAlphabet.hiraganaDictionary[now_char].flatMap(element => {
+                return returnList.map(element2 => { return element2 + element; });
             });
 
-            returnList = tmpList.slice(0);
-            console.log(returnList);
-
-            tmpList = [];
-
-            HiraganaToAlphabet.hiraganaDictionary[next_char].forEach(element => {
-                returnList.forEach(element2 => { tmpList.push(element2 + element); })
+            returnList = HiraganaToAlphabet.hiraganaDictionary[next_char].flatMap(element => {
+                return returnList.map(element2 => { return element2 + element; });
             });
-
-            returnList = tmpList.slice(0);
 
             HiraganaToAlphabet.hiraganaDictionary[next_char].forEach(element => {
                 if(!HiraganaToAlphabet.hiraganaSpecialListN.includes(element.charAt(0))) {
@@ -126,8 +117,10 @@ class HiraganaToAlphabet {
             })
 
             return returnList;
+        }
 
-        } else {
+        // それ以外の文字の時
+        else {
             this.nowInputText = this.nowInputText.slice(1);
             return HiraganaToAlphabet.hiraganaDictionary[now_char];
         }
@@ -175,15 +168,11 @@ class HiraganaToAlphabet {
     makeRomajiChangeList() {
         this.ableTypeKeyList = [""];
         while(this.nowInputText.length != 0) {
-            let nextKeyList = [];
             let romaji = this.canRomajiChangeList()
-            this.ableTypeKeyList.forEach(element => {
-                romaji.forEach(element2 => {
-                    nextKeyList.push(element + element2);
-                })
-            })
 
-            this.ableTypeKeyList = nextKeyList;
+            this.ableTypeKeyList = this.ableTypeKeyList.flatMap(element => {
+                return romaji.map(element2 => { return element + element2; });
+            });
         }
     }
 

@@ -9,13 +9,6 @@ from fastapi import Depends, FastAPI, HTTPException
 from starlette.websockets import WebSocket
 from sqlalchemy.orm import Session
 
-from databases import crud, models, schemas
-from databases.database import SessionLocal, engine
-
-import json
-
-models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # クライアント情報
@@ -33,30 +26,9 @@ app.mount("/templates", StaticFiles(directory="templates"), name="tem")
 
 templates = Jinja2Templates(directory="templates")
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@app.post("/items/", response_model=schemas.Item)
-def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
-    db_item = crud.get_items(db)
-    return crud.create_item(db=db, item=item)
-
-
-@app.get("/items/", response_model=List[schemas.Item])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_items(db, skip=skip, limit=limit)
-    return items
-
-
 @app.get("/", response_class=HTMLResponse)
-async def read_item(request: Request, db: Session = Depends(get_db)):
-    items = crud.get_items(db)
-    return templates.TemplateResponse("index.html", {"request": request, "item": items})
+async def read_item(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/chara/", response_class=HTMLResponse)
 async def read_item(request: Request):

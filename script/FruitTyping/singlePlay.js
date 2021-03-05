@@ -21,8 +21,8 @@ class SinglePlayPage {
         this.alreadyType = "";
         this.hiraganaToAlphabet.newTextSet(this.nowItem.hiragana_data);
 
-        this.window.showKanjiText(this.nowKanji);
-        this.window.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
+        this.window.showWindow({kanjiText:this.nowKanji});
+        this.window.showWindow({already:this.alreadyType, yet:this.hiraganaToAlphabet.romajiChangeListHead()});
     }
 
     /**
@@ -30,8 +30,8 @@ class SinglePlayPage {
      */
     async gameCountDown() {
         for(let i = 29; i >= 0; i--) {
-            this.window.showTimerCountDown(i);
-            await this.sleep(1000);
+            this.window.showWindow({time:i});
+            await sleep(1000);
             if(this.finish) { return new Promise(resolve => resolve()); }
         }
 
@@ -78,7 +78,7 @@ class SinglePlayPage {
         } else {
             this.missTyping();
         }
-        this.window.showCorrectAndMissCount(this.rightTypeCount, this.missTypeCount);
+        this.window.showWindow({correct:this.rightTypeCount, miss:this.missTypeCount});
     }
 
     /**
@@ -87,11 +87,12 @@ class SinglePlayPage {
      */
     rightTyping(key) {
         this.alreadyType += key;
-        this.window.showRomaji(this.alreadyType, this.hiraganaToAlphabet.romajiChangeListHead());
+        this.window.showWindow({already:this.alreadyType, yet:this.hiraganaToAlphabet.romajiChangeListHead()});
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
         }
         this.rightTypeCount++;
+        AudioUsedRegularly.playAudioCorrectType();
     }
 
     /**
@@ -99,6 +100,7 @@ class SinglePlayPage {
      */
     missTyping() {
         this.missTypeCount++;
+        AudioUsedRegularly.playAudioMissType();
     }
 
     /**
@@ -117,23 +119,27 @@ class SinglePlayPage {
         this.start = false;
         this.finish = true;
         this.window = new ResultWindow(this.rightTypeCount, this.missTypeCount);
-        this.window.showWindow();
+        this.window.showWindow({});
     }
 
     /**
      * スタートのカウントダウン
      */
     async startCountDown() {
-        this.window.showCount(3);
-        await this.sleep(1000);
-        this.window.showCount(2);
-        await this.sleep(1000);
-        this.window.showCount(1);
-        await this.sleep(1000);
+        this.window.showCountDown(3);
+        AudioUsedRegularly.playAudio3();
+        await sleep(1000);
+        this.window.showCountDown(2);
+        AudioUsedRegularly.playAudio2();
+        await sleep(1000);
+        this.window.showCountDown(1);
+        AudioUsedRegularly.playAudio1();
+        await sleep(1000);
         this.start = true;
-        this.window.showWindow();
+        this.window.showWindow({});
         this.changeText();
-        this.window.showCorrectAndMissCount(this.rightTypeCount, this.missTypeCount);
+        this.window.showWindow({correct:this.rightTypeCount, miss:this.missTypeCount});
+        AudioUsedRegularly.playAudioStart();
 
         return new Promise(resolve => resolve());
     }
@@ -149,29 +155,12 @@ class SinglePlayWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
-    }
-
-    /**
-     * 平仮名部分の消去
-     */
-    kanjiClear() {
-        let width = 400;
-        this.ctx.clearRect(this.canvas.width/2-width/2, 200, width, 60);
-    }
-
-    /**
-     * ローマ字部分のクリア
-     */
-    romajiClear() {
-        let width = 400;
-        this.ctx.clearRect(this.canvas.width/2-width/2, 180, width, 40);
-    }
-
-    /**
-     * タイマーを消去する
-     */
-    timerClear() {
-        this.ctx.clearRect(15, 15, 55, 55);
+        this.already = "";
+        this.yet = "";
+        this.kanjiText = "";
+        this.correct = 0;
+        this.miss = 0;
+        this.time = 0;
     }
 
     /**
@@ -179,48 +168,67 @@ class SinglePlayWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
+        this.clock = Images.getImage("clock");
     }
 
     /**
     * 平仮名文字列を表示する
-    * @param {*} kanjiText 平仮名の文字列
     */
-    showKanjiText(kanjiText) {
-        this.kanjiClear();
+    showKanjiText() {
         this.ctx.font = "28px osaka-mono";
         this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "black";
-        let textWidth = this.ctx.measureText( kanjiText ).width;
+        this.ctx.fillStyle = "#333333";
+        let textWidth = this.ctx.measureText( this.kanjiText ).width;
 
-        this.ctx.fillText(kanjiText, (this.canvas.width - textWidth) / 2, 250);
+        this.ctx.fillText(this.kanjiText, (this.canvas.width - textWidth) / 2, 250);
     }
 
     /**
      * ページを表示する
      */
-    showWindow() {
+    showWindow({already, yet, kanjiText, miss, time, correct}) {
+        if(already != undefined) { this.already = already; }
+        if(yet != undefined) { this.yet = yet; }
+        if(kanjiText != undefined) { this.kanjiText = kanjiText; }
+        if(miss != undefined) { this.miss = miss; }
+        if(time != undefined) { this.time = time; }
+        if(correct != undefined) { this.correct = correct; }
+
         this.canvasClear();
+        this.showBackGround();
         this.showFrame();
+        this.showKanjiText();
+        this.showRomaji();
+        this.showTimerCountDown();
+        this.showCorrectAndMissCount();
     }
 
     /**
      * ローマ字を表示する
      * @param {*} str
      */
-    showRomaji(already, yet) {
-        let fontSize = 24;
+    showRomaji() {
+        let fontSize = 22;
         this.ctx.font = fontSize.toString() + "px osaka-mono";
-        let textWidth = this.ctx.measureText( already + yet ).width;
+        let textWidth = this.ctx.measureText( this.already + this.yet ).width;
         let start = (this.canvas.width - textWidth) / 2;
         let height = 210;
 
-        this.romajiClear();
-
         this.ctx.fillStyle = "#ff9933";
-        this.ctx.fillText(already, start, height);
+        this.ctx.fillText(this.already, start, height);
 
-        this.ctx.fillStyle = "black";
-        this.ctx.fillText(yet, start + already.length*fontSize / 2, height);
+        this.ctx.fillStyle = "#333333";
+        this.ctx.fillText(this.yet, start + this.already.length*fontSize / 2, height);
+    }
+
+    /**
+     * カウントダウンを表示する
+     * @param {*} number
+     */
+    showCountDown(number) {
+        this.showBackGround();
+        this.showCount(number);
+        this.showFrame();
     }
 
     /**
@@ -234,34 +242,30 @@ class SinglePlayWindow extends WindowParents {
 
     /**
      * 時間のカウントダウンを表示する
-     * @param time
      */
-    showTimerCountDown(time) {
+    showTimerCountDown() {
         let fontSize = 32;
-        time = time.toString();
+        const time = this.time.toString();
         this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( time ).width;
-        let height = 45;
+        let height = 80;
 
-        this.timerClear();
-
+        this.ctx.drawImage(this.clock, 30, 14);
         this.ctx.fillStyle = "#ff9933";
-        this.ctx.fillText(time, 35-textWidth/2, height);
+        this.ctx.fillText(time, 80-textWidth/2, height);
     }
 
     /**
      * 正しく打てた数と間違えた数を表示する
      */
-    showCorrectAndMissCount(correct, miss) {
+    showCorrectAndMissCount() {
         let fontSize = 32;
-        let text = "正しい入力: "+ correct.toString() + "  間違えた入力: " + miss.toString();
+        let text = "正しい入力: "+ this.correct.toString() + "  間違えた入力: " + this.miss.toString();
 
         this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
         let textWidth = this.ctx.measureText( text ).width;
         let height = 450;
         let start = (this.canvas.width - textWidth) / 2;
-
-        this.ctx.clearRect(50, height - 80, 700, 90);
 
         this.ctx.fillStyle = "#ff9933";
         this.ctx.fillText(text, start, height);

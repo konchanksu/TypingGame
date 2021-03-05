@@ -11,13 +11,23 @@ class TitlePage extends PageParents {
     }
 
     /**
+     * このページをクリックできるようにする
+     */
+    canClick() {
+        this.window.canClick();
+    }
+
+    /**
      * クリックした時の処理
      * @param x
      * @param y
      * @return 移動座標
      */
     onClick(x, y) {
-        return this.window.onClick(x, y);
+        const result = this.window.onClick(x, y);
+        return Promise.resolve(result).then( resolve => {
+            return resolve;
+        });
     }
 }
 
@@ -31,6 +41,54 @@ class TitleWindow extends WindowParents {
     constructor() {
         super();
         this.imageLoad();
+        this.charaWidth = -20;
+        this.charaHeight = 30;
+        this.canClickFlag = true;
+        this.isNowJump = false;
+    }
+
+    /**
+     * ページ移動の時のアニメを表示する
+     */
+    async movePageAnimation() {
+        const max = 12;
+        const waitTime = 35;
+
+        const movePosition = upAndDownAnimation(max, this.charaHeight, this.charaHeight - 40);
+        await sleep(200);
+        for(const value of movePosition) {
+            await sleep(waitTime);
+            this.charaHeight = value;
+            this.showWindow();
+        }
+
+        return new Promise(resolve => resolve());
+    }
+
+    /**
+     * 小さいジャンプのアニメーションの表示
+     */
+    async miniJumpAnimation() {
+        this.isNowJump = true;
+        AudioUsedRegularly.playAudioJump();
+        const max = 7;
+        const waitTime = 30;
+
+        const movePosition = upAndDownAnimation(max, this.charaHeight, this.charaHeight - 20);
+        for(const value of movePosition) {
+            await sleep(waitTime);
+            this.charaHeight = value;
+            this.showWindow();
+        }
+        this.isNowJump = false;
+    }
+
+    /**
+     * このページをクリックできるようにする
+     * ページ遷移中に連打不可能にするための処理
+     */
+    canClick() {
+        this.canClickFlag = true;
     }
 
     /**
@@ -40,6 +98,7 @@ class TitleWindow extends WindowParents {
         this.single.setAbleClick(false);
         this.multi.setAbleClick(false);
         this.setting.setAbleClick(false);
+        this.canClickFlag = false;
     }
 
     /**
@@ -52,6 +111,18 @@ class TitleWindow extends WindowParents {
         this.single = new ButtonOnCanvas("single_play");
         this.multi = new ButtonOnCanvas("multi_play");
         this.setting = new ButtonOnCanvas("setting");
+    }
+
+    /**
+     * キャラがクリックされたかどうか
+     * @param {*} x
+     * @param {*} y
+     */
+    inCharacter(x, y) {
+        [x, y] = position(x, y);
+        if(this.charaWidth <= x && x <= this.charaWidth + this.character.width
+            && this.charaHeight <= y && y <= this.charaHeight + this.character.height ) { return true; }
+        return false;
     }
 
     /**
@@ -91,27 +162,39 @@ class TitleWindow extends WindowParents {
     }
 
     /**
+     * ページ移動する時に行う処理
+     */
+    async movePage() {
+        this.cannotClick();
+        AudioUsedRegularly.playAudioKettei();
+        await this.movePageAnimation();
+        await sleep(200);
+        return new Promise(resolve => resolve());
+    }
+
+    /**
      * クリック後の遷移先のページを決定する
      * @param {*} x
      * @param {*} y
      * @returns 先に進むページ
      */
-    onClick(x, y) {
+    async onClick(x, y) {
         this.mouseUp(x, y);
+        if(!this.canClickFlag) { return -1; }
         if(this.single.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
-            this.cannotClick();
-            return GameController.SINGLE_WAIT;
+            await this.movePage();
+            return GameController.SINGLE_CHARACTER_CHOOSE;
         }
         if(this.multi.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
-            this.cannotClick();
+            await this.movePage();
             return GameController.NICKNAME;
         }
         if(this.setting.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
-            this.cannotClick();
+            await this.movePage();
             return GameController.SETTING;
+        }
+        if(this.inCharacter(x, y) && !this.isNowJump) {
+            this.miniJumpAnimation();
         }
         this.showWindow();
         return -1;
@@ -141,7 +224,7 @@ class TitleWindow extends WindowParents {
      * キャラクターを表示する
      */
     showCharacter() {
-        this.ctx.drawImage(this.character, 60, 50);
+        this.ctx.drawImage(this.character, this.charaWidth, this.charaHeight);
     }
 
     /**

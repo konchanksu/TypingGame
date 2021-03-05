@@ -33,7 +33,7 @@ class Database {
      * @param {String} hiragana_data データベース内の平仮名の文章
      */
     static pushItemList(id, kanji_data, hiragana_data) {
-        Database.itemList.push( new Items(parseInt(id), kanji_data, hiragana_data) );
+        Database.itemList.push( new Items(id, kanji_data, hiragana_data) );
         Database.randomItemList.push( Database.itemList[Database.itemList - 1] );
     }
 
@@ -64,7 +64,17 @@ class Database {
     }
 }
 
-function itemSet(id, kanji_data, hiragana_data) {
-    Database.pushItemList(id, kanji_data, hiragana_data);
+function itemSet() {
+    const mojiData = [
+        [0, "フォーチュンクッキー", "ふぉーちゅんくっきー"],
+        [1, "サクサクメロンパン", "さくさくめろんぱん"],
+        [2, "美味しいフルーツ頂きます", "おいしいふるーついただきます"],
+        [3, "時計の針が止まっている", "とけいのはりがとまっている"],
+        [4, "リモコンが逃げてる", "りもこんがにげてる"],
+    ]
+
+    mojiData.forEach(items => {
+        Database.pushItemList(items[0], items[1], items[2]);
+    })
 }
 

@@ -26,6 +26,8 @@ class ButtonOnCanvas {
      */
     drawImage(startW, startH) {
         if(!this.isAbleClick) { this.doFirstDrawImage(startW, startH); }
+        if(startW != undefined) { this.startW = startW; }
+        if(startH != undefined) { this.startH = startH; }
 
         if(!this.isHover && !this.isDown) { this.ctx.drawImage(this._image, this.startW, this.startH); }
         else if(this.isDown) { this.ctx.drawImage(this._imageDown, this.startW, this.startH); }
@@ -73,14 +75,18 @@ class ButtonOnCanvas {
      * 幅
      */
     width() {
-        return this._image.width;
+        if(!this.isHover && !this.isDown) { return this._image.width; }
+        else if(this.isDown) { return this._imageDown.width; }
+        return this._imageHover.width;
     }
 
     /**
      * 高さ
      */
     height() {
-        return this._image.height;
+        if(!this.isHover && !this.isDown) { return this._image.height; }
+        else if(this.isDown) { return this._imageDown.height; }
+        return this._imageHover.height;
     }
 
     /**
@@ -243,7 +249,7 @@ class SlideButtonOnCanvas {
      * @param y
      */
     onClick(x, y) {
-        [x, y] = this.position(x, y);
+        [x, y] = position(x, y);
         if((this.nowPosition - x) ** 2 + (this.startH+(this.height/2) - y) ** 2 <= this.rect ** 2) {
             return true;
         }
