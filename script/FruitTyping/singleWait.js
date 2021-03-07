@@ -16,6 +16,15 @@ class SingleWaitPage extends PageParents {
     onClick(x, y) {
         return this.window.onClick(x, y);
     }
+
+    /**
+     * キーが下がった時の処理
+     * @param {*} key
+     */
+    inputKeyDown(key) {
+        if(key == " ") { return MovePage.AHEAD_PAGE; }
+        return MovePage.CURRENT_PAGE;
+    }
 }
 
 /**
@@ -43,11 +52,6 @@ class SingleWaitWindow extends WindowParents {
             this.cannotClick();
             return MovePage.BEHIND_PAGE;
         }
-        if(this.decision.onClick(x, y)) {
-            AudioUsedRegularly.playAudioKettei();
-            this.cannotClick();
-            return MovePage.AHEAD_PAGE;
-        }
         this.showWindow();
         return MovePage.CURRENT_PAGE;
     }
@@ -57,6 +61,7 @@ class SingleWaitWindow extends WindowParents {
      */
     imageLoad() {
         super.imageLoad();
+        this.description = Images.getImage("junbiOK");
     }
 
     /**
@@ -67,14 +72,6 @@ class SingleWaitWindow extends WindowParents {
         this.showBackGround();
         this.showFrame();
         this.showUndo();
-        this.showDecisionButton();
-    }
-
-    /**
-     * 決定ボタンを表示する
-     */
-    showDecisionButton() {
-        let startH = 450;
-        this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
+        this.showDescription();
     }
 }

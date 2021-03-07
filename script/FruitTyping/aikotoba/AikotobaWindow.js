@@ -1,54 +1,7 @@
 /**
- * 合言葉を入力するページ
- */
-class AikotobaPage extends PageParents {
-    /**
-     * コンストラクタ
-     */
-    constructor() {
-        super();
-        this.inputKeyBoard = new InputKeyBoard(6);
-        this.window = new AikotobaWindow();
-    }
-
-    /**
-     * 入力したニックネームを返す
-     * @return ニックネーム
-     */
-    getAikotoba() {
-        return this.inputKeyBoard.text;
-    }
-
-    /**
-     * キー入力があった時の処理
-     */
-    inputKeyDown(key) {
-        this.inputKeyBoard.inputKeyDownOnlyNumber(key);
-        this.window.setAikotoba(this.inputKeyBoard.text);
-        this.showWindow();
-        AudioUsedRegularly.playAudioCorrectType();
-    }
-
-    /**
-     * クリックした時の処理
-     * @param {*} x
-     * @param {*} y
-     * @return クリックした後の遷移先
-     */
-    onClick(x, y) {
-        const movePage = this.window.onClick(x, y);
-        if( movePage == MovePage.AHEAD_PAGE && this.inputKeyBoard.text.length != this.inputKeyBoard.textMax ) {
-            this.window.canClick();
-            return MovePage.CURRENT_PAGE;
-        }
-        return movePage;
-    }
-}
-
-/**
  * 合言葉入力画面を表示するウィンドウ
  */
-class AikotobaWindow extends WindowParents {
+ class AikotobaWindow extends WindowParents {
     /**
      * コンストラクタ
      */
@@ -94,9 +47,9 @@ class AikotobaWindow extends WindowParents {
     showWindow() {
         this.canvasClear();
         this.showBackGround();
-        this.ctx.font = "56px osaka-mono"
+        this.ctx.font = FontUsedReguraly.osakaMono(TextSizeUsedReguraly.MAX);
         this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillStyle = ColorUsedReguraly.GAME_ORANGE;
 
         this.showDescription();
         this.showFrame();
@@ -129,4 +82,3 @@ class AikotobaWindow extends WindowParents {
         this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
     }
 }
-

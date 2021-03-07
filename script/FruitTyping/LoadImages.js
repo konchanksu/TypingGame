@@ -83,6 +83,7 @@ const loadAllImages = function(gameController) {
                          ["/static/img/resultPage.png", "resultPage"],
                          ["/static/img/title/aikotoba.png", "aikotoba"],
                          ["/static/img/title/characterChoose.png", "characterChoose"],
+                         ["/static/img/title/junbiOK.png", "junbiOK"],
                          ["/static/img/title/matchingWait.png", "matching"],
                          ["/static/img/title/nickname.png", "nickname"],
                          ["/static/img/title/setting.png", "setting_title"],

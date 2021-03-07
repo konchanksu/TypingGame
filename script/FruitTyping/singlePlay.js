@@ -3,20 +3,39 @@ class SinglePlayPage {
      * コンストラクタ
      */
     constructor() {
-        this.window = new SinglePlayWindow();
+        this.setSinglePlayWindow();
+    }
+
+    /**
+     * 新規でプレイする時に画面をセットするメソッド
+     */
+    setSinglePlayWindow() {
         this.start = false;
         this.finish = false;
+        this.character;
         this.alreadyType = "";
         this.hiraganaToAlphabet = new HiraganaToAlphabet("");
         this.rightTypeCount = 0;
         this.missTypeCount = 0;
+        this.window = new SinglePlayWindow();
+        this.enemy = new Enemy();
+        this.window.setEnemy(this.enemy);
+    }
+
+    /**
+     * 攻撃を行う
+     */
+    attack() {
+        this.character.upAttack();
+        const damage = this.character.toAttack();
+        this.enemy.receiveDamage(damage);
     }
 
     /**
      * 文字列の入れ替え
      */
     changeText() {
-        this.nowItem = Database.randomGetDouble();
+        this.nowItem = Database.randomGet();
         this.nowKanji = this.nowItem.kanji_data;
         this.alreadyType = "";
         this.hiraganaToAlphabet.newTextSet(this.nowItem.hiragana_data);
@@ -26,10 +45,19 @@ class SinglePlayPage {
     }
 
     /**
+     * キャラクターをセットする
+     */
+    setCharacter(character) {
+        this.character = character;
+        this.window.setCharacter(this.character);
+    }
+
+    /**
      * ゲームのカウントダウンを表示する
      */
     async gameCountDown() {
-        for(let i = 29; i >= 0; i--) {
+        const time = 60;
+        for(let i = time; i > 0; i--) {
             this.window.showWindow({time:i});
             await sleep(1000);
             if(this.finish) { return new Promise(resolve => resolve()); }
@@ -71,8 +99,12 @@ class SinglePlayPage {
      * @param {*} key
      */
     keyDown(key) {
-        if(!this.start) return;
-        if(key == "Escape") { this.finish = true; return; }
+        if(!this.start || this.finish) return;
+        if(key == "Escape") {
+            this.showFinish();
+            return;
+        }
+
         if(this.hiraganaToAlphabet.isAbleToInputRomaji(key)) {
             this.rightTyping(key);
         } else {
@@ -87,12 +119,14 @@ class SinglePlayPage {
      */
     rightTyping(key) {
         this.alreadyType += key;
+        this.rightTypeCount++;
+        AudioUsedRegularly.playAudioCorrectType();
         this.window.showWindow({already:this.alreadyType, yet:this.hiraganaToAlphabet.romajiChangeListHead()});
         if(this.hiraganaToAlphabet.isFinished()) {
             this.changeText();
+            this.attack();
+            if(this.enemy.hp() == 0) { this.showFinish(); }
         }
-        this.rightTypeCount++;
-        AudioUsedRegularly.playAudioCorrectType();
     }
 
     /**
@@ -100,14 +134,8 @@ class SinglePlayPage {
      */
     missTyping() {
         this.missTypeCount++;
+        this.character.downAttack();
         AudioUsedRegularly.playAudioMissType();
-    }
-
-    /**
-     * スリープする
-     */
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     /**
@@ -117,9 +145,11 @@ class SinglePlayPage {
         await this.startCountDown();
         await this.gameCountDown();
         this.start = false;
-        this.finish = true;
-        this.window = new ResultWindow(this.rightTypeCount, this.missTypeCount);
-        this.window.showWindow({});
+        if(!this.finish) {
+            this.finish = true;
+            this.window = new ResultWindow(this.rightTypeCount, this.missTypeCount);
+            this.window.showWindow();
+        }
     }
 
     /**
@@ -136,12 +166,21 @@ class SinglePlayPage {
         AudioUsedRegularly.playAudio1();
         await sleep(1000);
         this.start = true;
-        this.window.showWindow({});
+        this.window.showWindow();
         this.changeText();
         this.window.showWindow({correct:this.rightTypeCount, miss:this.missTypeCount});
         AudioUsedRegularly.playAudioStart();
 
         return new Promise(resolve => resolve());
+    }
+
+    /**
+     * 終了後の表示を行う
+     */
+    showFinish() {
+        this.finish = true;
+        this.window = new ResultWindow(this.rightTypeCount, this.missTypeCount);
+        this.window.showWindow();
     }
 }
 
@@ -164,6 +203,28 @@ class SinglePlayWindow extends WindowParents {
     }
 
     /**
+     * ページを表示する
+     */
+     showWindow({already, yet, kanjiText, miss, time, correct}={}) {
+        if(already != undefined) { this.already = already; }
+        if(yet != undefined) { this.yet = yet; }
+        if(kanjiText != undefined) { this.kanjiText = kanjiText; }
+        if(miss != undefined) { this.miss = miss; }
+        if(time != undefined) { this.time = time; }
+        if(correct != undefined) { this.correct = correct; }
+
+        this.canvasClear();
+        this.showBackGround();
+        this.showFrame();
+        this.showMyCharacter();
+        this.showKanjiText();
+        this.showRomaji();
+        this.showTimerCountDown();
+        this.showCorrectAndMissCount();
+        this.showEnemyHp();
+    }
+
+    /**
      * イメージを表示する
      */
     imageLoad() {
@@ -175,32 +236,12 @@ class SinglePlayWindow extends WindowParents {
     * 平仮名文字列を表示する
     */
     showKanjiText() {
-        this.ctx.font = "28px osaka-mono";
-        this.ctx.textAlign = "left";
-        this.ctx.fillStyle = "#333333";
-        let textWidth = this.ctx.measureText( this.kanjiText ).width;
+        this.ctx.font = FontUsedReguraly.osakaMono(TextSizeUsedReguraly.NOMAL);
+        this.ctx.fillStyle = ColorUsedReguraly.TEXT_COLOR;
+        const textWidth = this.ctx.measureText( this.kanjiText ).width;
+        const height = 275;
 
-        this.ctx.fillText(this.kanjiText, (this.canvas.width - textWidth) / 2, 250);
-    }
-
-    /**
-     * ページを表示する
-     */
-    showWindow({already, yet, kanjiText, miss, time, correct}) {
-        if(already != undefined) { this.already = already; }
-        if(yet != undefined) { this.yet = yet; }
-        if(kanjiText != undefined) { this.kanjiText = kanjiText; }
-        if(miss != undefined) { this.miss = miss; }
-        if(time != undefined) { this.time = time; }
-        if(correct != undefined) { this.correct = correct; }
-
-        this.canvasClear();
-        this.showBackGround();
-        this.showFrame();
-        this.showKanjiText();
-        this.showRomaji();
-        this.showTimerCountDown();
-        this.showCorrectAndMissCount();
+        this.ctx.fillText(this.kanjiText, (this.canvas.width - textWidth) / 2, height);
     }
 
     /**
@@ -208,16 +249,16 @@ class SinglePlayWindow extends WindowParents {
      * @param {*} str
      */
     showRomaji() {
-        let fontSize = 22;
-        this.ctx.font = fontSize.toString() + "px osaka-mono";
-        let textWidth = this.ctx.measureText( this.already + this.yet ).width;
-        let start = (this.canvas.width - textWidth) / 2;
-        let height = 210;
+        const fontSize = TextSizeUsedReguraly.MINI;
+        this.ctx.font = FontUsedReguraly.osakaMono(fontSize);
+        const textWidth = this.ctx.measureText( this.already + this.yet ).width;
+        const start = (this.canvas.width - textWidth) / 2;
+        const height = 240;
 
-        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillStyle = ColorUsedReguraly.GAME_ORANGE;
         this.ctx.fillText(this.already, start, height);
 
-        this.ctx.fillStyle = "#333333";
+        this.ctx.fillStyle = ColorUsedReguraly.TEXT_COLOR;
         this.ctx.fillText(this.yet, start + this.already.length*fontSize / 2, height);
     }
 
@@ -226,6 +267,7 @@ class SinglePlayWindow extends WindowParents {
      * @param {*} number
      */
     showCountDown(number) {
+        this.canvasClear();
         this.showBackGround();
         this.showCount(number);
         this.showFrame();
@@ -236,7 +278,6 @@ class SinglePlayWindow extends WindowParents {
      * @param {*} number
      */
     showCount(number) {
-        this.canvasClear();
         this.ctx.drawImage(Images.getImage("count"+number.toString()), 0, 0);
     }
 
@@ -244,14 +285,14 @@ class SinglePlayWindow extends WindowParents {
      * 時間のカウントダウンを表示する
      */
     showTimerCountDown() {
-        let fontSize = 32;
+        const fontSize = TextSizeUsedReguraly.BIG;
         const time = this.time.toString();
-        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
+        this.ctx.font = FontUsedReguraly.osakaMono(fontSize);
         let textWidth = this.ctx.measureText( time ).width;
         let height = 80;
 
         this.ctx.drawImage(this.clock, 30, 14);
-        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillStyle = ColorUsedReguraly.GAME_ORANGE;
         this.ctx.fillText(time, 80-textWidth/2, height);
     }
 
@@ -259,16 +300,55 @@ class SinglePlayWindow extends WindowParents {
      * 正しく打てた数と間違えた数を表示する
      */
     showCorrectAndMissCount() {
-        let fontSize = 32;
-        let text = "正しい入力: "+ this.correct.toString() + "  間違えた入力: " + this.miss.toString();
+        const fontSize = TextSizeUsedReguraly.BIG;
+        const text = "正しい入力: "+ this.correct.toString() + "  間違えた入力: " + this.miss.toString();
 
-        this.ctx.font = fontSize.toString() + "px ヒラギノ丸ゴ Pro W4";
+        this.ctx.font = FontUsedReguraly.osakaMono(fontSize);
         let textWidth = this.ctx.measureText( text ).width;
         let height = 450;
         let start = (this.canvas.width - textWidth) / 2;
 
-        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillStyle = ColorUsedReguraly.GAME_ORANGE;
         this.ctx.fillText(text, start, height);
+    }
+
+    /**
+     * 自分のキャラクターを表示する
+     */
+    showMyCharacter() {
+        const startW = 20;
+        const startH = 80;
+        this.ctx.drawImage(this.character.getImageSmall(), startW, startH);
+    }
+
+    /**
+     * 敵のhpを表示する
+     */
+    showEnemyHp() {
+        const startH = 40;
+        const startW = 260;
+        const width = 500;
+        const height = 10;
+
+        this.ctx.fillStyle = ColorUsedReguraly.HP_BAR;
+        const remainHp = width*(1.0 - this.enemy.hpPercent());
+        this.ctx.fillRect(startW + remainHp, startH, width-remainHp, height);
+    }
+
+    /**
+     * 敵を設定する
+     * @param {Enemy} enemy 敵
+     */
+    setEnemy(enemy) {
+        this.enemy = enemy;
+    }
+
+    /**
+     * キャラクターを設定する
+     * @param {CharacterStatus} キャラクター
+     */
+    setCharacter(character) {
+        this.character = character;
     }
 }
 

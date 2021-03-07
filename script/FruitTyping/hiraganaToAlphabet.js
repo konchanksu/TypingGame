@@ -90,33 +90,74 @@ class HiraganaToAlphabet {
             });
 
             if(Object.keys(HiraganaToAlphabet.hiraganaDictionary).includes(now_char + next_char)) {
-                returnList = returnList.concat(HiraganaToAlphabet.hiraganaDictionary[now_char+next_char]);
+                returnList = HiraganaToAlphabet.hiraganaDictionary[now_char+next_char].concat(returnList);
             }
 
             return returnList;
-
         }
 
         // 現在の文字がっの時の処理
         else if(now_char == "っ") {
-            this.nowInputText = this.nowInputText.slice(2);
+            // い っちょ う,みたいに「っ」と「小文字」が重なった時の処理
+            if(this.nowInputText.length >= 2 && HiraganaToAlphabet.hiraganaSpecialListSmall.includes(this.nowInputText[2])) {
+                const nextNextChar = this.nowInputText[2];
+                this.nowInputText = this.nowInputText.slice(3);
 
-            let returnList = [""];
-            returnList = HiraganaToAlphabet.hiraganaDictionary[now_char].flatMap(element => {
-                return returnList.map(element2 => { return element2 + element; });
-            });
+                // ちょ、とかの部分を求める
+                let smallList = [""];
+                smallList = HiraganaToAlphabet.hiraganaDictionary[next_char].flatMap(element => {
+                    return smallList.map(element2 => { return element2.concat(element); });
+                })
 
-            returnList = HiraganaToAlphabet.hiraganaDictionary[next_char].flatMap(element => {
-                return returnList.map(element2 => { return element2 + element; });
-            });
+                smallList = HiraganaToAlphabet.hiraganaDictionary[nextNextChar].flatMap(element => {
+                    return smallList.map(element2 => { return element2 + element; });
+                });
 
-            HiraganaToAlphabet.hiraganaDictionary[next_char].forEach(element => {
-                if(!HiraganaToAlphabet.hiraganaSpecialListN.includes(element.charAt(0))) {
-                    returnList.push(element.charAt(0) + element);
+                if(Object.keys(HiraganaToAlphabet.hiraganaDictionary).includes(next_char + nextNextChar)) {
+                    smallList = HiraganaToAlphabet.hiraganaDictionary[next_char + nextNextChar].concat(smallList);
                 }
-            })
 
-            return returnList;
+                let returnList = [];
+                smallList.forEach(element => {
+                    if(!HiraganaToAlphabet.hiraganaSpecialListN.includes(element.charAt(0))) {
+                        returnList.push(element.charAt(0) + element);
+                    }
+                })
+
+                let tmpList = [""];
+                tmpList = HiraganaToAlphabet.hiraganaDictionary[now_char].flatMap(element => {
+                    return tmpList.map(element2 => { return element2 + element; });
+                });
+
+                tmpList = smallList.flatMap(element => {
+                    return tmpList.map(element2 => { return element2 + element; });
+                });
+
+                returnList = returnList.concat(tmpList);
+                return returnList;
+            }
+
+            else {
+                this.nowInputText = this.nowInputText.slice(2);
+
+                let returnList = [];
+                HiraganaToAlphabet.hiraganaDictionary[next_char].forEach(element => {
+                    if(!HiraganaToAlphabet.hiraganaSpecialListN.includes(element.charAt(0))) {
+                        returnList.push(element.charAt(0) + element);
+                    }
+                })
+
+                let tmpList = [""];
+                tmpList = HiraganaToAlphabet.hiraganaDictionary[now_char].flatMap(element => {
+                    return tmpList.map(element2 => { return element2 + element; });
+                });
+
+                tmpList = HiraganaToAlphabet.hiraganaDictionary[next_char].flatMap(element => {
+                    return tmpList.map(element2 => { return element2 + element; });
+                });
+
+                return returnList.concat(tmpList);
+            }
         }
 
         // それ以外の文字の時

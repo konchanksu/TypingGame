@@ -16,7 +16,7 @@ class CharacterChoosePage extends PageParents {
      */
     showWindow() {
         this.window.canClick();
-        this.window.showWindow({});
+        this.window.showWindow();
     }
 
     /**
@@ -190,7 +190,7 @@ class CharacterChooseWindow extends WindowParents {
      * キャラクター1ボタンを表示する
      */
     showCharacters() {
-        let startW = 470;
+        let startW = 500;
         const move = 130;
         let startH = 320;
 

@@ -121,7 +121,7 @@ class NickNameWindow extends WindowParents {
      * 決定ボタンを表示する
      */
     showDecisionButton() {
-        let startH = 450;
+        const startH = 450;
         this.showDecision((this.windowWidth - this.decision.width()) / 2, startH);
     }
 }

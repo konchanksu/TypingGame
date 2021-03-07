@@ -84,7 +84,15 @@ class CharacterStatus {
      * @return {Image} 画像データ
      */
     getImage() {
-        return this._image;
+        return Images.getImage(this._image);
+    }
+
+    /**
+     * 小さいキャライメージを取得
+     * @return {Image} 画像データ
+     */
+    getImageSmall() {
+        return Images.getImage(this._image + "_small");
     }
 
     /**

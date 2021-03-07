@@ -30,6 +30,17 @@ class GameController {
         this.characterChoosePage = new CharacterChoosePage();
         this.nickNamePage = new NickNamePage();
         this.singleWaitPage = new SingleWaitPage();
+        this.singlePlayPage = new SinglePlayPage();
+    }
+
+    keyDownSingleWaitPage(key) {
+        const movePage = this.singleWaitPage.inputKeyDown(key);
+
+        switch(movePage) {
+            case MovePage.AHEAD_PAGE:
+                this.moveToSinglePlayPage();
+                break;
+        }
     }
 
     /**
@@ -50,6 +61,9 @@ class GameController {
                 break;
             case GameController.BATTLE:
                 this.doBattlePage(key);
+                break;
+            case GameController.SINGLE_WAIT:
+                this.keyDownSingleWaitPage(key);
                 break;
         }
     }
@@ -239,7 +253,6 @@ class GameController {
      */
     moveToSinglePlayPage() {
         this.page = GameController.SINGLE;
-        this.singlePlayPage = new SinglePlayPage();
         this.singlePlayPage.showWindow();
     }
 
@@ -366,6 +379,7 @@ class GameController {
                     break;
                 case MovePage.AHEAD_PAGE:
                     this.character = this.characterChoosePage.getCharacterId();
+                    this.singlePlayPage.setCharacter(Characters.characters(this.character));
                     this.moveToSingleWaitPage();
                     break;
             }
@@ -384,9 +398,6 @@ class GameController {
             case MovePage.BEHIND_PAGE:
                 this.moveToTitlePage();
                 break;
-            case MovePage.AHEAD_PAGE:
-                this.moveToSinglePlayPage();
-                break;
         }
     }
 
@@ -401,6 +412,7 @@ class GameController {
         switch(movePage) {
             case MovePage.BEHIND_PAGE:
                 this.moveToTitlePage();
+                this.singlePlayPage.setSinglePlayWindow();
                 break;
         }
     }

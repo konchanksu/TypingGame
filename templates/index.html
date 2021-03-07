@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
     <link rel="icon" href="/static/favicon.ico">
     <script src="/script/FruitTyping/LoadImages.js"></script>
-    <script src="/script/FruitTyping/audioSetting.js"></script>
+    <script src="/script/FruitTyping/AudioOnWeb.js"></script>
     <script src="/script/FruitTyping/button.js"></script>
-    <script src="/script/FruitTyping/windowParents.js"></script>
-    <script src="/script/FruitTyping/aikotoba.js"></script>
+    <script src="/script/FruitTyping/WindowParents.js"></script>
+    <script src="/script/FruitTyping/usedReguraly/AudioUsedRegularly.js"></script>
+    <script src="/script/FruitTyping/usedReguraly/ColorUsedReguraly.js"></script>
+    <script src="/script/FruitTyping/usedReguraly/FontUsedReguraly.js"></script>
+    <script src="/script/FruitTyping/usedReguraly/TextSizeUsedReguraly.js"></script>
+    <script src="/script/FruitTyping/aikotoba/AikotobaPage.js"></script>
+    <script src="/script/FruitTyping/aikotoba/AikotobaWindow.js"></script>
     <script src="/script/FruitTyping/battlePage.js"></script>
     <script src="/script/FruitTyping/characterChoose.js"></script>
     <script src="/script/FruitTyping/characterStatus.js"></script>
@@ -24,7 +29,8 @@
     <script src="/script/FruitTyping/setting.js"></script>
     <script src="/script/FruitTyping/singleWait.js"></script>
     <script src="/script/FruitTyping/singlePlay.js"></script>
-    <script src="/script/FruitTyping/titlePage.js"></script>
+    <script src="/script/FruitTyping/title/TitlePage.js"></script>
+    <script src="/script/FruitTyping/title/TitleWindow.js"></script>
 </head>
 
 <body onload="firstload();">
@@ -45,7 +51,6 @@
             <div id="game" style="width: 800px; height: 550px; /**border: 3px solid #ff9933;*/">
                 <canvas id="gameWindow" width="800" height="550"></canvas>
             </div>
-            <h1 style="margin-top: 70px;">遊び方</h1>
         </section>
         <footer>
             <!-- <h3><small>&copy; 2021 Kondo Hidemasa</small></h3> -->

@@ -34,7 +34,7 @@ class Database {
      */
     static pushItemList(id, kanji_data, hiragana_data) {
         Database.itemList.push( new Items(id, kanji_data, hiragana_data) );
-        Database.randomItemList.push( Database.itemList[Database.itemList - 1] );
+        Database.randomItemList.push( new Items(id, kanji_data, hiragana_data) );
     }
 
     /**
@@ -53,6 +53,7 @@ class Database {
         let randomIndex = Math.floor(Math.random() * Database.randomItemList.length);
         let returnItem = Database.randomItemList[randomIndex];
         Database.randomItemList = Database.randomItemList.filter(n => n != returnItem);
+        if(Database.randomItemList.length == 0) { Database.randomItemList = Database.itemList; }
         return returnItem;
     }
 
@@ -71,6 +72,11 @@ function itemSet() {
         [2, "美味しいフルーツ頂きます", "おいしいふるーついただきます"],
         [3, "時計の針が止まっている", "とけいのはりがとまっている"],
         [4, "リモコンが逃げてる", "りもこんがにげてる"],
+        [5, "にゃんこを飼いたい", "にゃんこをかいたい"],
+        [6, "クラゲぷかぷか浮いている", "くらげぷかぷかういている"],
+        [7, "お待ちかねのデザート", "おまちかねのでざーと"],
+        [8, "街はすでに茜色", "まちはすでにあかねいろ"],
+        [9, "ラーメン一丁お待ち", "らーめんいっちょうおまち"],
     ]
 
     mojiData.forEach(items => {

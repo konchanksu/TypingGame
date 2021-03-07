@@ -229,14 +229,14 @@ class BattleWindow extends WindowParents{
 
         this.ctx.clearRect(startW, startH, width, height);
 
-        this.ctx.fillStyle = "#666666";
+        this.ctx.fillStyle = ColorUsedReguraly.TEXT_COLOR;
         this.ctx.fillRect(startW, startH, width, height);
 
         let diff = (1 - hp / maxHp) * width;
         startW += diff;
         width -= diff;
 
-        this.ctx.fillStyle = "#73E396";
+        this.ctx.fillStyle = ColorUsedReguraly.HP_BAR;
         this.ctx.fillRect(startW, startH, width, height);
     }
 
@@ -251,7 +251,7 @@ class BattleWindow extends WindowParents{
         let start = (this.canvas.width) * 5 / 6;
         let height = 470;
 
-        this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = ColorUsedReguraly.TEXT_COLOR;
         this.ctx.fillText(nickName, (start - textWidth/2), height);
     }
 

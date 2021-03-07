@@ -119,7 +119,7 @@ class SettingWindow extends WindowParents {
     showText(height, text) {
         let fontSize = 28;
         this.ctx.font = fontSize.toString() + "px Noto Sans JP";
-        this.ctx.fillStyle = "#ff9933";
+        this.ctx.fillStyle = ColorUsedReguraly.TEXT_COLOR;
         height += fontSize/2;
 
         this.ctx.fillText(text, 100, height);
