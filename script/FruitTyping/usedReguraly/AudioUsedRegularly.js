@@ -3,6 +3,7 @@
  */
  class AudioUsedRegularly {
     static BGM = new AudioOnWeb("/static/audio/bgm.mp3", AudioOnWeb.BGM);
+    static BATTLE = new AudioOnWeb("/static/audio/battle.mp3", AudioOnWeb.BGM);
     static KETTEI = new AudioOnWeb("/static/audio/kettei.mp3", AudioOnWeb.SE);
     static TYPING = new AudioOnWeb("/static/audio/typing.mp3", AudioOnWeb.SE);
     static CANCEL = new AudioOnWeb("/static/audio/cancel.mp3", AudioOnWeb.SE);
@@ -12,6 +13,7 @@
     static ONE = new AudioOnWeb("/static/audio/1.mp3", AudioOnWeb.SE);
     static START = new AudioOnWeb("/static/audio/start.mp3", AudioOnWeb.SE);
     static JUMP = new AudioOnWeb("/static/audio/Jump.mp3", AudioOnWeb.SE);
+    static ATTACK = new AudioOnWeb("/static/audio/attack.mp3", AudioOnWeb.SE);
 
     /**
      * 決定の効果音を鳴らす
@@ -32,6 +34,27 @@
      */
     static playAudioBGM() {
         AudioUsedRegularly.BGM.playAudioLoop();
+    }
+
+    /**
+     * bgmを止める
+     */
+    static stopAudioBGM() {
+        AudioUsedRegularly.BGM.stopAudio();
+    }
+
+    /**
+     * 戦闘曲を流す
+     */
+    static playAudioBattle() {
+        AudioUsedRegularly.BATTLE.playAudioLoop();
+    }
+
+    /**
+     * 戦闘曲を停止させる
+     */
+    static stopAudioBattle() {
+        AudioUsedRegularly.BATTLE.stopAudio();
     }
 
     /**
@@ -81,5 +104,12 @@
      */
     static playAudioJump() {
         AudioUsedRegularly.JUMP.playAudio();
+    }
+
+    /**
+     * 攻撃音を鳴らす
+     */
+    static playAudioAttack() {
+        AudioUsedRegularly.ATTACK.playAudio();
     }
 }

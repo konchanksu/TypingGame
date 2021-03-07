@@ -3,7 +3,7 @@
  */
  class TextSizeUsedReguraly {
     static MINI = 20;
-    static NOMAL = 28;
+    static NORMAL = 28;
     static BIG = 36;
     static MAX = 56
 }

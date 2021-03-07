@@ -47,7 +47,7 @@
     showWindow() {
         this.canvasClear();
         this.showBackGround();
-        this.ctx.font = FontUsedReguraly.osakaMono(TextSizeUsedReguraly.MAX);
+        this.ctx.font = FontUsedReguraly.monoSpace(TextSizeUsedReguraly.MAX);
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = ColorUsedReguraly.GAME_ORANGE;
 

@@ -12,10 +12,10 @@ class WindowParents {
         this.canvas = document.getElementById("gameWindow");
         this.ctx = this.canvas.getContext("2d");
         this.gl = this.canvas.getContext("webgl");
-        this.fontSize = TextSizeUsedReguraly.NOMAL;
+        this.fontSize = TextSizeUsedReguraly.NORMAL;
         this.windowWidth = this.canvas.width;
         this.widnowHeight = this.canvas.height;
-        this.ctx.font = FontUsedReguraly.osakaMono(this.fontSize);
+        this.ctx.font = FontUsedReguraly.monoSpace(this.fontSize);
 
         this.imageLoad();
     }

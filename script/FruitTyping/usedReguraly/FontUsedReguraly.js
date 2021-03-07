@@ -6,7 +6,7 @@
      * フォントを返却する
      * @param {TextSizeUsedReguraly} size フォントサイズを指定する
      */
-    static osakaMono(size) {
-        return size.toString() + "px osaka-mono";
+    static monoSpace(size) {
+        return size.toString() + "px monospace";
     }
 }

@@ -70,6 +70,13 @@ class AudioOnWeb extends Audio {
     }
 
     /**
+     * 流れている曲を停止させる
+     */
+    stopAudio() {
+        if(!this.paused) { this.pause(); }
+    }
+
+    /**
      * 音量を変更する
      */
     static changeAudioVolumeSE() {
